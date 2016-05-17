@@ -16,6 +16,7 @@ var del = require('del');
 var runSequence = require('run-sequence');
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
+var nodemon = require('gulp-nodemon');
 var merge = require('merge-stream');
 var path = require('path');
 var fs = require('fs');
@@ -214,8 +215,30 @@ gulp.task('clean', function() {
   return del(['.tmp', dist()]);
 });
 
+// Task to start nodemon inspired by:
+// https://gist.github.com/sogko/b53d33d4f3b40d3b4b2e
+gulp.task('nodemon', function (cb) {
+  var started = false;
+
+  return nodemon({
+    script: 'server.js',
+    watch: ['server.js', 'routes/*.js']
+  })
+  .on('start', function () {
+    // to avoid nodemon being started multiple times
+    // thanks @matthisk
+    if (!started) {
+      cb();
+      started = true;
+    }
+  })
+  .on('restart', function () {
+    setTimeout(reload, 500);
+  });
+});
+
 // Watch files for changes & reload
-gulp.task('serve', ['styles', 'elements'], function() {
+gulp.task('serve', ['styles', 'elements', 'nodemon'], function() {
   browserSync({
     port: 5000,
     notify: false,
@@ -228,14 +251,7 @@ gulp.task('serve', ['styles', 'elements'], function() {
         }
       }
     },
-    // Run as an https by uncommenting 'https: true'
-    // Note: this uses an unsigned certificate which on first access
-    //       will present a certificate warning in the browser.
-    // https: true,
-    server: {
-      baseDir: ['.tmp', 'app'],
-      middleware: [historyApiFallback()]
-    }
+    proxy: 'http://localhost:8000'
   });
 
   gulp.watch(['app/**/*.html'], reload);

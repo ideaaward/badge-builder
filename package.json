@@ -1,5 +1,13 @@
 {
   "private": true,
+  "scripts": {
+    "test": "gulp test:local",
+    "start": "gulp serve"
+  },
+  "dependencies": {
+    "express": "^4.13.4",
+    "path": "^0.12.7"
+  },
   "devDependencies": {
     "browser-sync": "^2.7.7",
     "connect-history-api-fallback": "^1.1.0",
@@ -16,6 +24,7 @@
     "gulp-load-plugins": "^1.1.0",
     "gulp-minify-css": "^1.2.1",
     "gulp-minify-html": "^1.0.2",
+    "gulp-nodemon": "^2.0.7",
     "gulp-rename": "^1.2.0",
     "gulp-replace": "^0.5.4",
     "gulp-size": "^2.0.0",
@@ -27,10 +36,6 @@
     "run-sequence": "^1.0.2",
     "vulcanize": ">= 1.4.2",
     "web-component-tester": "^4.0.0"
-  },
-  "scripts": {
-    "test": "gulp test:local",
-    "start": "gulp serve"
   },
   "engines": {
     "node": ">=0.10.0"
