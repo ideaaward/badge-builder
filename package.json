@@ -5,7 +5,12 @@
     "start": "gulp serve"
   },
   "dependencies": {
+    "connect-mongo": "^1.2.0",
     "express": "^4.13.4",
+    "express-session": "^1.13.0",
+    "mongoose": "^4.4.17",
+    "passport": "^0.3.2",
+    "passport-auth0": "^0.5.1",
     "path": "^0.12.7"
   },
   "devDependencies": {

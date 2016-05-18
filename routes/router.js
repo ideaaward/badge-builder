@@ -4,8 +4,9 @@ var express = require('express');
 
 var router = express.Router();
 
-router.get('/my-list.json', function (request, response) {
-  response.json({
+router.get('/my-list.json', function (req, res) {
+  console.log(req.user);
+  res.json({
     items: [
       'Responsive Web App boilerplate',
       'Iron Elements and Paper Elements',
