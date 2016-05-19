@@ -13,17 +13,13 @@ $ gulp serve
 
 ## Directory structure
 
+Below lists the key files and folders:
+
 ```
 .
-├── app
-│   ├── elements
-│   ├── images
-│   ├── scripts
-│   ├── styles
-│   └── test
-├── dist
-│   └── styles
-├── models
-├── routes
-└── tasks
+├── app // The polymer app
+│   ├── elements // Polymer elements
+├── models // Models for the REST API
+├── routes // Routes for the REST API
+├── server.js // Entry point of the REST API
 ```
