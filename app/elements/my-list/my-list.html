@@ -10,7 +10,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-request.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
 <dom-module id="my-list">
   <template>
@@ -24,14 +28,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <ul>
-      <iron-ajax auto
-        url="/api/my-list.json" handle-as="json" last-response="{{ajaxResponse}}">
-      </iron-ajax>
-      <template is="dom-repeat" items="[[ajaxResponse.items]]">
-        <li><span>[[item]]</span></li>
+    <p class="subhead">Your badges:</p>
+
+    <iron-request id="deleteBadge" handle-as="json">
+    </iron-request>
+    <iron-ajax id="getBadges" auto
+      url="/api/badges" handle-as="json" last-response="{{badgesResponse}}">
+    </iron-ajax>
+    <iron-list items="[[badgesResponse]]" as="item">
+      <template>
+        <div class="layout horizontal">
+          <a data-route="badges" href="{{baseUrl}}badges/{{item._id}}">
+            <paper-button>[[item._id]]</paper-button>
+          </a>
+          <paper-button on-tap="badgeDeleted" raised><iron-icon icon="delete"></iron-icon>delete</paper-button>
+        </div>
       </template>
-    </ul>
+    </iron-list>
   </template>
 
   <script>
@@ -39,7 +52,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       'use strict';
 
       Polymer({
-        is: 'my-list'
+        is: 'my-list',
+        badgeSelected: function (event) {
+          console.log(event.model.item);
+        },
+        badgeDeleted: function (event) {
+          var self = this;
+          self.$.deleteBadge.send(
+            {
+              url: '/api/badges/' + event.model.item._id,
+              method: 'DELETE'
+            }
+          ).then(function () {
+            self.$.getBadges.generateRequest();
+          });
+        }
       });
     })();
   </script>
