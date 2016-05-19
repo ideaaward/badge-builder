@@ -11,23 +11,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 
-<dom-module id="my-greeting">
+<dom-module id="single-badge">
   <template>
     <style include="shared-styles">
       :host {
         display: block;
       }
-
-      span,
-      input {
-        @apply(--paper-font-body2);
-      }
     </style>
 
-    <h2 class="page-title">{{greeting}}</h2>
-    <span>Update text to change the greeting.</span>
-    <!-- Listens for "input" event and sets greeting to <input>.value -->
-    <input value="{{greeting::input}}">
+    <h2 class="page-title">{{params._id}}</h2>
   </template>
 
   <script>
@@ -35,15 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       'use strict';
 
       Polymer({
-        is: 'my-greeting',
-
-        properties: {
-          greeting: {
-            type: String,
-            value: 'Welcome!',
-            notify: true
-          }
-        }
+        is: 'single-badge'
       });
     })();
   </script>

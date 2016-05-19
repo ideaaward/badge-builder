@@ -16,7 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
-<dom-module id="my-list">
+<dom-module id="list-badges">
   <template>
     <style>
       :host {
@@ -52,7 +52,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       'use strict';
 
       Polymer({
-        is: 'my-list',
+        is: 'list-badges',
         badgeSelected: function (event) {
           console.log(event.model.item);
         },

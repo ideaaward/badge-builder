@@ -5,7 +5,7 @@
 * Install mongodb https://docs.mongodb.com/manual/installation/#tutorials
 
 ```
-$ npm install -g gulp-cli nodemon
+$ npm install -g gulp-cli nodemon bower
 $ npm install
 $ bower install
 $ gulp serve
