@@ -22,7 +22,8 @@ var startServer = function () {
   });
 };
 
-mongoose.connect('mongodb://127.0.0.1/badge-builder');
+var connectionString = process.env.MONGODB_CONNECTION_STRING || 'mongodb://127.0.0.1';
+mongoose.connect(connectionString);
 
 mongoose.connection.on('connected', function () {
   models.init(mongoose.connection);

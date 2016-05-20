@@ -2,7 +2,8 @@ var mongoose = require('mongoose');
 
 var badgeSchema = new mongoose.Schema({
   author: 'string',
-  content: 'string',
+  title: 'string',
+  content: Object,
   date: {
     type: Date,
     default: Date.now

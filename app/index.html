@@ -89,8 +89,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <span class="space"></span>
 
           <!-- Toolbar icons -->
-          <paper-icon-button icon="refresh"></paper-icon-button>
-          <paper-icon-button icon="search"></paper-icon-button>
+          <a data-route="create" href="{{baseUrl}}create">
+            <paper-icon-button icon="create"></paper-icon-button>
+          </a>
 
           <!-- Application name -->
           <div class="middle middle-container">
@@ -119,7 +120,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </paper-material>
             </section>
 
-            <section data-route="create-badge">
+            <section data-route="create">
               <paper-material elevation="1">
                 <create-badge></create-badge>
               </paper-material>

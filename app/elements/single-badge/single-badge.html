@@ -9,7 +9,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/iron-signals/iron-signals.html">
 
 <dom-module id="single-badge">
   <template>
@@ -19,7 +21,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <h2 class="page-title">{{params._id}}</h2>
+    <iron-signals on-iron-signal-badges="opened"></iron-signals>
+
+    <iron-ajax id="getBadge"
+      handle-as="json" on-response="badgeResponse">
+    </iron-ajax>
+
+    <h2 class="page-title">{{badgeTitle}}</h2>
+    <div>{{badgeContent}}</div>
   </template>
 
   <script>
@@ -27,7 +36,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       'use strict';
 
       Polymer({
-        is: 'single-badge'
+        is: 'single-badge',
+        properties: {
+          badgeTitle: {
+            type: String,
+            notify: true
+          }
+        },
+        opened: function (event) {
+          this.$.getBadge.url = '/api/badges/' + event.detail.params._id;
+          this.$.getBadge.generateRequest();
+        },
+        badgeResponse: function (event) {
+          var response = this.$.getBadge.lastResponse;
+          this.badgeTitle = response.title;
+          // TODO: Create right components based on the JSON
+          this.badgeContent = JSON.stringify(response.content);
+        }
       });
     })();
   </script>

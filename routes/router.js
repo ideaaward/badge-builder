@@ -5,11 +5,15 @@ var models = require('../models/models.js');
 
 var router = express.Router();
 
+var sendError = function (res, err) {
+  res.statusCode = 500;
+  res.send(err);
+};
+
 router.get('/badges/:id', function (req, res) {
   models.Badge.findById(req.params.id, function (err, badge) {
     if (err) {
-      res.send(err);
-      return;
+      return sendError(res, err);
     }
     res.json(badge);
   });
@@ -20,8 +24,7 @@ router.delete('/badges/:id', function (req, res) {
     _id: req.params.id
   }, function (err) {
     if (err) {
-      res.send(err);
-      return;
+      return sendError(res, err);
     }
     res.json({
       message: 'Deleted'
@@ -32,12 +35,12 @@ router.delete('/badges/:id', function (req, res) {
 router.post('/badges', function (req, res) {
   var badge = new models.Badge();
   badge.author = req.user && req.user.id || '';
+  badge.title = req.body.title;
   badge.content = req.body.content;
 
   badge.save(function (err, badge) {
     if (err) {
-      res.send(err);
-      return;
+      return sendError(res, err);
     }
 
     res.statusCode = 201;
@@ -50,9 +53,9 @@ router.post('/badges', function (req, res) {
 router.get('/badges', function (req, res) {
   models.Badge.find(function(err, badges) {
     if (err) {
-      res.send(err);
-      return;
+      return sendError(res, err);
     }
+    // TODO: Return only _id and title
     res.json(badges);
   });
 });

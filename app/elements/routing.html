@@ -32,35 +32,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       next();
     }
 
+    function switchPage(route, data) {
+      app.route = route;
+      app.fire('iron-signal', {
+        name: app.route,
+        data: data
+      });
+    }
+
     // Routes
     page('*', scrollToTop, closeDrawer, function(ctx, next) {
       next();
     });
 
     page('/', function() {
-      app.route = 'home';
+      switchPage('home');
     });
 
     page(app.baseUrl, function() {
-      app.route = 'home';
+      switchPage('home');
     });
 
-    page('/users', function() {
-      app.route = 'users';
-    });
-
-    page('/users/:name', function(data) {
-      app.route = 'user-info';
-      app.params = data.params;
-    });
-
-    page('/contact', function() {
-      app.route = 'contact';
+    page('/create', function() {
+      switchPage('create');
     });
 
     page('/badges/:_id', function(data) {
-      app.route = 'badges';
-      app.params = data.params;
+      switchPage('badges', data);
     });
 
     // 404
