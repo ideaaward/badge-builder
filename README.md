@@ -23,3 +23,10 @@ Below lists the key files and folders:
 ├── routes // Routes for the REST API
 ├── server.js // Entry point of the REST API
 ```
+
+## Run web component tests
+
+```
+npm install -g web-component-tester
+wct
+```

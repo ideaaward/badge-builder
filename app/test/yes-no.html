@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="../bower_components/lodash/lodash.js"></script>
+
+    <!-- import the element to test -->
+    <link rel="import" href="../elements/yes-no/yes-no.html">
+  </head>
+  <body>
+
+    <!-- set up your fixtures. -->
+    <yes-no></yes-no>
+
+    <script>
+      var el = document.querySelector('yes-no');
+
+      suite('<yes-no>', function() {
+
+        test('defines the "question" and "answer" property', function() {
+          assert.isTrue(el.question.length > 0);
+          assert.isTrue(el.answer);
+        });
+
+        test('should return false result by default', function() {
+          assert.isFalse(el.checkAnswer());
+        });
+
+        test('should have only one correct answer', function(done) {
+          var results = [];
+          var l = el.$.options.items.length;
+
+          el.addEventListener('yes-no-result', function(event) {
+            results.push(event.detail.result);
+            //console.log('fired event', results.length,'/',l);
+            if (l === results.length) {
+              var trueResults = _.filter(results, function(bool){ return bool; });
+              //console.log('results', results, 'trueResults:', trueResults);
+              assert.isTrue( 1 === trueResults.length );
+              done();
+            }
+          });
+
+          //console.log('options', i);
+          var i = l;
+          while (i--){
+            var item = el.$.options.items[i];
+            //console.log('item', item);
+            el.$.options.selected = item.name;
+          }
+        });
+
+      });
+    </script>
+
+  </body>
+</html>

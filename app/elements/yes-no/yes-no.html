@@ -1,0 +1,231 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+<!--
+A question element with a yes/no response
+
+Example:
+
+    <yes-no question="Has a triangle got 3 sides?" answer=true label-yes="True" label-no="False"></yes-no>
+
+@demo
+-->
+<dom-module id="yes-no">
+
+  <style>
+    :host {
+      display: block;
+      box-sizing: border-box;
+    }
+
+    paper-input {
+      display: inline-block;
+    }
+
+    .question {
+      width: 100%;
+    }
+  </style>
+
+  <template>
+    <p class="question" hidden=[[edit]]>[[question]]</p>
+    <div><paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>
+
+    <paper-radio-group id="options" on-iron-select="_selectAnswer">
+      <paper-radio-button name="yes"><span hidden=[[edit]]>[[labelYes]]</span></paper-radio-button>
+      <paper-input placeholder="Yes" value="{{labelYes}}" hidden=[[!edit]]></paper-input>
+      <paper-radio-button name="no"><span hidden=[[edit]]>[[labelNo]]</span></paper-radio-button>
+      <paper-input placeholder="No" value="{{labelNo}}" hidden=[[!edit]]></paper-input>
+    </paper-radio-group>
+  </template>
+
+</dom-module>
+
+<script>
+
+  Polymer({
+
+    is: 'yes-no',
+
+    properties: {
+
+      /**
+       * The question.
+       * @type {string}
+       */
+      question: {
+        type: String,
+        value: function() {
+          return 'Is snow white?';
+        }
+      },
+
+      /**
+       * The answer.
+       * @type {boolean}
+       */
+      answer: {
+        type: Boolean,
+        value: function() {
+          return true;
+        }
+      },
+
+      /**
+       * Result of user's answer.
+       * @type {boolean}
+       */
+      result: {
+        type: Boolean,
+        observer: '_resultChanged'
+      },
+
+      /**
+       * Custom label for 'Yes' option.
+       * @type {string}
+       */
+      labelYes: {
+        type: String,
+        value: function() {
+          return 'Yes';
+        }
+      },
+
+      /**
+       * Custom label for 'No' option.
+       * @type {string}
+       */
+      labelNo: {
+        type: String,
+        value: function() {
+          return 'No';
+        }
+      },
+
+      /**
+       * `edit` indicates that the element should be in WYSIWYG editor mode.
+       */
+      edit: {
+        type: Boolean,
+        value: false,
+        observer: '_editChanged'
+      }
+
+    },
+
+    // Element Lifecycle
+
+    ready: function() {
+      // `ready` is called after all elements have been configured, but
+      // propagates bottom-up. This element's children are ready, but parents
+      // are not.
+      //
+      // This is the point where you should make modifications to the DOM (when
+      // necessary), or kick off any processes the element wants to perform.
+    },
+
+    attached: function() {
+      // `attached` fires once the element and its parents have been inserted
+      // into a document.
+      //
+      // This is a good place to perform any work related to your element's
+      // visual state or active behavior (measuring sizes, beginning animations,
+      // loading resources, etc).
+    },
+
+    detached: function() {
+      // The analog to `attached`, `detached` fires when the element has been
+      // removed from a document.
+      //
+      // Use this to clean up anything you did in `attached`.
+    },
+
+    // Element Behavior
+
+    /**
+     * The `yes-no-result` event is fired whenever an answer is selected or changed.
+     * @event yes-no-answer
+     * @detail {boolean}
+     */
+    _resultChanged: function(newValue) {
+      //console.info(this.localName, 'fire result:', this.result);
+      this.fire('yes-no-result', {result: this.result}); // dispatches event with result
+    },
+
+    /**
+     * Triggered when you select an answer
+     */
+    _selectAnswer: function(ev) {
+      if (this.edit) {
+        this._editAnswer();
+        return;
+      }
+      //var selectedAnswer = ev.detail.item.name;
+      var result = this.checkAnswer();
+      this.set('result', result); // update result
+    },
+
+    /**
+     * Checks if your answer is correct.
+     */
+    checkAnswer: function() {
+      if (!this.$.options.selectedItem) {
+        return false;
+      }
+      var selectedAnswer = this.$.options.selectedItem.name;
+      //console.log(this.localName, selectedAnswer, this._answerName());
+      return (selectedAnswer === this._answerName());
+    },
+
+    /**
+     * @return {string} label of the answer boolean.
+     */
+    _answerName: function() {
+      return (this.answer) ? "yes" : "no"; // radio button name attributes
+    },
+
+    /**
+     * @param {string} The name label.
+     * @return {boolean} value of name label.
+     */
+    _isAnswerName: function(name) {
+      return (name === "yes") ? true : false;
+    },
+
+    /**
+     * Toggle edit mode
+     */
+    toggleEdit: function() {
+      this.set('edit', !this.edit);
+    },
+
+    /**
+     * Triggered when edit mode is changed
+     */
+    _editChanged: function(newValue) {
+      if (!this.edit) {
+        return;
+      }
+      // edit mode - set/reset selection to correct answer
+      //console.log(this.localName, 'answer:', this._answerName(this.answer) );
+      this.$.options.set('selected', this._answerName(this.answer) );
+    },
+
+    /**
+     * Edit the correct answer
+     */
+    _editAnswer: function(){
+      if (!this.$.options.selectedItem) {
+        return false;
+      }
+      var selectedAnswer = this.$.options.selectedItem.name;
+      var answer = this._isAnswerName(selectedAnswer);
+      this.set('answer', answer); // update answer property
+      //console.info(this.localName, "edited answer", this.answer);
+    }
+
+  });
+
+</script>
