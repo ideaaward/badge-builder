@@ -4,11 +4,11 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 
 <!--
-A question element with a yes/no response
+Quiz component for question with yes / no response
 
 Example:
 
-    <yes-no question="Has a triangle got 3 sides?" answer=true label-yes="True" label-no="False"></yes-no>
+    <yes-no question="Has a triangle got 3 sides?" answer="true" label-yes="True" label-no="False"></yes-no>
 
 @demo
 -->
@@ -39,6 +39,8 @@ Example:
       <paper-radio-button name="no"><span hidden=[[edit]]>[[labelNo]]</span></paper-radio-button>
       <paper-input placeholder="No" value="{{labelNo}}" hidden=[[!edit]]></paper-input>
     </paper-radio-group>
+
+    <pre>A. [[answer]]</pre>
   </template>
 
 </dom-module>
@@ -63,14 +65,23 @@ Example:
       },
 
       /**
-       * The answer.
-       * @type {boolean}
+       * Is the answer 'true' or 'false'.
+       * @type {string}
        */
       answer: {
-        type: Boolean,
+        type: String,
         value: function() {
-          return true;
+          return "false"; // using string here as boolean attribute will always be true regardless of value
         }
+      },
+
+      /**
+       * The value of answer string.
+       * @type {boolean}
+       */
+      _answer: {
+        type: Boolean,
+        computed: '_computeAnswer(answer)'
       },
 
       /**
@@ -175,7 +186,7 @@ Example:
         return false;
       }
       var selectedAnswer = this.$.options.selectedItem.name;
-      //console.log(this.localName, selectedAnswer, this._answerName());
+      //console.log(this.localName, selectedAnswer, this._answerName(), this._answer);
       return (selectedAnswer === this._answerName());
     },
 
@@ -183,7 +194,7 @@ Example:
      * @return {string} label of the answer boolean.
      */
     _answerName: function() {
-      return (this.answer) ? "yes" : "no"; // radio button name attributes
+      return (this._answer) ? "yes" : "no"; // radio button name attributes
     },
 
     /**
@@ -192,6 +203,14 @@ Example:
      */
     _isAnswerName: function(name) {
       return (name === "yes") ? true : false;
+    },
+
+    /**
+     * @param {string} The answer.
+     * @return {boolean} value of answer.
+     */
+    _computeAnswer: function(answer) {
+      return (answer === "true") ? true : false;
     },
 
     /**
@@ -209,8 +228,8 @@ Example:
         return;
       }
       // edit mode - set/reset selection to correct answer
-      //console.log(this.localName, 'answer:', this._answerName(this.answer) );
-      this.$.options.set('selected', this._answerName(this.answer) );
+      //console.log(this.localName, 'answer:', this._answerName(this._answer) );
+      this.$.options.set('selected', this._answerName(this._answer) );
     },
 
     /**
@@ -222,8 +241,8 @@ Example:
       }
       var selectedAnswer = this.$.options.selectedItem.name;
       var answer = this._isAnswerName(selectedAnswer);
-      this.set('answer', answer); // update answer property
-      //console.info(this.localName, "edited answer", this.answer);
+      //console.info(this.localName, "edited answer ->", selectedAnswer, answer);
+      this.set('answer', answer.toString()); // update answer string property
     }
 
   });
