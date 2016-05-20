@@ -10,6 +10,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="../yes-no/yes-no.html">
 
 <dom-module id="create-badge">
   <template>
@@ -22,6 +27,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       input {
         @apply(--paper-font-body2);
       }
+
+      .fab {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        z-index: 1;
+      }
     </style>
 
     <iron-ajax id="createBadge" handle-as="json" content-type="application/json"
@@ -31,11 +43,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <h2 class="page-title">Create Badge</h2>
 
-    <label for="titleInput">Title:</label>
-    <input id="titleInput">
+    <paper-input id="titleInput" placeholder="Title" label="Badge" autofocus required></paper-input>
+
     <paper-button on-tap="saveBadge" raised><iron-icon icon="save"></iron-icon>save</paper-button>
 
-    <yes-no edit></yes-no>
+    <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>test</paper-button>
+
+    <div class="fab">
+      <paper-fab label="y/n" on-tap="addYesNo"></paper-fab>
+    </div>
+
+    <!-- dynamic elements go inside here -->
+    <div id="components"></div>
   </template>
 
   <script>
@@ -44,25 +63,110 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       Polymer({
         is: 'create-badge',
+        properties: {
+          _node : {
+            type: Object,
+            value: {
+              elements: []
+            }
+          },
+          sections : {
+            type: Array,
+            value: []
+          },
+          questions : {
+            type: Array,
+            value: [
+              { question: "Is Santa real?", answer: false },
+              { question: "Is the moon made of cheese?", answer: false },
+              { question: "Is the earth flat?", answer: false },
+              { question: "Is is cool to listen to rap music?", answer: false },
+            ]
+          }
+        },
+
         saveBadge: function (event) {
+          this._updateSections();
           this.$.createBadge.body = {
             title: this.$.titleInput.value,
             content: {
-              sections: [
-                {
-                  content: 'foo'
-                }
-              ]
+              sections: this.sections
             }
           };
           this.$.createBadge.generateRequest();
         },
+
         handleCreateResponse: function (event) {
           app.$.toast.text = 'Badged Saved';
           app.$.toast.show();
           page.redirect(app.baseUrl);
+          this._resetPage();
+        },
+
+        // TODO: clean-up dynamic elements / resources
+        _resetPage: function(){
           this.$.titleInput.value = '';
-        }
+          // detatch custom elements
+          var i = this._node.elements.length;
+          while(i--){
+            var el = this._node.elements[i];
+            console.info(this.localName, '-', el);
+            Polymer.dom(this.$.components).removeChild(el.element); // TODO: check elements are being detached
+          }
+          this._node = {
+            elements: []
+          };
+          this.sections = [];
+        },
+
+        addYesNo: function() {
+          //this.push('sections', {"role":"yes-no", "data":{"question":"Are you afraid of the big bad wolf?"}} );
+          var el = new YesNo(); //document.createElement("yes-no");
+          var q = this._getRandomQuestion();
+          el.question = q.question;
+          el.answer = q.answer.toString(); //"true";
+          el.edit = true;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+        },
+
+        _getRandomQuestion: function(){
+          return this.questions[_.random(this.questions.length-1)];
+        },
+
+        _elementsChanged: function(changeRecord){
+          //console.info(this.localName, '*', changeRecord, this._node.elements);
+        },
+
+        _updateSections: function(){
+          this.set('sections', this._getSectionsData());
+        },
+
+        _getSectionsData: function(){
+          var i = this._node.elements.length;
+          var sections = [];
+          while(i--){
+            var el = this._node.elements[i].element;
+            console.log(el.data);
+            sections.unshift(el.data); // reverse order 
+          }
+          console.log("sections:", sections);
+          return sections;
+        },
+
+        _sectionsChanged: function(){
+          this._test();
+        },
+
+        _test: function(){
+          this._updateSections();
+          console.info(this.localName, 'DATA', this.sections); // this._node.elements
+        },
+
+        observers: [
+          '_elementsChanged(_node.elements.length)'
+        ],
       });
     })();
   </script>
