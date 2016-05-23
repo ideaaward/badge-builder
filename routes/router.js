@@ -32,6 +32,8 @@ router.delete('/badges/:id', function (req, res) {
   });
 });
 
+// TODO: put method to update
+
 router.post('/badges', function (req, res) {
   var badge = new models.Badge();
   badge.author = req.user && req.user.id || '';

@@ -40,16 +40,21 @@ Example:
       <paper-input placeholder="No" value="{{labelNo}}" hidden=[[!edit]]></paper-input>
     </paper-radio-group>
 
-    <pre>A. [[answer]]</pre>
+    <pre hidden=[[!edit]]>A. [[answer]]</pre>
   </template>
 
 </dom-module>
 
 <script>
 
-  Polymer({
+  YesNo = Polymer({
 
     is: 'yes-no',
+
+    // factoryImpl: function(question, answer) {
+    //   this.set('question', question);
+    //   this.set('answer', answer.toString());
+    // },
 
     properties: {
 
@@ -59,9 +64,9 @@ Example:
        */
       question: {
         type: String,
-        value: function() {
-          return 'Is snow white?';
-        }
+        // value: function() {
+        //   return 'Is snow white?';
+        // }
       },
 
       /**
@@ -70,9 +75,9 @@ Example:
        */
       answer: {
         type: String,
-        value: function() {
-          return "false"; // using string here as boolean attribute will always be true regardless of value
-        }
+        // value: function() {
+        //   return "false"; // using string here as boolean attribute will always be true regardless of value
+        // }
       },
 
       /**
@@ -122,6 +127,20 @@ Example:
         type: Boolean,
         value: false,
         observer: '_editChanged'
+      },
+
+      /**
+       * `data` contains the edited properties
+       */
+      data: {
+        type: Object,
+        readOnly: true,
+        // reflectToAttribute: true, // update attribute
+        // notify: true,
+        // value: function() {
+        //   return {};
+        // },
+        computed: '_dataUpdated(question, answer, labelYes, labelNo)'
       }
 
     },
@@ -243,7 +262,36 @@ Example:
       var answer = this._isAnswerName(selectedAnswer);
       //console.info(this.localName, "edited answer ->", selectedAnswer, answer);
       this.set('answer', answer.toString()); // update answer string property
-    }
+    },
+
+    // _dataChanged: function(data) {
+    //   console.info(this.localName, '~', data);
+    //   if (data && data.question) {
+    //     this.set('question', data.question);
+    //   }
+    // },
+
+    // _computeData: function() {
+    //   return this._dataUpdated(this.question, this.answer, this.labelYes, this.labelNo);
+    // },
+
+    /**
+     * Updates the data attribute property
+     */
+    _dataUpdated: function(question, answer, labelYes, labelNo) {
+      var data = {
+        "question" : question,
+        "answer" : answer,
+        "yes" : labelYes,
+        "no" : labelNo
+      };
+      //console.info(this.localName, '^', data);
+      return data;
+    },
+
+    // observers: [
+    //   '_dataUpdated(question, answer, labelYes, labelNo)'
+    // ],
 
   });
 

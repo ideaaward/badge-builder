@@ -61,6 +61,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       switchPage('badges', data);
     });
 
+    page('/edit/:_id', function(data) {
+      data.edit = true;
+      switchPage('create', data);
+    });
+
     // 404
     page('*', function() {
       app.$.toast.text = 'Can\'t find: ' + window.location.href  + '. Redirected you to Home Page';

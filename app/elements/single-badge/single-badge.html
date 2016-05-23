@@ -13,6 +13,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/iron-signals/iron-signals.html">
 
+<link rel="import" href="../yes-no/yes-no.html">
+
 <dom-module id="single-badge">
   <template>
     <style include="shared-styles">
@@ -24,11 +26,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <iron-signals on-iron-signal-badges="opened"></iron-signals>
 
     <iron-ajax id="getBadge"
-      handle-as="json" on-response="badgeResponse">
+      handle-as="json" on-response="badgeResponse" last-response="{{response}}" >
     </iron-ajax>
 
-    <h2 class="page-title">{{badgeTitle}}</h2>
-    <div>{{badgeContent}}</div>
+    <h2 class="page-title">[[badgeTitle]]</h2>
+
+    <ol>
+      <template is="dom-repeat" items="{{response.content.sections}}" as="item">
+        <li id="{{index}}">
+          <yes-no question="[[item.question]]" answer="[[item.answer]]" label-no="[[item.no]]" label-yes="[[item.yes]]"></yes-no>
+        </li>
+      </template>
+    </ol>
+
+    <!-- TODO: dynamic elements go inside here -->
+    <div id="components"></div>
+
+    <code>{{badgeContent}}</code>
   </template>
 
   <script>
@@ -41,9 +55,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           badgeTitle: {
             type: String,
             notify: true
+          },
+          response: {
+            type: Object,
+            notify: true
           }
         },
+        // TODO: clean-up dynamic resources
         opened: function (event) {
+          //console.log(this.localName, "opened");
           this.$.getBadge.url = '/api/badges/' + event.detail.params._id;
           this.$.getBadge.generateRequest();
         },
@@ -52,6 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.badgeTitle = response.title;
           // TODO: Create right components based on the JSON
           this.badgeContent = JSON.stringify(response.content);
+          //console.log(this.localName, "sections", this.response.content.sections);
         }
       });
     })();

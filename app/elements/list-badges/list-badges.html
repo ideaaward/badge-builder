@@ -41,9 +41,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <iron-list items="[[badgesResponse]]" as="item">
       <template>
         <div class="layout horizontal">
-          <a data-route="badges" href="{{baseUrl}}badges/{{item._id}}">
-            <paper-button>[[item.title]]</paper-button>
-          </a>
+          <a data-route="badges" href="{{baseUrl}}badges/{{item._id}}">[[item.title]]</a>
+          <a data-route="badges" href="{{baseUrl}}edit/{{item._id}}">Edit</a>
+
           <paper-button on-tap="badgeDeleted" raised><iron-icon icon="delete"></iron-icon>delete</paper-button>
         </div>
       </template>
