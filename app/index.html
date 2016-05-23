@@ -74,8 +74,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- Drawer Content -->
         <paper-menu attr-for-selected="data-route" selected="[[route]]">
           <a data-route="home" href="{{baseUrl}}">
-            <iron-icon icon="home"></iron-icon>
-            <span>Home</span>
+            <iron-icon icon="icons:apps"></iron-icon>
+            <span>Badges</span>
+          </a>
+
+          <a data-route="create" href="{{baseUrl}}create">
+            <iron-icon icon="icons:add-circle-outline"></iron-icon>
+            <span>Create Badge</span>
           </a>
         </paper-menu>
       </paper-scroll-header-panel>
@@ -89,9 +94,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <span class="space"></span>
 
           <!-- Toolbar icons -->
-          <a data-route="create" href="{{baseUrl}}create">
-            <paper-icon-button icon="create"></paper-icon-button>
-          </a>
+
 
           <!-- Application name -->
           <div class="middle middle-container">
