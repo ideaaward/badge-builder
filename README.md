@@ -3,6 +3,11 @@
 ## Running locally
 
 * Install mongodb https://docs.mongodb.com/manual/installation/#tutorials
+* If you are on Windows and haven't got this setup:
+  - Create a folder at the root (C:/) called 'data'
+  - Within 'data' create another folder called 'db'
+  - So you should have the path: C:/data/db available
+* Run 'mongod' in a seperate command line window
 
 ```
 $ npm install -g gulp-cli nodemon bower
