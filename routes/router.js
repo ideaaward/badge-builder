@@ -32,8 +32,6 @@ router.delete('/badges/:id', function (req, res) {
   });
 });
 
-// TODO: put method to update
-
 router.post('/badges', function (req, res) {
   var badge = new models.Badge();
   badge.author = req.user && req.user.id || '';
@@ -48,6 +46,26 @@ router.post('/badges', function (req, res) {
     res.statusCode = 201;
     res.json({
       _id: badge._id
+    });
+  });
+});
+
+router.put('/badges/:id', function (req, res) {
+  models.Badge.findById(req.params.id, function (err, badge) {
+    if (err) {
+      return sendError(res, err);
+    }
+
+    badge.title = req.body.title;
+    badge.content = req.body.content;
+
+    badge.save(function (err) {
+      if (err) {
+        return sendError(res, err);
+      }
+      res.json({
+        _id: badge._id
+      });
     });
   });
 });
