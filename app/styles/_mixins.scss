@@ -1,0 +1,48 @@
+// browser prefixing eg. @include prefix('hyphens', 'auto');
+@mixin prefix($property, $value) {
+	@each $prefix in ('-webkit-', '-moz-', '-ms-', '') {
+		#{$prefix}#{$property}: #{$value};
+	}
+}
+
+// Screen resolution media queries
+
+// @2x - Retina screen
+@mixin media-2x() {
+	@media (min-resolution: 144dpi), (min-device-pixel-ratio: 1.25), (-webkit-min-device-pixel-ratio: 2) {
+		@content;
+	}
+}
+
+// @3x - Retina HD screen
+@mixin media-3x() {
+	@media (min-resolution: 288dpi), (min-device-pixel-ratio: 2.25), (-webkit-min-device-pixel-ratio: 3) {
+		@content;
+	}
+}
+
+// Responsive
+
+@mixin media-xxs() {
+	@media (max-width: 479px) {
+		@content;
+	}
+}
+
+@mixin media-xs() {
+	@media (max-width: 767px) {
+		@content;
+	}
+}
+
+@mixin media-md() {
+	@media (max-width: 991px) {
+		@content;
+	}
+}
+
+@mixin media-lg() {
+	@media (max-width: 992px) {
+		@content;
+	}
+}

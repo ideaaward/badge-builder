@@ -1,0 +1,30 @@
+// colour palette
+$pink: #E84079;
+$white: #FFFFFF;
+$navy: #203269;
+$orange: #FFA409;
+$green: #6BC048;
+$blue: #00B3E3;
+
+$bg_green: $green url("#{$path}idea/background/green.png");
+$bg_blue: $blue url("#{$path}idea/background/blue.png");
+$bg_pink: $pink url("#{$path}idea/background/pink.png");
+$bg_orange: $orange url("#{$path}idea/background/orange.png");
+
+// TODO: make themes DRY
+
+body.green #mainToolbar {
+	background: $bg_green;
+}
+
+body.blue #mainToolbar {
+	background: $bg_blue;
+}
+
+body.pink #mainToolbar {
+	background: $bg_pink;
+}
+
+body.orange #mainToolbar {
+	background: $bg_orange;
+}

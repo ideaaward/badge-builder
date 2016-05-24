@@ -1,0 +1,22 @@
+/* reset */
+
+html,body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+
+/* web app config */
+
+// prevent iOS Safari changing font-size
+html {
+	@include prefix('text-size-adjust', 'none');
+}
+
+// disable text selection
+body {
+	-webkit-touch-callout: none;
+	@include prefix('user-select', 'none');
+	cursor: default;
+}

@@ -13,6 +13,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/iron-signals/iron-signals.html">
 
+<link rel="import" href="../behaviors/document-behavior.html">
+
 <link rel="import" href="../yes-no/yes-no.html">
 
 <dom-module id="single-badge">
@@ -70,10 +72,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         badgeResponse: function (event) {
           var response = this.$.getBadge.lastResponse;
           this.badgeTitle = response.title;
+          this._setAppTheme(response.content.theme);
           // TODO: Create right components based on the JSON
           this.badgeContent = JSON.stringify(response.content);
           //console.log(this.localName, "sections", this.response.content.sections);
-        }
+        },
+        behaviors: [
+          Page.DocumentBehavior
+        ]
       });
     })();
   </script>
