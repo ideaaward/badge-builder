@@ -23,6 +23,7 @@ var fs = require('fs');
 var glob = require('glob-all');
 var packageJson = require('./package.json');
 var crypto = require('crypto');
+var sass = require('gulp-sass');
 
 var AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
@@ -92,6 +93,14 @@ var optimizeHtmlTask = function(src, dest) {
       title: 'html'
     }));
 };
+
+// Compile SASS into CSS & auto-inject into browsers
+gulp.task('sass', function(){
+  return gulp.src("app/styles/**/*.scss")
+    .pipe(sass())
+    .pipe(gulp.dest("app/styles"))
+    .pipe(browserSync.stream());
+});
 
 // Compile and automatically prefix stylesheets
 gulp.task('styles', function() {
@@ -243,6 +252,7 @@ gulp.task('serve', ['styles', 'elements', 'nodemon'], function() {
     proxy: 'http://localhost:8000'
   });
 
+  gulp.watch("app/styles/**/*.scss", ['sass']);
   gulp.watch(['app/**/*.html'], reload);
   gulp.watch(['app/styles/**/*.css'], ['styles', reload]);
   gulp.watch(['app/elements/**/*.css'], ['elements', reload]);

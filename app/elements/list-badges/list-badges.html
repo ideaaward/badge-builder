@@ -16,6 +16,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
+<link rel="import" href="../behaviors/document-behavior.html">
+
 <dom-module id="list-badges">
   <template>
     <style>
@@ -57,6 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       Polymer({
         is: 'list-badges',
         opened: function (event) {
+          this._setAppTheme('none');
           this.$.getBadges.generateRequest();
         },
         badgeDeleted: function (event) {
@@ -65,8 +68,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         handleDeleteResponse: function (event, response) {
           this.$.getBadges.generateRequest();
-        }
+        },
+        behaviors: [
+          Page.DocumentBehavior
+        ]
       });
+
     })();
   </script>
 </dom-module>
