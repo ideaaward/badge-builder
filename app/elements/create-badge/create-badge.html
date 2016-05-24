@@ -13,6 +13,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+
+<link rel="import" href="../behaviors/document-behavior.html">
 
 <link rel="import" href="../yes-no/yes-no.html">
 <link rel="import" href="../content-video/content-video.html">
@@ -54,6 +58,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <h2 class="page-title">[[title]]</h2>
 
     <paper-input id="titleInput" placeholder="Title" label="Badge" value="{{badgeTitle}}" autofocus required></paper-input>
+
+    <paper-dropdown-menu label="Badge Theme">
+      <paper-listbox id="theme" class="dropdown-content" attr-for-selected="value" selected="{{badgeTheme}}" on-iron-select="selectTheme">
+        <paper-item value="blue"><span class="swatch blue"></span>Blue</paper-item>
+        <paper-item value="green"><span class="swatch green"></span>Green</paper-item>
+        <paper-item value="pink"><span class="swatch pink"></span>Pink</paper-item>
+        <paper-item value="orange"><span class="swatch orange"></span>Orange</paper-item>
+      </paper-listbox>
+    </paper-dropdown-menu>
 
     <paper-button on-tap="saveBadge" raised><iron-icon icon="save"></iron-icon>{{saveTitle}}</paper-button>
 
@@ -142,14 +155,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.set('title', "Create Badge");
         },
 
+        selectTheme: function(event) {
+          //var theme = event.detail.item.id;
+          console.log("select theme:", this.badgeTheme);
+          this._setAppTheme(this.badgeTheme);
+        },
+
         saveBadge: function (event) {
           this._updateSections();
           var body = {
             title: this.$.titleInput.value,
             content: {
+              theme: this.badgeTheme,
               sections: this.sections
             }
           };
+          console.info(this.localName, 'save', body);
           if (this.isEditMode) {
             this.$.updateBadge.url = '/api/badges/' + this.id;
             this.$.updateBadge.body = body;
@@ -175,6 +196,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // TODO: clean-up dynamic elements / resources
         _resetPage: function(){
           this.$.titleInput.value = '';
+          this.$.theme.selected = ''; // clear theme selection
+          this._setAppTheme('none');
           // detatch custom elements
           var i = this._node.elements.length;
           while(i--){
@@ -260,9 +283,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // EDIT
         badgeResponse: function(event) {
           var sections = this.response.content.sections;
-          console.log(this.localName, this.response);
-          
+          console.log(this.localName, 'edit', this.response.content);
           this.set('badgeTitle', this.response.title);
+          this.set('badgeTheme', this.response.content.theme);
+
           
           for (var i=0; i<sections.length; i++) {
                     
@@ -285,6 +309,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         observers: [
           '_elementsChanged(_node.elements.length)'
         ],
+
+        behaviors: [
+          Page.DocumentBehavior
+        ]
       });
     })();
   </script>

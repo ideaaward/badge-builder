@@ -1,0 +1,33 @@
+// layout vars
+$gap: 10px;
+
+/* styles */
+
+body {
+  background: #fafafa;
+  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  color: #333;
+}
+
+.swatch {
+	width: $gap;
+	height: $gap;
+	display: inline-block;
+	margin-right: $gap/2;
+}
+
+.blue {
+	background-color: $blue;
+}
+
+.green {
+	background-color: $green;
+}
+
+.pink {
+	background-color: $pink;
+}
+
+.orange {
+	background-color: $orange;
+}
