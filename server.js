@@ -57,8 +57,8 @@ if (authentication) {
   });
 }
 
-// TODO: Switch to dist folder in production
-var rootPath = path.join(__dirname, 'app');
+var appFolder = process.argv[2] === 'dist' ? 'dist' : 'app';
+var rootPath = path.join(__dirname, appFolder);
 app.use('/', express.static(rootPath));
 app.use(bodyParser.json());
 app.use(session({
