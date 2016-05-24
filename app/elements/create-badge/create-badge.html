@@ -46,11 +46,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       on-response="handleCreateResponse">
     </iron-ajax>
 
+    <iron-ajax id="updateBadge" handle-as="json" content-type="application/json"
+      method="PUT" on-response="handleUpdateResponse">
+    </iron-ajax>
+
     <h2 class="page-title">[[title]]</h2>
 
     <paper-input id="titleInput" placeholder="Title" label="Badge" value="{{badgeTitle}}" autofocus required></paper-input>
 
-    <paper-button on-tap="saveBadge" raised><iron-icon icon="save"></iron-icon>save</paper-button>
+    <paper-button on-tap="saveBadge" raised><iron-icon icon="save"></iron-icon>{{saveTitle}}</paper-button>
 
     <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>test</paper-button>
 
@@ -97,6 +101,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: String,
             value: "Create Badge"
           },
+          id: {
+            type: String
+          },
+          saveTitle: {
+            type: String
+          },
           badgeTitle: {
             type: String,
             value: "",
@@ -111,6 +121,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var id = event.detail.params._id;
             console.log(this.localName, "opened", id);
             this.set('isEditMode', true);
+            this.set('id', id);
             this.$.getBadge.url = '/api/badges/' + id;
             this.$.getBadge.generateRequest();
             return;
@@ -122,27 +133,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log("mode", isEditMode);
           if (isEditMode){
             this.set('title', "Edit Badge");
+            this.set('saveTitle', "Update");
             return;
           }
+          this.set('saveTitle', "Save");
           this.set('title', "Create Badge");
         },
 
         saveBadge: function (event) {
           this._updateSections();
-          this.$.createBadge.body = {
+          var body = {
             title: this.$.titleInput.value,
             content: {
               sections: this.sections
             }
           };
-          this.$.createBadge.generateRequest();
+          if (this.isEditMode) {
+            this.$.updateBadge.url = '/api/badges/' + this.id;
+            this.$.updateBadge.body = body;
+            this.$.updateBadge.generateRequest();
+          } else {
+            this.$.createBadge.body = body;
+            this.$.createBadge.generateRequest();
+          }
         },
 
         handleCreateResponse: function (event) {
-          app.$.toast.text = 'Badged Saved';
+          app.$.toast.text = 'Badge Saved';
           app.$.toast.show();
           page.redirect(app.baseUrl);
           this._resetPage();
+        },
+
+        handleUpdateResponse: function (event) {
+          app.$.toast.text = 'Badge Updated';
+          app.$.toast.show();
         },
 
         // TODO: clean-up dynamic elements / resources
