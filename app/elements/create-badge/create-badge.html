@@ -19,6 +19,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../behaviors/document-behavior.html">
 
 <link rel="import" href="../yes-no/yes-no.html">
+<link rel="import" href="../content-video/content-video.html">
 
 <dom-module id="create-badge">
   <template>
@@ -73,6 +74,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="fab">
       <paper-fab label="y/n" on-tap="createYesNo"></paper-fab>
+      <paper-fab label="vid" on-tap="createVideo"></paper-fab>
     </div>
 
     <!-- dynamic elements go inside here -->
@@ -231,6 +233,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addYesNo(q.question, q.answer.toString());
         },
 
+        addVideo: function(embededURI) {
+          var el = new ContentVideo(); // var el = document.createElement("content-video");
+          
+          el.embededURI = embededURI;
+          el.edit = true;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+        },
+
+        createVideo: function() {
+          this.addVideo();
+        },
+
         _getRandomQuestion: function(){
           return this.questions[_.random(this.questions.length-1)];
         },
@@ -271,9 +287,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.set('badgeTitle', this.response.title);
           this.set('badgeTheme', this.response.content.theme);
 
+          
           for (var i=0; i<sections.length; i++) {
-            var q = sections[i];
-            this.addYesNo(q.question, q.answer, q.yes, q.no);
+                    
+            var element = sections[i];  
+                    
+            switch(element.elementType) {
+                case "yes-no":
+                    this.addYesNo(element.question, element.answer, element.yes, element.no);
+                    break;
+                case "content-video":
+                    this.addVideo(element.embededURI);
+                    break;
+                default:
+                   break; 
+            } 
+            
           }
         },
 
