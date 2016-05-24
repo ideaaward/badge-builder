@@ -59,6 +59,28 @@ Example:
     properties: {
 
       /**
+       * The id of the element
+       * @type {string}
+       */
+      _id: {
+        type: String,
+        value: function() {
+          return "";
+        }
+      }, 
+
+      /**
+       * The element type. This is the same as the element id
+       * @type {string}
+       */
+      elementType: {
+        type: String,
+        value: function() {
+          return "yes-no";
+        }
+      }, 
+
+      /**
        * The question.
        * @type {string}
        */
@@ -140,7 +162,7 @@ Example:
         // value: function() {
         //   return {};
         // },
-        computed: '_dataUpdated(question, answer, labelYes, labelNo)'
+        computed: '_dataUpdated(question, answer, labelYes, labelNo, elementType)'
       }
 
     },
@@ -283,7 +305,8 @@ Example:
         "question" : question,
         "answer" : answer,
         "yes" : labelYes,
-        "no" : labelNo
+        "no" : labelNo,
+        "elementType" : "yes-no",
       };
       //console.info(this.localName, '^', data);
       return data;
