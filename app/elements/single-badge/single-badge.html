@@ -28,8 +28,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <iron-signals on-iron-signal-badges="opened"></iron-signals>
-
     <iron-ajax id="getBadge"
       handle-as="json" on-response="badgeResponse" last-response="{{response}}" >
     </iron-ajax>
@@ -37,8 +35,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <iron-ajax id="putAnswers" method="PUT" content-type="application/json"
       handle-as="json" on-response="answersResponse">
     </iron-ajax>
-
-    <h2 class="page-title">[[badgeTitle]]</h2>
 
     <div id="components"></div>
 
@@ -81,9 +77,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         },
 
-        opened: function (event) {
+        ready: function (event) {
           this._resetPage();
-          this.id = event.detail.params._id;
+          this.id = location.pathname.split('/').pop();
           this.$.getBadge.url = '/api/badges/' + this.id;
           this.$.getBadge.generateRequest();
         },
@@ -150,6 +146,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         badgeResponse: function (event) {
           var response = this.$.getBadge.lastResponse;
           this.badgeTitle = response.title;
+          this._setAppTitle(this.badgeTitle);
           this._setAppTheme(response.content.theme);
           this.badgeContent = JSON.stringify(response.content);
           var sections = this.response.content.sections;
