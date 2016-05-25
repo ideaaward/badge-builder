@@ -6,25 +6,83 @@ $orange: #FFA409;
 $green: #6BC048;
 $blue: #00B3E3;
 
-$bg_green: $white url("#{$path}idea/background/green.png");
-$bg_blue: $white url("#{$path}idea/background/blue.png");
-$bg_pink: $white url("#{$path}idea/background/pink.png");
-$bg_orange: $white url("#{$path}idea/background/orange.png");
+// Header
+$bg_green: $green url("#{$path}idea/background/green.png");
+$bg_blue: $blue url("#{$path}idea/background/blue.png");
+$bg_pink: $pink url("#{$path}idea/background/pink.png");
+$bg_orange: $orange url("#{$path}idea/background/orange.png");
 
-// TODO: make themes DRY
+// Footer
+$footer_green: url("#{$path}idea/footer/green.png");
+$footer_blue: url("#{$path}idea/footer/blue.png");
+$footer_pink: url("#{$path}idea/footer/pink.png");
+$footer_orange: url("#{$path}idea/footer/orange.png");
 
-body.green #mainToolbar {
-	background: $bg_green;
+// iDEA Badge Logo
+$badge_green: url("#{$path}idea/logos/iDEA-green.png");
+$badge_blue: url("#{$path}idea/logos/iDEA-blue.png");
+$badge_pink: url("#{$path}idea/logos/iDEA-pink.png");
+$badge_orange: url("#{$path}idea/logos/iDEA-orange.png");
+
+// Header
+body.green .header, .bg_green {
+	background: $bg_green;	
 }
 
-body.blue #mainToolbar {
+body.blue .header, .bg_blue {
 	background: $bg_blue;
 }
 
-body.pink #mainToolbar {
+body.pink .header, .bg_pink {
 	background: $bg_pink;
 }
 
-body.orange #mainToolbar {
+body.orange .header, .bg_orange {
 	background: $bg_orange;
+}
+
+// Footer
+body.green .footer {
+	background: $footer_green;
+	background-attachment: fixed;
+	background-size: contain;
+}
+
+body.blue .footer {
+	background: $footer_blue;
+	background-attachment: fixed;
+	background-size: contain;
+}
+
+body.pink .footer {
+	background: $footer_pink;
+	background-attachment: fixed;
+	background-size: contain;
+}
+
+body.orange .footer {
+	background: $footer_orange;
+	background-attachment: fixed;
+	background-size: contain;
+}
+
+// iDEA Badge Logo
+body.green #idea-badge {
+	background: $badge_green;	
+	background-size: contain;
+}
+
+body.blue #idea-badge {
+	background: $badge_blue;
+	background-size: contain;
+}
+
+body.pink #idea-badge {
+	background: $badge_pink;
+	background-size: contain;
+}
+
+body.orange #idea-badge {
+	background: $badge_orange;
+	background-size: contain;
 }

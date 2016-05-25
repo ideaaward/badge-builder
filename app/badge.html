@@ -34,38 +34,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <style is="custom-style" include="shared-styles"></style>
 </head>
 
-<body unresolved>
+<body unresolved id="viewer">
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
 
       <!-- Main Area -->
-      <paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>
+      <!--<paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>-->
         
         
         <!-- Main Toolbar -->
-        <paper-toolbar id="mainToolbar" class="tall">
-
-          <!-- Application name -->
-          <div class="middle middle-container">
-            <div class="app-name">[[title]]</div>
-          </div>
-
-          <!-- Application sub title -->
-          <div class="bottom bottom-container">
-          </div>
-
-        </paper-toolbar>
-
+        <div class="header">
+          <img style="width:100px; height: 100px; " src="/images/idea/garter/garter-stamp-png.png">      
+          <div id="idea-badge"></div>
+        </div>
+      
         <!-- Main Content -->
         <div class="content">
           <single-badge></single-badge>
         </div>
         
-        <div class="footer">
-          <img style="height: 150px; width:100%;" src="/images/idea/footer/orange.png" />
-        </div>
+        <div class="footer"></div>
         
-      </paper-scroll-header-panel>
+      <!--</paper-scroll-header-panel>-->
+      
+     
 
     <paper-toast id="toast">
       <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">Ok</span>
@@ -90,6 +82,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     -->
 
   </template>
+  
+  
 
   <!-- build:js scripts/app.js -->
   <script src="/scripts/app.js"></script>

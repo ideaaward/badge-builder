@@ -1,5 +1,6 @@
 // layout vars
 $gap: 10px;
+$footer_height: 150px;
 
 /* styles */
 
@@ -7,6 +8,7 @@ body {
   background: #fafafa;
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
+  background-color: $white;
 }
 
 .swatch {
@@ -16,22 +18,39 @@ body {
 	margin-right: $gap/2;
 }
 
-.blue {
-	background-color: $blue;
-}
 
-.green {
-	background-color: $green;
-}
 
-.pink {
-	background-color: $pink;
-}
 
-.orange {
-	background-color: $orange;
-}
+#viewer {
+	.highlight {
+		border: 1px red solid;
+	}
+	
+	.content{
+		padding-bottom: $footer_height + $gap;
+		margin-bottom: $footer_height + $gap;
+		text-align: center;
+	}
 
-body .highlight {
-	border: 1px red solid;
+	.footer{
+		height: $footer_height; 
+		width:100%;
+		position: fixed;
+		bottom: 0;
+	}
+
+	.header{
+		width: 100%;
+		height: 100px;
+		margin-bottom: 50px;
+	}
+
+	#idea-badge{
+		width:200px; 
+		height: 200px; 
+		float: right; 
+		right:50px; 
+		top:20px; 
+		position: absolute;
+	}
 }
