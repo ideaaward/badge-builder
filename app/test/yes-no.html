@@ -29,34 +29,6 @@
           assert.isTrue(el._answer === false);
         });
 
-        test('should return false result by default', function() {
-          assert.isFalse(el.checkAnswer());
-        });
-
-        test('should have only one correct answer', function(done) {
-          var results = [];
-          var l = el.$.options.items.length;
-
-          el.addEventListener('yes-no-result', function(event) {
-            results.push(event.detail.result);
-            //console.log('fired event', results.length,'/',l);
-            if (l === results.length) {
-              var trueResults = _.filter(results, function(bool){ return bool; });
-              //console.log('results', results, 'trueResults:', trueResults);
-              assert.isTrue( 1 === trueResults.length );
-              done();
-            }
-          });
-
-          //console.log('options', i);
-          var i = l;
-          while (i--){
-            var item = el.$.options.items[i];
-            //console.log('item', item);
-            el.$.options.selected = item.name;
-          }
-        });
-
       });
     </script>
 
