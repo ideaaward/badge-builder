@@ -252,7 +252,7 @@ gulp.task('serve', ['styles', 'elements', 'nodemon'], function() {
     proxy: 'http://localhost:8000'
   });
 
-  gulp.watch("app/styles/**/*.scss", ['sass']);
+  gulp.watch('app/styles/**/*.scss', ['sass']);
   gulp.watch(['app/**/*.html'], reload);
   gulp.watch(['app/styles/**/*.css'], ['styles', reload]);
   gulp.watch(['app/elements/**/*.css'], ['elements', reload]);
@@ -268,7 +268,7 @@ gulp.task('serve:dist', ['default'], function() {
 gulp.task('default', ['clean'], function(cb) {
   // Uncomment 'cache-config' if you are going to use service workers.
   runSequence(
-    ['copy', 'styles'],
+    ['copy', 'sass', 'styles'],
     'elements',
     ['images', 'fonts', 'html'],
     'vulcanize', // 'cache-config',

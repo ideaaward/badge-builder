@@ -4,4 +4,4 @@ bower_components
 .tmp
 .publish/
 .vscode/
-**/main.css
+*.css
