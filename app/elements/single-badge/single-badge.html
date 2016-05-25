@@ -18,7 +18,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../yes-no/yes-no.html">
 <link rel="import" href="../content-video/content-video.html">
 <link rel="import" href="../content-html/content-html.html">
-
+<link rel="import" href="../content-button/content-button.html">
 
 <dom-module id="single-badge">
   <template>
@@ -142,6 +142,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.push('_node.elements', {element: el});
          
         },
+        
+        addButton: function(buttonURL, buttonText) {
+          var el = new ContentButton();
+          
+          el.buttonURL = buttonURL;   
+          el.buttonText = buttonText;         
+          el.edit = false; 
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+         
+        },
 
         badgeResponse: function (event) {
           var response = this.$.getBadge.lastResponse;
@@ -164,6 +176,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     break;
                 case "content-html":
                     this.addHTML(element.text);
+                    break;  
+                case "content-button":
+                    this.addButton(element.buttonURL, element.buttonText);
                     break;  
                 default:
                    break;

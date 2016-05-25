@@ -22,6 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../yes-no/yes-no.html">
 <link rel="import" href="../content-video/content-video.html">
 <link rel="import" href="../content-html/content-html.html">
+<link rel="import" href="../content-button/content-button.html">
 
 <dom-module id="create-badge">
   <template>
@@ -78,6 +79,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-fab label="y/n" on-tap="createYesNo"></paper-fab><br/>
       <paper-fab label="vid" on-tap="createVideo"></paper-fab><br/>
       <paper-fab label="T" on-tap="createHTML"></paper-fab><br/>
+      <paper-fab label="B" on-tap="createButton"></paper-fab><br/>
     </div>
 
     <!-- dynamic elements go inside here -->
@@ -266,6 +268,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         createHTML: function() {
           this.addHTML();
         },
+             
+        addButton: function(buttonURL, buttonText) {
+          var el = new ContentButton();
+          
+          el.buttonURL = buttonURL;  
+          el.buttonText = buttonText;          
+          el.edit = true; 
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+         
+        },
+
+        createButton: function() {
+          this.addButton();
+        },
 
         _getRandomQuestion: function(){
           return this.questions[_.random(this.questions.length-1)];
@@ -319,9 +337,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 case "content-video":
                     this.addVideo(element.embededURI);
                     break;
-                  case "content-html":
+                case "content-html":
                     this.addHTML(element.text);
-                    break;                  
+                    break;       
+                case "content-button":
+                    this.addButton(element.buttonURL, element.buttonText);
+                    break;                                
                 default:
                    break; 
             } 
