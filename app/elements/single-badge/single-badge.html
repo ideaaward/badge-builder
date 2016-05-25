@@ -86,12 +86,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         _resetPage: function(){
           // detatch custom elements
-          var i = this._node.elements.length;
-          while(i--){
-            var el = this._node.elements[i];
-            console.info(this.localName, '-', el);
-            Polymer.dom(this.$.components).removeChild(el.element); // TODO: check elements are being detached
-          }
+          this._node.elements.forEach(function (element) {
+            Polymer.dom(this.$.components).removeChild(element); // TODO: check elements are being detached
+          });
           this._node = {
             elements: []
           };
@@ -127,9 +124,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         addElement: function (element) {
-          this.push('_node.elements', {
-            element: element
-          });
+          this.push('_node.elements', element);
         },
         
         addHTML: function(text) {
@@ -139,8 +134,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           el.edit = false; 
 
           Polymer.dom(this.$.components).appendChild(el);
-          this.push('_node.elements', {element: el});
-         
+          this.addElement(el);
         },
         
         addButton: function(buttonURL, buttonText) {
@@ -189,7 +183,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
           var answers = {};
           this._node.elements.forEach(function (element) {
-            answers[element.element._id] = element.element.selectedAnswer;
+            answers[element._id] = element.selectedAnswer;
           });
           this.$.putAnswers.body = answers;
           this.$.putAnswers.generateRequest();
@@ -197,9 +191,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         answersResponse: function (event) {
           var response = this.$.putAnswers.lastResponse;
           var allCorrect = true;
-          Object.keys(response).forEach(function (key) {
-            if (!response[key]) {
+          this._node.elements.forEach(function (element) {
+            if (response[element._id] === false) {
+              element.classList.add('highlight');
               allCorrect = false;
+            } else {
+              element.classList.remove('highlight');
             }
           });
           app.$.toast.text = allCorrect ? 'All correct!' : 'You made mistakes!';
