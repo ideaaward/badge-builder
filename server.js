@@ -95,4 +95,10 @@ if (authentication) {
   );
 }
 
+app.get('/badges/:id', function (req, res) {
+  res.sendFile('/badge.html', {
+    root: appFolder
+  });
+});
+
 app.use('/api', apiRoute);

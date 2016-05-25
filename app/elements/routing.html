@@ -57,10 +57,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       switchPage('create');
     });
 
-    page('/badges/:_id', function(data) {
-      switchPage('badges', data);
-    });
-
     page('/edit/:_id', function(data) {
       data.edit = true;
       switchPage('create', data);
