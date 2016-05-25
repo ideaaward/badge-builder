@@ -34,13 +34,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       handle-as="json" on-response="badgeResponse" last-response="{{response}}" >
     </iron-ajax>
 
+    <iron-ajax id="putAnswers" method="PUT" content-type="application/json"
+      handle-as="json" on-response="answersResponse">
+    </iron-ajax>
+
     <h2 class="page-title">[[badgeTitle]]</h2>
 
     <div id="components"></div>
 
     <br/><hr/>
-
     <code>{{badgeContent}}</code>
+    <br/><hr/>
+
+    <paper-button on-tap="submitBadge" raised><iron-icon icon="save"></iron-icon>Submit</paper-button>
   </template>
 
   <script>
@@ -55,6 +61,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             value: {
               elements: []
             }
+          },
+          id: {
+            type: String
           },
           sections : {
             type: Array,
@@ -74,7 +83,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         opened: function (event) {
           this._resetPage();
-          this.$.getBadge.url = '/api/badges/' + event.detail.params._id;
+          this.id = event.detail.params._id;
+          this.$.getBadge.url = '/api/badges/' + this.id;
           this.$.getBadge.generateRequest();
         },
 
@@ -92,9 +102,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.sections = [];
         },
 
-        addYesNo: function(question, answer, yes, no) {
+        addYesNo: function(id, question, answer, yes, no) {
           var el = new YesNo();
 
+          el._id = id;
           el.question = question;
           el.answer = answer.toString(); //"true";
           if (yes){
@@ -106,7 +117,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           el.edit = false;
 
           Polymer.dom(this.$.components).appendChild(el);
-          this.push('_node.elements', {element: el});
+          this.addElement(el);
         },
 
         addVideo: function(embededURI) {
@@ -116,7 +127,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           el.edit = false;
 
           Polymer.dom(this.$.components).appendChild(el);
-          this.push('_node.elements', {element: el});
+          this.addElement(el);
+        },
+
+        addElement: function (element) {
+          this.push('_node.elements', {
+            element: element
+          });
         },
         
         addHTML: function(text) {
@@ -134,7 +151,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var response = this.$.getBadge.lastResponse;
           this.badgeTitle = response.title;
           this._setAppTheme(response.content.theme);
-          // TODO: Create right components based on the JSON
           this.badgeContent = JSON.stringify(response.content);
           var sections = this.response.content.sections;
 
@@ -144,7 +160,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             switch(element.elementType) {
                 case "yes-no":
-                    this.addYesNo(element.question, element.answer, element.yes, element.no);
+                    this.addYesNo(element._id, element.question, element.answer, element.yes, element.no);
                     break;
                 case "content-video":
                     this.addVideo(element.embededURI);
@@ -157,11 +173,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
           }
         },
-
+        submitBadge: function (event) {
+          this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
+          var answers = {};
+          this._node.elements.forEach(function (element) {
+            answers[element.element._id] = element.element.selectedAnswer;
+          });
+          this.$.putAnswers.body = answers;
+          this.$.putAnswers.generateRequest();
+        },
+        answersResponse: function (event) {
+          var response = this.$.putAnswers.lastResponse;
+          var allCorrect = true;
+          Object.keys(response).forEach(function (key) {
+            if (!response[key]) {
+              allCorrect = false;
+            }
+          });
+          app.$.toast.text = allCorrect ? 'All correct!' : 'You made mistakes!';
+          app.$.toast.show();
+        },
         behaviors: [
           Page.DocumentBehavior
-        ]     
-
+        ]
       });
     })();
   </script>

@@ -67,7 +67,7 @@ Example:
         value: function() {
           return "";
         }
-      }, 
+      },
 
       /**
        * The element type. This is the same as the element id
@@ -112,12 +112,12 @@ Example:
       },
 
       /**
-       * Result of user's answer.
-       * @type {boolean}
+       * The answer user selected.
+       * @type {string}
        */
-      result: {
-        type: Boolean,
-        observer: '_resultChanged'
+      selectedAnswer: {
+        type: String,
+        observer: '_selectedAnswerChanged'
       },
 
       /**
@@ -162,7 +162,8 @@ Example:
         // value: function() {
         //   return {};
         // },
-        computed: '_dataUpdated(elementType, question, answer, labelYes, labelNo)'
+        
+        computed: '_dataUpdated(_id, elementType, question, answer, labelYes, labelNo)'
       }
 
     },
@@ -197,13 +198,14 @@ Example:
     // Element Behavior
 
     /**
-     * The `yes-no-result` event is fired whenever an answer is selected or changed.
+     * The `yes-no-selected-answer-changed` event is fired whenever an answer is selected or changed.
      * @event yes-no-answer
-     * @detail {boolean}
+     * @detail {string}
      */
-    _resultChanged: function(newValue) {
-      //console.info(this.localName, 'fire result:', this.result);
-      this.fire('yes-no-result', {result: this.result}); // dispatches event with result
+    _selectedAnswerChanged: function(newValue) {
+      this.fire('yes-no-selected-answer-changed', {
+        answer: this.selectedAnswer
+      });
     },
 
     /**
@@ -214,21 +216,7 @@ Example:
         this._editAnswer();
         return;
       }
-      //var selectedAnswer = ev.detail.item.name;
-      var result = this.checkAnswer();
-      this.set('result', result); // update result
-    },
-
-    /**
-     * Checks if your answer is correct.
-     */
-    checkAnswer: function() {
-      if (!this.$.options.selectedItem) {
-        return false;
-      }
-      var selectedAnswer = this.$.options.selectedItem.name;
-      //console.log(this.localName, selectedAnswer, this._answerName(), this._answer);
-      return (selectedAnswer === this._answerName());
+      this.set('selectedAnswer', this._isAnswerName(this.$.options.selectedItem.name));
     },
 
     /**
@@ -300,8 +288,9 @@ Example:
     /**
      * Updates the data attribute property
      */
-    _dataUpdated: function(elementType, question, answer, labelYes, labelNo) {
+    _dataUpdated: function(id, elementType, question, answer, labelYes, labelNo) {
       var data = {
+        "_id" : id,
         "elementType" : elementType,
         "question" : question,
         "answer" : answer,
