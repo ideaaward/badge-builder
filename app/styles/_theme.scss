@@ -6,10 +6,10 @@ $orange: #FFA409;
 $green: #6BC048;
 $blue: #00B3E3;
 
-$bg_green: $green url("#{$path}idea/background/green.png");
-$bg_blue: $blue url("#{$path}idea/background/blue.png");
-$bg_pink: $pink url("#{$path}idea/background/pink.png");
-$bg_orange: $orange url("#{$path}idea/background/orange.png");
+$bg_green: $white url("#{$path}idea/background/green.png");
+$bg_blue: $white url("#{$path}idea/background/blue.png");
+$bg_pink: $white url("#{$path}idea/background/pink.png");
+$bg_orange: $white url("#{$path}idea/background/orange.png");
 
 // TODO: make themes DRY
 

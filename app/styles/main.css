@@ -1,14 +1,14 @@
 body.green #mainToolbar {
-  background: #6BC048 url("../images/idea/background/green.png"); }
+  background: #FFFFFF url("../images/idea/background/green.png"); }
 
 body.blue #mainToolbar {
-  background: #00B3E3 url("../images/idea/background/blue.png"); }
+  background: #FFFFFF url("../images/idea/background/blue.png"); }
 
 body.pink #mainToolbar {
-  background: #E84079 url("../images/idea/background/pink.png"); }
+  background: #FFFFFF url("../images/idea/background/pink.png"); }
 
 body.orange #mainToolbar {
-  background: #FFA409 url("../images/idea/background/orange.png"); }
+  background: #FFFFFF url("../images/idea/background/orange.png"); }
 
 /* reset */
 html, body {
