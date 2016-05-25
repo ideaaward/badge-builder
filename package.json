@@ -3,7 +3,7 @@
   "scripts": {
     "postinstall": "bower install",
     "test": "gulp test:local",
-    "start": "node server.js"
+    "start": "gulp && node server.js"
   },
   "dependencies": {
     "body-parser": "^1.15.1",
