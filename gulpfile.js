@@ -24,6 +24,7 @@ var glob = require('glob-all');
 var packageJson = require('./package.json');
 var crypto = require('crypto');
 var sass = require('gulp-sass');
+var bower = require('gulp-bower');
 
 var AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
@@ -169,6 +170,10 @@ gulp.task('vulcanize', function() {
     .pipe($.size({title: 'vulcanize'}));
 });
 
+gulp.task('bower', function() {
+  return bower();
+});
+
 // Generate config data for the <sw-precache-cache> element.
 // This include a list of files that should be precached, as well as a (hopefully unique) cache
 // id that ensure that multiple PSK projects don't share the same Cache Storage.
@@ -268,6 +273,7 @@ gulp.task('serve:dist', ['default'], function() {
 gulp.task('default', ['clean'], function(cb) {
   // Uncomment 'cache-config' if you are going to use service workers.
   runSequence(
+    'bower',
     ['copy', 'sass', 'styles'],
     'elements',
     ['images', 'fonts', 'html'],
