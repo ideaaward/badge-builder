@@ -1,0 +1,202 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+
+<link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
+
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../../bower_components/iron-overlay-behavior/iron-overlay-behavior.html">
+
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/marked-element/marked-import.html">
+
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+
+
+<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-e.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-tool-behavior.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-tool-styles.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/bold.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/italic.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/underline.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/clear.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/link.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/image.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/ordered.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/unordered.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/justify.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/heading.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/undo.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/redo.html">
+
+
+<link rel="import" href="../../bower_components/juicy-html/juicy-html.html">
+
+<!--
+Content component for html content such as paragraphs, images, lists
+-->
+<dom-module id="content-html">
+
+  <style>
+    :host {
+      display: block;
+      box-sizing: border-box;
+    }
+
+    paper-input {
+      display: inline-block;
+      width: 100%;
+    }
+  </style>
+
+  <template>
+
+    <wysiwyg-e class="flex" style="height:500px" value="{{text}}" hidden="[[!edit]]">
+      <wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
+      <wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
+      <wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
+      <wysiwyg-tool-clear class="wysiwyg-tool"></wysiwyg-tool-clear>
+      <wysiwyg-tool-link class="wysiwyg-tool"></wysiwyg-tool-link>
+      <wysiwyg-tool-image class="wysiwyg-tool"></wysiwyg-tool-image>
+      <wysiwyg-tool-ordered class="wysiwyg-tool"></wysiwyg-tool-ordered>
+      <wysiwyg-tool-unordered class="wysiwyg-tool"></wysiwyg-tool-unordered>
+      <wysiwyg-tool-justify class="wysiwyg-tool" right center full></wysiwyg-tool-justify>
+      <wysiwyg-tool-heading class="wysiwyg-tool" h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
+      <wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
+      <wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
+    </wysiwyg-e>
+    
+    
+    <template is="dom-if" if="[[!edit]]" >
+       <template is="juicy-html" content$="{{text}}" > </template>  
+    </template>
+
+  </template>
+  
+
+
+</dom-module>
+
+<script>
+
+  ContentHTML = Polymer({
+
+    is: 'content-html',
+
+    properties: {
+
+      /**
+       * The id of the element
+       * @type {string}
+       */
+      _id: {
+        type: String,
+        value: function() {
+          return "";
+        }
+      },  
+
+      /**
+       * The element type. This is the same as the element id
+       * @type {string}
+       */
+      elementType: {
+        type: String,
+        value: function() {
+          return "content-html";
+        }
+      },   
+      
+     /**
+       * This is the text that will be displayed in the html editor. The users text.
+       * @type {string}
+       */
+      text: {
+        type: String,
+        value: function() {
+          return "";
+        }
+      },     
+
+      /**
+       * `edit` indicates that the element should be in WYSIWYG editor mode.
+       */
+      edit: {
+        type: Boolean,
+        value: true,
+        observer: '_editChanged'
+      },
+
+      /**
+       * `data` contains the edited properties
+       */
+      data: {
+        type: Object,
+        readOnly: true,
+        computed: '_dataUpdated(elementType, text)'
+      }
+
+    },
+
+    // Element Lifecycle
+
+    ready: function() {
+      // `ready` is called after all elements have been configured, but
+      // propagates bottom-up. This element's children are ready, but parents
+      // are not.
+      //
+      // This is the point where you should make modifications to the DOM (when
+      // necessary), or kick off any processes the element wants to perform.
+    },
+
+    attached: function() {
+      // `attached` fires once the element and its parents have been inserted
+      // into a document.
+      //
+      // This is a good place to perform any work related to your element's
+      // visual state or active behavior (measuring sizes, beginning animations,
+      // loading resources, etc).
+    },
+
+    detached: function() {
+      // The analog to `attached`, `detached` fires when the element has been
+      // removed from a document.
+      //
+      // Use this to clean up anything you did in `attached`.
+    },
+
+    // Element Behavior
+
+    /**
+     * Toggle edit mode
+     */
+    toggleEdit: function() {
+      this.set('edit', !this.edit);
+    },
+    
+        /**
+     * Triggered when edit mode is changed
+     */
+    _editChanged: function(newValue) {
+      if (!this.edit) {
+        return;
+      }
+    },
+
+    /**
+     * Updates the data attribute property
+     */
+    _dataUpdated: function(elementType, text) {
+      var data = {
+        "elementType" : elementType,
+        "text" : text
+      };
+      //console.info(this.localName, '^', data);
+      return data;
+    }
+
+  });
+
+</script>

@@ -162,7 +162,8 @@ Example:
         // value: function() {
         //   return {};
         // },
-        computed: '_dataUpdated(_id, question, _answer, labelYes, labelNo, elementType)'
+        
+        computed: '_dataUpdated(_id, elementType, question, answer, labelYes, labelNo)'
       }
 
     },
@@ -287,14 +288,14 @@ Example:
     /**
      * Updates the data attribute property
      */
-    _dataUpdated: function(id, question, answer, labelYes, labelNo) {
+    _dataUpdated: function(id, elementType, question, answer, labelYes, labelNo) {
       var data = {
         "_id" : id,
+        "elementType" : elementType,
         "question" : question,
         "answer" : answer,
         "yes" : labelYes,
-        "no" : labelNo,
-        "elementType" : "yes-no",
+        "no" : labelNo
       };
       //console.info(this.localName, '^', data);
       return data;

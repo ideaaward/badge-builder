@@ -86,7 +86,7 @@ Content component for embeded video display
       data: {
         type: Object,
         readOnly: true,
-        computed: '_dataUpdated(embededURI, elementType)'
+        computed: '_dataUpdated(elementType, embededURI)'
       }
 
     },
@@ -141,10 +141,10 @@ Content component for embeded video display
     /**
      * Updates the data attribute property
      */
-    _dataUpdated: function(embededURI) {
-      var data = {
-        "embededURI" : embededURI,
-        "elementType" : "content-video"
+    _dataUpdated: function(elementType, embededURI) {
+      var data = {   
+        "elementType" : elementType,
+        "embededURI" : embededURI
       };
       //console.info(this.localName, '^', data);
       return data;

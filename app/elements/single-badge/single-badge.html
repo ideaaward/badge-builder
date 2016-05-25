@@ -17,6 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../yes-no/yes-no.html">
 <link rel="import" href="../content-video/content-video.html">
+<link rel="import" href="../content-html/content-html.html">
 
 
 <dom-module id="single-badge">
@@ -134,6 +135,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             element: element
           });
         },
+        
+        addHTML: function(text) {
+          var el = new ContentHTML();
+          
+          el.text = text;    
+          el.edit = false; 
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+         
+        },
 
         badgeResponse: function (event) {
           var response = this.$.getBadge.lastResponse;
@@ -148,13 +160,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             switch(element.elementType) {
                 case "yes-no":
-                    console.info("inside yes-no");
                     this.addYesNo(element._id, element.question, element.answer, element.yes, element.no);
                     break;
                 case "content-video":
-                    console.info("inside video");
                     this.addVideo(element.embededURI);
                     break;
+                case "content-html":
+                    this.addHTML(element.text);
+                    break;  
                 default:
                    break;
             }
