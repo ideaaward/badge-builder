@@ -11,6 +11,7 @@
     "express": "^4.13.4",
     "express-session": "^1.13.0",
     "mongoose": "^4.4.17",
+    "node-uuid": "^1.4.7",
     "passport": "^0.3.2",
     "passport-auth0": "^0.5.1",
     "path": "^0.12.7"
@@ -42,6 +43,7 @@
     "merge-stream": "^1.0.0",
     "require-dir": "^0.3.0",
     "run-sequence": "^1.0.2",
+    "tape": "^4.5.1",
     "vulcanize": ">= 1.4.2",
     "web-component-tester": "^4.0.0"
   },

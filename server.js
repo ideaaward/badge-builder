@@ -7,7 +7,7 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var mongoose = require('mongoose');
 
-var router = require('./routes/router.js');
+var apiRoute = require('./routes/api.js');
 var models = require('./models/models.js');
 
 var Auth0Strategy = require('passport-auth0');
@@ -95,4 +95,4 @@ if (authentication) {
   );
 }
 
-app.use('/api', router);
+app.use('/api', apiRoute);
