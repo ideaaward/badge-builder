@@ -162,7 +162,7 @@ Example:
         // value: function() {
         //   return {};
         // },
-        computed: '_dataUpdated(question, answer, labelYes, labelNo, elementType)'
+        computed: '_dataUpdated(elementType, question, answer, labelYes, labelNo)'
       }
 
     },
@@ -300,13 +300,13 @@ Example:
     /**
      * Updates the data attribute property
      */
-    _dataUpdated: function(question, answer, labelYes, labelNo) {
+    _dataUpdated: function(elementType, question, answer, labelYes, labelNo) {
       var data = {
+        "elementType" : elementType,
         "question" : question,
         "answer" : answer,
         "yes" : labelYes,
-        "no" : labelNo,
-        "elementType" : "yes-no",
+        "no" : labelNo
       };
       //console.info(this.localName, '^', data);
       return data;
