@@ -75,7 +75,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   };
 
   app.closeDrawer = function() {
-    app.$.paperDrawerPanel.closeDrawer();
+    if (app.$.paperDrawerPanel) {
+      app.$.paperDrawerPanel.closeDrawer();
+    }
   };
 
 })(document);
