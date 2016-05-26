@@ -1,0 +1,335 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
+<!-- TODO: make html import -->
+<script src="../../bower_components/lodash/lodash.min.js"></script>
+
+<!--
+A question element with a yes/no response
+
+Example:
+
+    <multiple-choice question="Which shapes have more than 7 sides?" answers='["Nonagon","Decagon"]' options='["Pentagon","Heptagon","Nonagon","Decagon"]'></multiple-choice>
+
+@demo
+-->
+<dom-module id="multiple-choice">
+
+  <style>
+    :host {
+      display: block;
+      box-sizing: border-box;
+    }
+
+    paper-input {
+      display: inline-block;
+    }
+
+    .question {
+      width: 100%;
+    }
+
+    .group {
+      display: inline-block;
+    }
+  </style>
+
+  <template>
+    <p class="question" hidden=[[edit]]>[[question]]</p>
+    <div><paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>
+
+    <paper-radio-group multi>
+      <template id="choices" is="dom-repeat" items="[[options]]" on-dom-change="_templateUpdated">
+        <div class="group">
+          <paper-radio-button id="[[index]]" name="[[item]]" class="options"><span hidden=[[edit]]>[[item]]</span></paper-radio-button>
+          <paper-input placeholder="Option" value="{{item}}" hidden=[[!edit]]></paper-input>
+        </div>
+      </template>
+    </paper-radio-group>
+
+    <paper-fab icon="add" hidden=[[!edit]] on-tap="addOption"></paper-fab>
+  </template>
+
+</dom-module>
+
+<script>
+
+  MultipleChoice = Polymer({
+
+    is: 'multiple-choice',
+
+    properties: {
+
+      /**
+       * The id of the element
+       * @type {string}
+       */
+      _id: {
+        type: String,
+        value: function() {
+          return "";
+        }
+      },
+
+      /**
+       * The element type. This should be the same as the web component name
+       * @type {string}
+       */
+      elementType: {
+        type: String,
+        value: function() {
+          return "multiple-choice";
+        }
+      },
+
+      /**
+       * The question.
+       *
+       * @type {string}
+       */
+      question: {
+        type: String,
+        // value: function() {
+        //   return 'Which are the odd numbers?';
+        // }
+      },
+
+      /**
+       * The possible answers to choose from.
+       *
+       * @type {array}
+       */
+      options: {
+        type: Array,
+        observer: '_optionsChanged',
+        // value: function() {
+        //   return [
+        //     "One",
+        //     "Two",
+        //     "Three",
+        //     "Four"
+        //   ];
+        // }
+      },
+
+      /**
+       * The answers.
+       *
+       * @type {array}
+       */
+      answers: {
+        type: Array,
+        // value: function() {
+        //   return [
+        //     "One",
+        //     "Three"
+        //   ];
+        // }
+      },
+
+      /**
+       * Result of user's answer.
+       *
+       * @type {boolean}
+       */
+      result: {
+        type: Boolean,
+        observer: '_resultChanged'
+      },
+
+      /**
+       * `edit` indicates that the element should be in WYSIWYG editor mode.
+       */
+      edit: {
+        type: Boolean,
+        value: false,
+        observer: '_editChanged'
+      },
+
+      /**
+       * `data` contains the edited properties
+       */
+      data: {
+        type: Object,
+        readOnly: true,
+        computed: '_dataUpdated(_id, elementType, question, answers, options)'
+      }
+
+    },
+
+    // Element Lifecycle
+
+    ready: function() {
+      // `ready` is called after all elements have been configured, but
+      // propagates bottom-up. This element's children are ready, but parents
+      // are not.
+      //
+      // This is the point where you should make modifications to the DOM (when
+      // necessary), or kick off any processes the element wants to perform.
+    },
+
+    attached: function() {
+      // `attached` fires once the element and its parents have been inserted
+      // into a document.
+      //
+      // This is a good place to perform any work related to your element's
+      // visual state or active behavior (measuring sizes, beginning animations,
+      // loading resources, etc).
+    },
+
+    detached: function() {
+      // The analog to `attached`, `detached` fires when the element has been
+      // removed from a document.
+      //
+      // Use this to clean up anything you did in `attached`.
+    },
+
+    // Element Behavior
+
+    _optionsChanged: function(e) {
+      //console.log(this.localName, e);
+    },
+
+    _templateUpdated: function(ev) {
+      // console.log(this.localName, 'template changed', ev );
+      this._editChanged(); // fire when dom elements are stamped to DOM
+    },
+
+    /**
+     * The `multiple-choice-result` event is fired whenever an answer is selected or changed.
+     *
+     * @event multiple-choice-answer
+     * @detail {boolean}
+     */
+    _resultChanged: function(newValue) {
+      //console.info(this.localName, 'fire result:', this.result);
+      this.fire('multiple-choice-result', {result: this.result}); // dispatches event with result
+    },
+
+    /**
+     * Triggered when you select an answer
+     */
+    _selectAnswer: function(ev) {
+      if (this.edit) {
+        this._editAnswer();
+        return;
+      }
+      //var changedAnswer = ev.target.name; // could be selected / unselected
+      //var selectedAnswers = this.getSelectedItems();
+      var result = this.checkAnswer();
+      console.log(this.localName, 'result:', result);
+      this.set('result', result); // update result
+    },
+
+    /**
+     * Checks if your answer is correct.
+     *
+     * NB: We can't rely on 'paper-radio-group' methods to get selected items
+     * as we want to use various nested elements which results in empty 'items' array.
+     */
+    getSelectedItems: function() {
+      var answers = [];
+      var items = this.querySelectorAll('paper-radio-button');
+      var i = items.length;
+      while(i--){
+        var item = items[i];
+        //console.log("item", item.checked, item.name);
+        if (item.checked) {
+          answers.push(item.name);
+        }
+      }
+      return answers;
+    },
+
+    _selectItemValues: function(values) {
+      //var template = this.querySelector('#choices');
+      var dynamicNodeExists = this.$$('.group');
+      if (!dynamicNodeExists){
+        return; // error did not find dynamic node
+      }
+      //var items = this.querySelectorAll('paper-radio-button');
+      var items = Polymer.dom(this.root).querySelectorAll('paper-radio-button');
+      var i = items.length;
+      //console.log("Found options:", i, items);
+      while(i--){
+        var item = items[i];
+        var value = item.name;
+        var index = _.findIndex(values, function(v){
+          return (v === value);
+        });
+        //console.log('•', value, index, values );
+        if ( index > -1 ) {
+          item.checked = true;
+        } else {
+          item.checked = false;
+        }
+      }
+    },
+
+    /**
+     * Checks if your answer is correct.
+     */
+    checkAnswer: function() {
+      var selectedAnswers = _.sortBy(this.getSelectedItems());
+      var answers = _.sortBy(this.answers); // _.map(this.answers, 'value')
+      //console.log(selectedAnswers, "===", answers);
+      return _.isEqual(selectedAnswers, answers);
+    },
+
+    /**
+     * Toggle edit mode
+     */
+    toggleEdit: function() {
+      this.set('edit', !this.edit);
+    },
+
+    /**
+     * Triggered when edit mode is changed
+     */
+    _editChanged: function(newValue) {
+      if (!this.edit) {
+        return;
+      }
+      // edit mode - set/reset selection to correct answer
+      //var answers = this.answers; //_.map(this.answers, 'value');
+      //console.log(this.localName, 'answers:', answers, 'options:', this.options);
+      this._selectItemValues(this.answers);
+    },
+
+    /**
+     * Edit the correct answer
+     */
+    _editAnswer: function(){
+      var selectedAnswers = this.getSelectedItems();
+      this.set('answers', selectedAnswers); // update answers property
+      console.info(this.localName, "edited answer", this.answers);
+    },
+
+    addOption: function() {
+      console.log('add new option');
+      this.push('options', 'Option');
+    },
+
+    _dataUpdated: function(id, elementType, question, answers, options) {
+      var data = {
+        "_id" : id,
+        "elementType" : elementType,
+        "question" : question,
+        "answers" : answers,
+        "options" : options
+      };
+      //console.info(this.localName, '^', data);
+      return data;
+    },
+
+    listeners: {
+      "change": "_selectAnswer"
+    }
+
+  });
+
+</script>

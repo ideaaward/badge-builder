@@ -1,16 +1,86 @@
-// layout vars
-$gap: 10px;
-$footer_height: 150px;
-
-/* styles */
+/* Shared styles */
 
 body {
-  background: #fafafa;
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
-  background-color: $white;
+  background: #FAFAFA;
 }
 
+// Background colour swatches
+
+.bg_green {
+	background: $green;
+}
+
+.bg_blue {
+	background: $blue;
+}
+
+.bg_pink {
+	background: $pink;
+}
+
+.bg_orange {
+	background: $orange;
+}
+
+.bg_white{
+	background: $white;
+}
+
+// Header
+body {
+  .header {
+    background-color: lighten($navy, 20%);
+  }
+
+  &.green .header {
+  	background-color: $green;
+  }
+
+  &.blue .header {
+  	background-color: $blue;
+  }
+
+  &.pink .header {
+  	background-color: $pink;
+  }
+
+  &.orange .header {
+  	background-color: $orange;
+  }
+}
+
+// Spacers
+.m1 { margin: $gap; }
+.m2 { margin: $gap*2; }
+.v1 { padding: ($gap) 0; }
+.v2 { padding: ($gap*2) 0; }
+
+// Alignment
+.rhs { float: right; }
+
+// Layout
+.list-item {
+  width: 200px;
+}
+.list-item>*{
+  margin: $gap;
+  padding: $gap;
+}
+
+.fab {
+  position: absolute;;
+  top: 50%;
+  transform: translate(0, -50%);
+  right: $gap;
+}
+
+.clearfix {
+  clear: both;
+}
+
+// Editor styles
 .swatch {
 	width: $gap;
 	height: $gap;
@@ -18,39 +88,120 @@ body {
 	margin-right: $gap/2;
 }
 
+/* Viewer styles only */
 
+body#viewer {
+  // Header
+  &.green .header {
+  	@include backgroundSizes($header_width, $header_height, $png_header_green, 1, $green);
+  }
 
+  &.blue .header {
+  	@include backgroundSizes($header_width, $header_height, $png_header_blue, 1, $blue);
+  }
 
-#viewer {
-	.highlight {
-		border: 1px red solid;
+  &.pink .header {
+  	@include backgroundSizes($header_width, $header_height, $png_header_pink, 1, $pink);
+  }
+
+  &.orange .header {
+  	@include backgroundSizes($header_width, $header_height, $png_header_orange, 1, $orange);
+  }
+
+  // Footer
+  .footer {
+    background-color: lighten($navy, 20%);
+  }
+
+  &.green .footer {
+  	@include backgroundSizes($footer_width, $footer_height, $png_footer_green, 1, $green);
+  }
+
+  &.blue .footer {
+  	@include backgroundSizes($footer_width, $footer_height, $png_footer_blue, 1, $blue);
+  }
+
+  &.pink .footer {
+  	@include backgroundSizes($footer_width, $footer_height, $png_footer_pink, 1, $pink);
+  }
+
+  &.orange .footer {
+  	@include backgroundSizes($footer_width, $footer_height, $png_footer_orange, 1, $orange);
+  }
+
+  // iDEA Badge Logo
+  & #idea-badge {
+    @include backgroundSizes($png_badge_width, $png_badge_height, $png_badge, 2);
+  }
+
+  &.green #idea-badge {
+    @include backgroundSizes($png_badge_width, $png_badge_height, $png_badge_green, 2);
+  }
+
+  &.blue #idea-badge {
+  	@include backgroundSizes($png_badge_width, $png_badge_height, $png_badge_blue, 2);
+  }
+
+  &.pink #idea-badge {
+  	@include backgroundSizes($png_badge_width, $png_badge_height, $png_badge_pink, 2);
+  }
+
+  &.orange #idea-badge {
+  	@include backgroundSizes($png_badge_width, $png_badge_height, $png_badge_orange, 2);
+  }
+
+  // viewer body children
+  #idea-badge{
+    position: absolute;
+		right: $png_badge_width/4;
+		top: $gap*2;
 	}
-	
-	.content{
-		padding-bottom: $footer_height + $gap;
-		margin-bottom: $footer_height + $gap;
-		text-align: center;
-	}
 
-	.footer{
-		height: $footer_height; 
-		width:100%;
+  #garter {
+    @include backgroundSizes($png_garter_width, $png_garter_height, $png_garter, 3);
+    // @include backgroundX($png_garter);
+    // background-size: $png_garter_width $png_garter_height;
+    //
+    // @include media-2x() {
+    //   @include backgroundX($png_garter, 2);
+    //   background-size: $png_garter_width $png_garter_height;
+    // }
+    // @include media-3x() {
+    //   @include backgroundX($png_garter, 3);
+    //   background-size: $png_garter_width $png_garter_height;
+    // }
+  }
+
+  // viewer layout
+  .header,
+  .footer {
+    width: 100%;
+  }
+
+	.footer {
+		height: $footer_height;
 		position: fixed;
 		bottom: 0;
 	}
 
-	.header{
-		width: 100%;
-		height: 100px;
-		margin-bottom: 50px;
+	.content {
+    padding-top: $png_garter_height + $gap;
+		padding-bottom: $footer_height + $gap;
+		text-align: center;
 	}
 
-	#idea-badge{
-		width:200px; 
-		height: 200px; 
-		float: right; 
-		right:50px; 
-		top:20px; 
-		position: absolute;
+  // Polymer element styles with custom theme color
+  @each $theme, $map in $themes {
+    &.#{$theme} {
+      paper-button {
+        color: white;
+        background-color: map-get($map, color);
+      }
+    }
+  }
+
+  // other viewer styles
+	.highlight {
+		border: 1px $error solid;
 	}
 }

@@ -91,7 +91,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- Main Area -->
       <paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>
         <!-- Main Toolbar -->
-        <paper-toolbar id="mainToolbar" class="tall">
+        <paper-toolbar id="mainToolbar" class="tall header">
           <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
 
           <span class="space"></span>
@@ -115,9 +115,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <iron-pages attr-for-selected="data-route" selected="{{route}}">
 
             <section data-route="home">
-              <paper-material elevation="1">
-                <list-badges></list-badges>
-              </paper-material>
+              <list-badges></list-badges>
             </section>
 
             <section data-route="create">
