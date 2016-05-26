@@ -190,6 +190,11 @@ body#viewer {
 		padding-bottom: $footer_height + $gap;
 		text-align: center;
 	}
+  
+  .buttonWrapper{
+   padding-top: ($gap*2);
+   padding-bottom: $footer_height + $gap;
+  }
 
   // Polymer element styles with custom theme color
   @each $theme, $map in $themes {
