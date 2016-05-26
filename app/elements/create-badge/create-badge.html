@@ -17,6 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/juicy-html/juicy-html.html">
+<link rel="import" href="../../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../behaviors/document-behavior.html">
 
 <link rel="import" href="../yes-no/yes-no.html">
@@ -78,10 +79,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="fab">
       <paper-fab label="y/n" on-tap="createYesNo"></paper-fab><br/>
-      <paper-fab label="xyz" on-tap="createMultipleChoice"></paper-fab><br/>
-      <paper-fab label="vid" on-tap="createVideo"></paper-fab><br/>
-      <paper-fab label="T" on-tap="createHTML"></paper-fab><br/>
-      <paper-fab label="B" on-tap="createButton"></paper-fab><br/>
+      <paper-fab icon="icons:radio-button-checked" on-tap="createMultipleChoice"></paper-fab><br/>
+      <paper-fab icon="av:videocam" on-tap="createVideo"></paper-fab><br/>
+      <paper-fab icon="editor:format-color-text" on-tap="createHTML"></paper-fab><br/>
+      <paper-fab icon="icons:link" on-tap="createButton"></paper-fab><br/>
     </div>
 
     <!-- dynamic elements go inside here -->
