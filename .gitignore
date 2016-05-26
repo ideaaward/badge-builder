@@ -5,3 +5,4 @@ bower_components
 .publish/
 .vscode/
 *.css
+.DS_Store

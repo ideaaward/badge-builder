@@ -5,6 +5,37 @@
 	}
 }
 
+// background-image url for standard defination, Retina (@2x), and Retina HD (@3x) background images
+@mixin backgroundX($imageFile, $resolution:1, $bgColor:"", $imageFormat:"png", $repeat:"no-repeat", $posX:"0px", $posY:"0px") {
+	@if $resolution != 1 {
+		background: #{$bgColor} url("#{$imageFile}@#{$resolution}x.#{$imageFormat}") #{$repeat} #{$posX} #{$posY};
+	} @else {
+		background: #{$bgColor} url("#{$imageFile}.#{$imageFormat}") #{$repeat} #{$posX} #{$posY};
+	}
+}
+
+// generates media queries for up to @3x image resolutions
+@mixin backgroundSizes($imageWidth, $imageHeight, $imageFile, $maxResolutions:1, $bgColor:"", $imageFormat:"png", $repeat:"no-repeat", $posX:"0px", $posY:"0px") {
+	width: $imageWidth;
+	height: $imageHeight;
+	@include backgroundX($imageFile);
+	background-size: $imageWidth $imageHeight;
+	// @2x
+	@if $maxResolutions > 1 {
+		@include media-2x() {
+			@include backgroundX($imageFile, 2, $bgColor, $imageFormat, $repeat, $posX, $posY);
+			background-size: $imageWidth $imageHeight;
+		}
+	}
+	// @3x
+	@if $maxResolutions > 2 {
+		@include media-3x() {
+			@include backgroundX($imageFile, 3, $bgColor, $imageFormat, $repeat, $posX, $posY);
+			background-size: $imageWidth $imageHeight;
+		}
+	}
+}
+
 // Screen resolution media queries
 
 // @2x - Retina screen

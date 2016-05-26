@@ -16,6 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../behaviors/document-behavior.html">
 
 <link rel="import" href="../yes-no/yes-no.html">
+<link rel="import" href="../multiple-choice/multiple-choice.html">
 <link rel="import" href="../content-video/content-video.html">
 <link rel="import" href="../content-html/content-html.html">
 <link rel="import" href="../content-button/content-button.html">
@@ -42,8 +43,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <code hidden>{{badgeContent}}</code>
     <br/><hr/>-->
 
-    <br/><br/>
-    <paper-button on-tap="submitBadge" raised><iron-icon icon="save"></iron-icon>Submit</paper-button>
+    <div class="v2">
+      <paper-button on-tap="submitBadge" raised><iron-icon icon="forward"></iron-icon>Submit</paper-button>
+    </div>
   </template>
 
   <script>
@@ -114,6 +116,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addElement(el);
         },
 
+        addMultipleChoice: function(id, question, answers, options) {
+          var el = new MultipleChoice();
+
+          el._id = id;
+          el.question = question;
+          el.answers = answers;
+          el.options = options;
+          el.edit = false;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.addElement(el);
+        },
+
         addVideo: function(embededURI) {
           var el = new ContentVideo();
 
@@ -127,27 +142,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         addElement: function (element) {
           this.push('_node.elements', element);
         },
-        
+
         addHTML: function(text) {
           var el = new ContentHTML();
-          
-          el.text = text;    
-          el.edit = false; 
+
+          el.text = text;
+          el.edit = false;
 
           Polymer.dom(this.$.components).appendChild(el);
           this.addElement(el);
         },
-        
+
         addButton: function(buttonURL, buttonText) {
           var el = new ContentButton();
-          
-          el.buttonURL = buttonURL;   
-          el.buttonText = buttonText;         
-          el.edit = false; 
+
+          el.buttonURL = buttonURL;
+          el.buttonText = buttonText;
+          el.edit = false;
 
           Polymer.dom(this.$.components).appendChild(el);
           this.push('_node.elements', {element: el});
-         
+
         },
 
         badgeResponse: function (event) {
@@ -166,15 +181,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 case "yes-no":
                     this.addYesNo(element._id, element.question, element.answer, element.yes, element.no);
                     break;
+                case "multiple-choice":
+                    this.addMultipleChoice(element._id, element.question, element.answers, element.options);
+                    break;
                 case "content-video":
                     this.addVideo(element.embededURI);
                     break;
                 case "content-html":
                     this.addHTML(element.text);
-                    break;  
+                    break;
                 case "content-button":
                     this.addButton(element.buttonURL, element.buttonText);
-                    break;  
+                    break;
                 default:
                    break;
             }

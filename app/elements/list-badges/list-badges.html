@@ -15,6 +15,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
 
 <link rel="import" href="../behaviors/document-behavior.html">
 
@@ -32,7 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <iron-signals on-iron-signal-home="opened"></iron-signals>
 
-    <p class="subhead">Your badges:</p>
+    <p class="subhead m1">Your badges:</p>
 
     <iron-ajax id="deleteBadge" handle-as="json" method="DELETE"
       on-response="handleDeleteResponse">
@@ -40,13 +42,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <iron-ajax id="getBadges"
       url="/api/badges" handle-as="json" last-response="{{badgesResponse}}" on-response="badgeResponse" >
     </iron-ajax>
-    <iron-list id="badgesList" items="[[badgesResponse]]" as="item">
+    <iron-list id="badgesList" items="[[badgesResponse]]" as="item" >
       <template>
-        <div class="layout horizontal">
-          <a href="{{baseUrl}}badges/{{item._id}}" target="_blank">[[item.title]]</a>
-          <a data-route="badges" href="{{baseUrl}}edit/{{item._id}}">Edit</a>
-
-          <paper-button on-tap="badgeDeleted" raised><iron-icon icon="delete"></iron-icon>delete</paper-button>
+        <div class="list-item">
+          <paper-material elevation="1" class="bg_white">
+            <h3>
+              <a href="{{baseUrl}}badges/{{item._id}}" target="_blank">[[item.title]]</a>
+              <a data-route="badges" href="{{baseUrl}}edit/{{item._id}}" title="Edit"><iron-icon icon="create"></iron-icon></a>
+            </h3>
+            <paper-fab on-tap="badgeDeleted" icon="delete" class="fab"></paper-fab>
+          </paper-material>
         </div>
       </template>
     </iron-list>

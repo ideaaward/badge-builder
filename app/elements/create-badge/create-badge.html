@@ -20,6 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../behaviors/document-behavior.html">
 
 <link rel="import" href="../yes-no/yes-no.html">
+<link rel="import" href="../multiple-choice/multiple-choice.html">
 <link rel="import" href="../content-video/content-video.html">
 <link rel="import" href="../content-html/content-html.html">
 <link rel="import" href="../content-button/content-button.html">
@@ -73,10 +74,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <paper-button on-tap="saveBadge" raised><iron-icon icon="save"></iron-icon>{{saveTitle}}</paper-button>
 
-    <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>test</paper-button>    
+    <!-- <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>test</paper-button> -->
 
     <div class="fab">
       <paper-fab label="y/n" on-tap="createYesNo"></paper-fab><br/>
+      <paper-fab label="xyz" on-tap="createMultipleChoice"></paper-fab><br/>
       <paper-fab label="vid" on-tap="createVideo"></paper-fab><br/>
       <paper-fab label="T" on-tap="createHTML"></paper-fab><br/>
       <paper-fab label="B" on-tap="createButton"></paper-fab><br/>
@@ -85,8 +87,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- dynamic elements go inside here -->
     <div id="components"></div>
   </template>
-  
-        
+
+
 
   <script>
     (function() {
@@ -240,9 +242,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addYesNo(q.question, q.answer.toString());
         },
 
+        addMultipleChoice: function(question, answers, options) {
+          var el = new MultipleChoice(); //document.createElement("multiple-choice");
+
+          el.question = question;
+          el.answers = answers;
+          el.options = options;
+          el.edit = true;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+        },
+
+        createMultipleChoice: function() {
+          var q = {
+            question: "Which are the primary colours of light?",
+            answers: ["Red","Green","Blue"],
+            options: ["Red","Orange","Yellow","Green","Blue"]
+          }
+          this.addMultipleChoice(q.question, q.answers, q.options);
+        },
+
         addVideo: function(embededURI) {
           var el = new ContentVideo(); // var el = document.createElement("content-video");
-          
+
           el.embededURI = embededURI;
           el.edit = true;
 
@@ -253,32 +276,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         createVideo: function() {
           this.addVideo();
         },
-        
+
         addHTML: function(text) {
           var el = new ContentHTML();
-          
-          el.text = text;            
-          el.edit = true; 
+
+          el.text = text;
+          el.edit = true;
 
           Polymer.dom(this.$.components).appendChild(el);
           this.push('_node.elements', {element: el});
-         
+
         },
 
         createHTML: function() {
           this.addHTML();
         },
-             
+
         addButton: function(buttonURL, buttonText) {
           var el = new ContentButton();
-          
-          el.buttonURL = buttonURL;  
-          el.buttonText = buttonText;          
-          el.edit = true; 
+
+          el.buttonURL = buttonURL;
+          el.buttonText = buttonText;
+          el.edit = true;
 
           Polymer.dom(this.$.components).appendChild(el);
           this.push('_node.elements', {element: el});
-         
+
         },
 
         createButton: function() {
@@ -325,28 +348,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.set('badgeTitle', this.response.title);
           this.set('badgeTheme', this.response.content.theme);
 
-          
+
           for (var i=0; i<sections.length; i++) {
-                    
-            var element = sections[i];  
-                    
+
+            var element = sections[i];
+
             switch(element.elementType) {
                 case "yes-no":
                     this.addYesNo(element.question, element.answer, element.yes, element.no);
+                    break;
+                case "multiple-choice":
+                    this.addMultipleChoice(element.question, element.answers, element.options);
                     break;
                 case "content-video":
                     this.addVideo(element.embededURI);
                     break;
                 case "content-html":
                     this.addHTML(element.text);
-                    break;       
+                    break;
                 case "content-button":
                     this.addButton(element.buttonURL, element.buttonText);
-                    break;                                
+                    break;
                 default:
-                   break; 
-            } 
-            
+                   break;
+            }
+
           }
         },
 
