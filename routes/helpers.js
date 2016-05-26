@@ -16,7 +16,7 @@ module.exports.calculateResults = function (badge, answers) {
   var results = {};
   badge.content.sections.forEach(function (element) {
     var id = element._id;
-    results[id] = answers[id] === element.answer;
+    results[id] = answers[id] + '' === element.answer + '';
   });
   return results;
 };
