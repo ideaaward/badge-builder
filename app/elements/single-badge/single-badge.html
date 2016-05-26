@@ -202,7 +202,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
           var answers = {};
           this._node.elements.forEach(function (element) {
-            answers[element._id] = element.getSelectedAnswer();
+            if (element.getSelectedAnswer) {
+              answers[element._id] = element.getSelectedAnswer();
+            }
           });
           this.$.putAnswers.body = answers;
           this.$.putAnswers.generateRequest();
