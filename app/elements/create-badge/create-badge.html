@@ -242,11 +242,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addYesNo(q.question, q.answer.toString());
         },
 
-        addMultipleChoice: function(question, answers, options) {
+        addMultipleChoice: function(question, answer, options) {
           var el = new MultipleChoice(); //document.createElement("multiple-choice");
 
           el.question = question;
-          el.answers = answers;
+          el.answer = answer;
           el.options = options;
           el.edit = true;
 
@@ -257,10 +257,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         createMultipleChoice: function() {
           var q = {
             question: "Which are the primary colours of light?",
-            answers: ["Red","Green","Blue"],
+            answer: ["Red","Green","Blue"],
             options: ["Red","Orange","Yellow","Green","Blue"]
           }
-          this.addMultipleChoice(q.question, q.answers, q.options);
+          this.addMultipleChoice(q.question, q.answer, q.options);
         },
 
         addVideo: function(embededURI) {
@@ -358,7 +358,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     this.addYesNo(element.question, element.answer, element.yes, element.no);
                     break;
                 case "multiple-choice":
-                    this.addMultipleChoice(element.question, element.answers, element.options);
+                    this.addMultipleChoice(element.question, element.answer, element.options);
                     break;
                 case "content-video":
                     this.addVideo(element.embededURI);

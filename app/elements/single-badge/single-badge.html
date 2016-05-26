@@ -116,12 +116,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addElement(el);
         },
 
-        addMultipleChoice: function(id, question, answers, options) {
+        addMultipleChoice: function(id, question, answer, options) {
           var el = new MultipleChoice();
 
           el._id = id;
           el.question = question;
-          el.answers = answers;
+          el.answer = answer;
           el.options = options;
           el.edit = false;
 
@@ -182,7 +182,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     this.addYesNo(element._id, element.question, element.answer, element.yes, element.no);
                     break;
                 case "multiple-choice":
-                    this.addMultipleChoice(element._id, element.question, element.answers, element.options);
+                    this.addMultipleChoice(element._id, element.question, element.answer, element.options);
                     break;
                 case "content-video":
                     this.addVideo(element.embededURI);
@@ -202,7 +202,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
           var answers = {};
           this._node.elements.forEach(function (element) {
-            answers[element._id] = element.selectedAnswer;
+            answers[element._id] = element.getSelectedAnswer();
           });
           this.$.putAnswers.body = answers;
           this.$.putAnswers.generateRequest();

@@ -13,19 +13,25 @@ var testBadge = {
     sections: [
       {
         _id: 'foo',
-        answer: 'true'
+        answer: true
+      },
+      {
+        _id: 'bar',
+        answer: ['foo', 'bar']
       }
     ]
   }
 };
 
-test('test right answer', function (t) {
+test('test right answers', function (t) {
   var results = helpers.calculateResults(testBadge,
     {
-      foo: 'true'
+      foo: true,
+      bar: ['foo', 'bar']
     }
   );
-  t.equals(results.foo, true, 'true when answer right');
+  t.equals(results.foo, true, 'true when answer right boolean');
+  t.equals(results.bar, true, 'true when answer right list');
   t.end();
 });
 

@@ -13,7 +13,7 @@ A question element with a yes/no response
 
 Example:
 
-    <multiple-choice question="Which shapes have more than 7 sides?" answers='["Nonagon","Decagon"]' options='["Pentagon","Heptagon","Nonagon","Decagon"]'></multiple-choice>
+    <multiple-choice question="Which shapes have more than 7 sides?" answer='["Nonagon","Decagon"]' options='["Pentagon","Heptagon","Nonagon","Decagon"]'></multiple-choice>
 
 @demo
 -->
@@ -99,7 +99,7 @@ Example:
       },
 
       /**
-       * The possible answers to choose from.
+       * The possible answer to choose from.
        *
        * @type {array}
        */
@@ -117,11 +117,11 @@ Example:
       },
 
       /**
-       * The answers.
+       * The answer.
        *
        * @type {array}
        */
-      answers: {
+      answer: {
         type: Array,
         // value: function() {
         //   return [
@@ -156,7 +156,7 @@ Example:
       data: {
         type: Object,
         readOnly: true,
-        computed: '_dataUpdated(_id, elementType, question, answers, options)'
+        computed: '_dataUpdated(_id, elementType, question, answer, options)'
       }
 
     },
@@ -219,30 +219,30 @@ Example:
         return;
       }
       //var changedAnswer = ev.target.name; // could be selected / unselected
-      //var selectedAnswers = this.getSelectedItems();
+      //var selectedAnswer = this.getSelectedAnswer();
       var result = this.checkAnswer();
       console.log(this.localName, 'result:', result);
       this.set('result', result); // update result
     },
 
     /**
-     * Checks if your answer is correct.
+     * Returns the selected answer.
      *
      * NB: We can't rely on 'paper-radio-group' methods to get selected items
      * as we want to use various nested elements which results in empty 'items' array.
      */
-    getSelectedItems: function() {
-      var answers = [];
+    getSelectedAnswer: function() {
+      var answer = [];
       var items = this.querySelectorAll('paper-radio-button');
       var i = items.length;
       while(i--){
         var item = items[i];
         //console.log("item", item.checked, item.name);
         if (item.checked) {
-          answers.push(item.name);
+          answer.push(item.name);
         }
       }
-      return answers;
+      return _.sortBy(answer);
     },
 
     _selectItemValues: function(values) {
@@ -274,10 +274,10 @@ Example:
      * Checks if your answer is correct.
      */
     checkAnswer: function() {
-      var selectedAnswers = _.sortBy(this.getSelectedItems());
-      var answers = _.sortBy(this.answers); // _.map(this.answers, 'value')
-      //console.log(selectedAnswers, "===", answers);
-      return _.isEqual(selectedAnswers, answers);
+      var selectedAnswer = _.sortBy(this.getSelectedAnswer());
+      var answer = _.sortBy(this.answer); // _.map(this.answer, 'value')
+      //console.log(selectedAnswer, "===", answer);
+      return _.isEqual(selectedAnswer, answer);
     },
 
     /**
@@ -295,18 +295,18 @@ Example:
         return;
       }
       // edit mode - set/reset selection to correct answer
-      //var answers = this.answers; //_.map(this.answers, 'value');
-      //console.log(this.localName, 'answers:', answers, 'options:', this.options);
-      this._selectItemValues(this.answers);
+      //var answer = this.answer; //_.map(this.answer, 'value');
+      //console.log(this.localName, 'answer:', answer, 'options:', this.options);
+      this._selectItemValues(this.answer);
     },
 
     /**
      * Edit the correct answer
      */
     _editAnswer: function(){
-      var selectedAnswers = this.getSelectedItems();
-      this.set('answers', selectedAnswers); // update answers property
-      console.info(this.localName, "edited answer", this.answers);
+      var selectedAnswer = this.getSelectedAnswer();
+      this.set('answer', selectedAnswer); // update answer property
+      console.info(this.localName, "edited answer", this.answer);
     },
 
     addOption: function() {
@@ -314,12 +314,12 @@ Example:
       this.push('options', 'Option');
     },
 
-    _dataUpdated: function(id, elementType, question, answers, options) {
+    _dataUpdated: function(id, elementType, question, answer, options) {
       var data = {
         "_id" : id,
         "elementType" : elementType,
         "question" : question,
-        "answers" : answers,
+        "answer" : _.sortBy(answer),
         "options" : options
       };
       //console.info(this.localName, '^', data);
