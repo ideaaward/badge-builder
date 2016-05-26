@@ -24,6 +24,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../content-video/content-video.html">
 <link rel="import" href="../content-html/content-html.html">
 <link rel="import" href="../content-button/content-button.html">
+<link rel="import" href="../quiz-text-input/quiz-text-input.html">
+
 
 <dom-module id="create-badge">
   <template>
@@ -79,6 +81,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div class="fab">
       <paper-fab label="y/n" on-tap="createYesNo"></paper-fab><br/>
       <paper-fab label="xyz" on-tap="createMultipleChoice"></paper-fab><br/>
+      <paper-fab label="ti" on-tap="createQuizTextInput"></paper-fab><br/>
       <paper-fab label="vid" on-tap="createVideo"></paper-fab><br/>
       <paper-fab label="T" on-tap="createHTML"></paper-fab><br/>
       <paper-fab label="B" on-tap="createButton"></paper-fab><br/>
@@ -307,6 +310,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         createButton: function() {
           this.addButton();
         },
+        
+        addQuizTextInput: function(question, answerKeywords) {
+          var el = new QuizTextInput();
+
+          el.question = question;
+          el.answerKeywords = answerKeywords;
+          el.edit = true;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+
+        },
+
+        createQuizTextInput: function() {
+          this.addQuizTextInput();
+        },
 
         _getRandomQuestion: function(){
           return this.questions[_.random(this.questions.length-1)];
@@ -368,6 +387,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     break;
                 case "content-button":
                     this.addButton(element.buttonURL, element.buttonText);
+                    break;
+                case "quiz-text-input":
+                    this.addQuizTextInput(element.question, element.answerKeywords);
                     break;
                 default:
                    break;
