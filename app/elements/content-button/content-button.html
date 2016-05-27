@@ -25,13 +25,13 @@ Content component for a button element
   <template>
     <paper-input placeholder="Button Text" value="{{buttonText}}" hidden=[[!edit]]></paper-input>
     <paper-input placeholder="Button URL" value="{{buttonURL}}" hidden="[[!edit]]"></paper-input>
-    
+
     <template is="dom-if" if="[[!edit]]" >
         <a href="{{buttonURL}}" target="_blank"><paper-button raised>{{buttonText}}</paper-button></a>
     </template>
-    
+
   </template>
-    
+
 
 
 </dom-module>
@@ -53,7 +53,7 @@ Content component for a button element
         value: function() {
           return "";
         }
-      },  
+      },
 
       /**
        * The element type. This is the same as the element id
@@ -64,7 +64,7 @@ Content component for a button element
         value: function() {
           return "content-button";
         }
-      },   
+      },
 
       /**
        * The URL the button will link to
@@ -72,15 +72,15 @@ Content component for a button element
        */
       buttonURL: {
         type: String,
-      },   
-      
+      },
+
      /**
        * The text that will be displayed on the button
        * @type {string}
        */
       buttonText: {
         type: String,
-      },     
+      },
 
       /**
        * `edit` indicates that the element should be in WYSIWYG editor mode.
@@ -94,11 +94,11 @@ Content component for a button element
       /**
        * `data` contains the edited properties
        */
-      data: {
-        type: Object,
-        readOnly: true,
-        computed: '_dataUpdated(elementType, buttonURL, buttonText)'
-      }
+      // data: {
+      //   type: Object,
+      //   readOnly: true,
+      //   computed: '_dataUpdated(elementType, buttonURL, buttonText)'
+      // }
 
     },
 
@@ -137,7 +137,7 @@ Content component for a button element
     toggleEdit: function() {
       this.set('edit', !this.edit);
     },
-    
+
         /**
      * Triggered when edit mode is changed
      */
@@ -152,16 +152,24 @@ Content component for a button element
     /**
      * Updates the data attribute property
      */
-    _dataUpdated: function(elementType, buttonURL, buttonText) {
-      var data = {   
-        "elementType" : elementType,
-        "buttonURL" : buttonURL,
-        "buttonText" : buttonText
+    // _dataUpdated: function(elementType, buttonURL, buttonText) {
+    //   var data = {
+    //     "elementType" : elementType,
+    //     "buttonURL" : buttonURL,
+    //     "buttonText" : buttonText
+    //   };
+    //   //console.info(this.localName, '^', data);
+    //   return data;
+    // },
+
+    getData: function(){
+      return {
+        elementType: this.elementType,
+        buttonURL: this.buttonURL,
+        buttonText: this.buttonText
       };
-      //console.info(this.localName, '^', data);
-      return data;
-    },
-    
+    }
+
   });
 
 </script>

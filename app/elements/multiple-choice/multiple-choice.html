@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
-<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
+<!-- <link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html"> -->
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
@@ -36,22 +37,31 @@ Example:
     .group {
       display: inline-block;
     }
+
+    .inline>* {
+      display: inline-block;
+    }
   </style>
 
   <template>
     <p class="question" hidden=[[edit]]>[[question]]</p>
-    <div><paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>
+    <div>
+      <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>
+    </div>
 
-    <paper-radio-group multi>
-      <template id="choices" is="dom-repeat" items="[[options]]" on-dom-change="_templateUpdated">
-        <div class="group">
-          <paper-radio-button id="[[index]]" name="[[item]]" class="options"><span hidden=[[edit]]>[[item]]</span></paper-radio-button>
-          <paper-input placeholder="Option" value="{{item}}" hidden=[[!edit]]></paper-input>
-        </div>
-      </template>
-    </paper-radio-group>
+    <template id="choices" is="dom-repeat" items="[[_options.list]]" on-dom-change="_templateUpdated">
+      <div class="group">
+        <paper-checkbox id="[[item.key]]" name="[[item.value]]" class="options">
+          <span hidden=[[edit]]>[[item.value]]</span>
+        </paper-checkbox>
+        <paper-input placeholder="Option" value="{{item.value}}" hidden=[[!edit]]></paper-input>
+      </div>
+    </template>
 
-    <paper-fab icon="add" hidden=[[!edit]] on-tap="addOption"></paper-fab>
+    <div class="inline">
+      <paper-fab mini icon="add" hidden=[[!edit]] on-tap="addOption"></paper-fab>
+      <paper-fab mini icon="remove" hidden=[[!edit]] on-tap="removeOption"></paper-fab>
+    </div>
   </template>
 
 </dom-module>
@@ -96,6 +106,19 @@ Example:
         // value: function() {
         //   return 'Which are the odd numbers?';
         // }
+      },
+
+      /**
+       * We needed an object for binding instead as the dynamic options array duplicates items with same value
+       *
+       * @type {object}
+       */
+      _options: {
+        type: Object,
+        value: function() {
+          return {};
+          //return { list: [] };
+        }
       },
 
       /**
@@ -153,11 +176,11 @@ Example:
       /**
        * `data` contains the edited properties
        */
-      data: {
-        type: Object,
-        readOnly: true,
-        computed: '_dataUpdated(_id, elementType, question, answer, options)'
-      }
+      // data: {
+      //   type: Object,
+      //   readOnly: true,
+      //   computed: '_dataUpdated(_id, elementType, question, answer, options, _options)'
+      // }
 
     },
 
@@ -190,13 +213,37 @@ Example:
 
     // Element Behavior
 
-    _optionsChanged: function(e) {
-      //console.log(this.localName, e);
-    },
-
     _templateUpdated: function(ev) {
       // console.log(this.localName, 'template changed', ev );
       this._editChanged(); // fire when dom elements are stamped to DOM
+    },
+
+    /**
+     * Handler when number of options is changed
+     */
+    _optionsChanged: function() {
+      console.log("-- populating options --");
+      this._updateBindingOptions(this.options);
+    },
+
+
+
+    /**
+     * Copies options for dynamic binding
+     */
+    _updateBindingOptions: function(options){
+      var list = [];
+      var i = this.options.length;
+      while(i--){
+        var option = this.options[i];
+        var optionObject = {
+          id: i,
+          value: option,
+        }
+        list.unshift(optionObject);
+      }
+      this.set('_options.list', list);
+      console.log(this.localName, '* options', this.options, this._options.list);
     },
 
     /**
@@ -218,8 +265,6 @@ Example:
         this._editAnswer();
         return;
       }
-      //var changedAnswer = ev.target.name; // could be selected / unselected
-      //var selectedAnswer = this.getSelectedAnswer();
       var result = this.checkAnswer();
       console.log(this.localName, 'result:', result);
       this.set('result', result); // update result
@@ -233,12 +278,12 @@ Example:
      */
     getSelectedAnswer: function() {
       var answer = [];
-      var items = this.querySelectorAll('paper-radio-button');
+      var items = this.querySelectorAll('.options'); // paper-radio-button or paper-checkbox
       var i = items.length;
       while(i--){
         var item = items[i];
         //console.log("item", item.checked, item.name);
-        if (item.checked) {
+        if (item.checked && item.name) {
           answer.push(item.name);
         }
       }
@@ -252,7 +297,7 @@ Example:
         return; // error did not find dynamic node
       }
       //var items = this.querySelectorAll('paper-radio-button');
-      var items = Polymer.dom(this.root).querySelectorAll('paper-radio-button');
+      var items = Polymer.dom(this.root).querySelectorAll('.options'); // paper-radio-button or paper-checkbox
       var i = items.length;
       //console.log("Found options:", i, items);
       while(i--){
@@ -311,24 +356,81 @@ Example:
 
     addOption: function() {
       console.log('add new option');
-      this.push('options', 'Option');
+      //this.push('options', '');
+      var obj = {
+        key: this._options.list.length+1,
+        value: ""
+      }
+      this.push('_options.list', obj);
+      console.log("> push", obj.key, obj.value);
     },
 
-    _dataUpdated: function(id, elementType, question, answer, options) {
-      var data = {
-        "_id" : id,
-        "elementType" : elementType,
-        "question" : question,
-        "answer" : _.sortBy(answer),
-        "options" : options
-      };
-      //console.info(this.localName, '^', data);
-      return data;
+    removeOption: function() {
+      console.log('remove last option');
+      //this.pop('options');
+      this.pop('_options.list');
+    },
+
+    // _listOptionsChanged: function() {
+    //   console.log("Deep observer > ", this.data);
+    //   //this._dataUpdated(this._id, this.elementType, this.question, this.answer, this.options, this._options);
+    // },
+
+    // data updated method is invoked to calculate the value whenever any of the argument values changes.
+    // _dataUpdated: function(id, elementType, question, answer, options, _options) {
+    //   // use edit options // _.map(this._options.list, 'value');
+    //   var sortedAnswers = _.sortBy(answer);
+    //   var editOptions = options;
+    //   if(_options.list){
+    //     editOptions = _.chain(_options.list)
+    //                     .clone() // just the properties
+    //                     .map('value') // just the value property
+    //                     .compact() // remove blank and duplicate strings
+    //                     .value();
+    //     console.log('*', editOptions);
+    //   }
+    //   console.log('@', editOptions, _options);
+    //   var data = {
+    //     "_id" : id,
+    //     "elementType" : elementType,
+    //     "question" : question,
+    //     "answer" : sortedAnswers,
+    //     "options" : editOptions
+    //   };
+    //   console.info(this.localName, '=', data.options);
+    //   return data;
+    // },
+
+    getData: function() {
+      var sortedAnswers = _.sortBy(this.answer);
+      var editOptions = this.options;
+      if(this._options.list){
+        editOptions = _.chain(this._options.list)
+                        .clone() // just the properties
+                        .map('value') // just the value property
+                        .compact() // remove blank and duplicate strings
+                        .value();
+        console.log('**', editOptions);
+      }
+      console.log('@@', editOptions, this._options);
+
+      return {
+        _id: this._id,
+        elementType: this.elementType,
+        question: this.question,
+        answer: sortedAnswers,
+        options: editOptions
+      }
     },
 
     listeners: {
       "change": "_selectAnswer"
-    }
+    },
+
+    // NB: Using deep observer to watch object property
+    // observers: [
+    //   '_listOptionsChanged(_options.list.*)'
+    // ]
 
   });
 
