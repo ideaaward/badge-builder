@@ -70,10 +70,15 @@ body {
 }
 
 .fab {
-  position: absolute;;
+  position: absolute;
   top: 50%;
   transform: translate(0, -50%);
   right: $gap;
+}
+
+paper-fab.blue {
+  --paper-fab-background: var(--paper-light-blue-500);
+  --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
 }
 
 .clearfix {
