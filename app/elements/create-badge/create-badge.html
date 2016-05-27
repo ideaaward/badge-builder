@@ -44,6 +44,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         right: 10px;
         z-index: 1;
       }
+      
+      paper-fab.blue {
+        --paper-fab-background: var(--paper-light-blue-500);
+        --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
+      }
     </style>
 
     <iron-signals on-iron-signal-create="opened"></iron-signals>
@@ -78,11 +83,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>test</paper-button> -->
 
     <div class="fab">
-      <paper-fab label="y/n" on-tap="createYesNo"></paper-fab><br/>
-      <paper-fab icon="icons:radio-button-checked" on-tap="createMultipleChoice"></paper-fab><br/>
-      <paper-fab icon="av:videocam" on-tap="createVideo"></paper-fab><br/>
-      <paper-fab icon="editor:format-color-text" on-tap="createHTML"></paper-fab><br/>
-      <paper-fab icon="icons:link" on-tap="createButton"></paper-fab><br/>
+        <!-- Quiz -->
+        <paper-fab icon="icons:radio-button-checked" on-tap="createYesNo"></paper-fab><br/>
+        <paper-fab icon="icons:check-box" on-tap="createMultipleChoice"></paper-fab><br/>
+        <!--short text input-->
+        <paper-fab icon="editor:short-text" on-tap=""></paper-fab><br/>
+        <!--long text input -->
+        <paper-fab icon="editor:format-align-left" on-tap=""></paper-fab><br/>
+        <!--drag and drop-->
+        <paper-fab icon="icons:touch-app" on-tap=""></paper-fab><br/>
+        <!-- Content -->
+        <paper-fab icon="editor:format-color-text" on-tap="createHTML" class="blue"></paper-fab><br/>
+        <paper-fab icon="av:videocam" on-tap="createVideo" class="blue"></paper-fab><br/>     
+        <paper-fab icon="icons:link" on-tap="createButton" class="blue"></paper-fab><br/>
+        <!--iframe 2.0-->
+        <paper-fab icon="av:play-circle-outline" on-tap="" class="blue"></paper-fab><br/>
+        <!--section divider-->
+        <paper-fab icon="icons:icons:more-horiz" on-tap="" class="blue"></paper-fab><br/>
     </div>
 
     <!-- dynamic elements go inside here -->
