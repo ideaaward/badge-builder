@@ -40,7 +40,8 @@ Example:
       <paper-input placeholder="No" value="{{labelNo}}" hidden=[[!edit]]></paper-input>
     </paper-radio-group>
 
-    <pre hidden=[[!edit]]>A. [[answer]]</pre>
+    <!-- <pre hidden=[[!edit]]>A. [[answer]]</pre> -->
+    <paper-fab icon="delete" tap="handleDelete" on-tap="_delete" hidden=[[!edit]]></paper-fab>
   </template>
 
 </dom-module>
@@ -210,6 +211,10 @@ Example:
       this.fire('yes-no-selected-answer-changed', {
         answer: this.selectedAnswer
       });
+    },
+
+    _delete: function() {
+      this.fire('deleteElement');
     },
 
     /**

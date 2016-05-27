@@ -47,7 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         right: 10px;
         z-index: 1;
       }
-      
+
       paper-fab.blue {
         --paper-fab-background: var(--paper-light-blue-500);
         --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
@@ -97,7 +97,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-fab icon="icons:touch-app" on-tap=""></paper-fab><br/>
         <!-- Content -->
         <paper-fab icon="editor:format-color-text" on-tap="createHTML" class="blue"></paper-fab><br/>
-        <paper-fab icon="av:videocam" on-tap="createVideo" class="blue"></paper-fab><br/>     
+        <paper-fab icon="av:videocam" on-tap="createVideo" class="blue"></paper-fab><br/>
         <paper-fab icon="icons:link" on-tap="createButton" class="blue"></paper-fab><br/>
         <!--iframe 2.0-->
         <paper-fab icon="av:play-circle-outline" on-tap="" class="blue"></paper-fab><br/>
@@ -239,6 +239,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             elements: []
           };
           this.sections = [];
+        },
+
+        _onDeleteElement: function(event) {
+          var target = event.target;
+          console.log("- delete", event.target);
+          var i = this._node.elements.length;
+          while(i--){
+            var el = this._node.elements[i].element;
+            if (el === target) {
+              console.log("delete element:", el);
+              console.log("befor:", this._node.elements);
+              Polymer.dom(this.$.components).removeChild(el); // TODO: check elements are being detached
+              this.splice('_node.elements',i,1); // remove from array
+              console.log("after:", this._node.elements);
+              return;
+            }
+          }
         },
 
         addYesNo: function(question, answer, yes, no) {
@@ -441,6 +458,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         observers: [
           '_elementsChanged(_node.elements.length)'
         ],
+
+        listeners: {
+          'deleteElement': "_onDeleteElement"
+        },
 
         behaviors: [
           Page.DocumentBehavior
