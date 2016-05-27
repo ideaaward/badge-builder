@@ -83,7 +83,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <paper-button on-tap="saveBadge" raised><iron-icon icon="save"></iron-icon>{{saveTitle}}</paper-button>
 
-     <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>test</paper-button> 
+    <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>Test</paper-button>
 
     <div class="fab">
         <!-- Quiz -->
@@ -381,7 +381,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           while(i--){
             var el = this._node.elements[i].element;
             var data = el.getData();
-            console.log(data);
+            console.log('json', data);
             sections.unshift(data); // reverse order
           }
           console.log("sections:", sections);
