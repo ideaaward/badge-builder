@@ -25,6 +25,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../content-video/content-video.html">
 <link rel="import" href="../content-html/content-html.html">
 <link rel="import" href="../content-button/content-button.html">
+<link rel="import" href="../quiz-short-input/quiz-short-input.html">
+<link rel="import" href="../quiz-long-input/quiz-long-input.html">
+
 
 <dom-module id="create-badge">
   <template>
@@ -80,16 +83,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <paper-button on-tap="saveBadge" raised><iron-icon icon="save"></iron-icon>{{saveTitle}}</paper-button>
 
-    <!-- <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>test</paper-button> -->
+     <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>test</paper-button> 
 
     <div class="fab">
         <!-- Quiz -->
         <paper-fab icon="icons:radio-button-checked" on-tap="createYesNo"></paper-fab><br/>
         <paper-fab icon="icons:check-box" on-tap="createMultipleChoice"></paper-fab><br/>
         <!--short text input-->
-        <paper-fab icon="editor:short-text" on-tap=""></paper-fab><br/>
+        <paper-fab icon="editor:short-text" on-tap="createQuizShortInput"></paper-fab><br/>
         <!--long text input -->
-        <paper-fab icon="editor:format-align-left" on-tap=""></paper-fab><br/>
+        <paper-fab icon="editor:format-align-left" on-tap="createQuizLongInput"></paper-fab><br/>
         <!--drag and drop-->
         <paper-fab icon="icons:touch-app" on-tap=""></paper-fab><br/>
         <!-- Content -->
@@ -326,6 +329,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addButton();
         },
 
+        addQuizShortInput: function(question, answerKeywords) {
+          var el = new QuizShortInput();
+
+          el.question = question;
+          el.answerKeywords = answerKeywords;
+          el.edit = true;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+
+        },
+
+        createQuizShortInput: function() {
+          this.addQuizShortInput();
+        },
+
+        addQuizLongInput: function(question) {
+          var el = new QuizLongInput();
+
+          el.question = question;
+          el.edit = true;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+
+        },
+
+        createQuizLongInput: function() {
+          this.addQuizLongInput();
+        },
+
+
+
+
         _getRandomQuestion: function(){
           return this.questions[_.random(this.questions.length-1)];
         },
@@ -343,8 +380,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var sections = [];
           while(i--){
             var el = this._node.elements[i].element;
-            console.log(el.data);
-            sections.unshift(el.data); // reverse order
+            var data = el.getData();
+            console.log(data);
+            sections.unshift(data); // reverse order
           }
           console.log("sections:", sections);
           return sections;
@@ -386,6 +424,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     break;
                 case "content-button":
                     this.addButton(element.buttonURL, element.buttonText);
+                    break;
+                case "quiz-short-input":
+                    this.addQuizShortInput(element.question, element.answerKeywords);
+                    break;
+                case "quiz-long-input":
+                    this.addQuizLongInput(element.question);
                     break;
                 default:
                    break;

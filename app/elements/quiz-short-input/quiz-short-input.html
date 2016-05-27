@@ -1,0 +1,167 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/marked-element/marked-import.html">
+
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+
+<!--
+    Quiz element for short user input
+-->
+<dom-module id="quiz-short-input">
+
+  <style>
+    :host {
+      display: block;
+      box-sizing: border-box;
+    }
+
+    paper-input {
+      display: inline-block;
+      width: 100%;
+    }
+    
+    .answer {
+      width: 50%;
+    }
+  </style>
+
+  <template>
+
+    <div><paper-input placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>   
+    <div><paper-input placeholder="Words to look for in user answer" value="{{answerKeywords}}" hidden=[[!edit]]></paper-input></div>
+
+    <template is="dom-if" if="[[!edit]]" >
+        <p>[[question]]</p>
+        <div><paper-input class="answer" placeholder="Answer" value="{{answer}}"></paper-input></div>
+    </template>
+
+  </template>
+  
+
+
+</dom-module>
+
+<script>
+
+  QuizShortInput = Polymer({
+
+    is: 'quiz-short-input',
+
+    properties: {
+
+      /**
+       * The id of the element
+       * @type {string}
+       */
+      _id: {
+        type: String,
+        value: ""
+      },  
+
+      /**
+       * The element type. This is the same as the element id
+       * @type {string}
+       */
+      elementType: {
+        type: String,
+        value: "quiz-short-input"      
+      },   
+      
+      /**
+       * The question.
+       * @type {string}
+       */
+      question: {
+        type: String
+      },
+         
+      /**
+       * The keywords to look for in a users answer
+       * @type {string}
+       */
+      answerKeywords: {
+        type: String
+      },
+
+      /**
+       * Is the answer
+       * @type {string}
+       */
+      answer: {
+        type: String
+      },
+
+      /**
+       * `edit` indicates that the element should be in WYSIWYG editor mode.
+       */
+      edit: {
+        type: Boolean,
+        value: true,
+        observer: '_editChanged'
+      }
+
+    },
+
+    // Element Lifecycle
+
+    ready: function() {
+      // `ready` is called after all elements have been configured, but
+      // propagates bottom-up. This element's children are ready, but parents
+      // are not.
+      //
+      // This is the point where you should make modifications to the DOM (when
+      // necessary), or kick off any processes the element wants to perform.
+    },
+
+    attached: function() {
+      // `attached` fires once the element and its parents have been inserted
+      // into a document.
+      //
+      // This is a good place to perform any work related to your element's
+      // visual state or active behavior (measuring sizes, beginning animations,
+      // loading resources, etc).
+    },
+
+    detached: function() {
+      // The analog to `attached`, `detached` fires when the element has been
+      // removed from a document.
+      //
+      // Use this to clean up anything you did in `attached`.
+    },
+
+    // Element Behavior
+
+    /**
+     * Toggle edit mode
+     */
+    toggleEdit: function() {
+      this.set('edit', !this.edit);
+    },
+    
+     /**
+     * Triggered when edit mode is changed
+     */
+    _editChanged: function(newValue) {
+      if (!this.edit) {
+        return;
+      }
+    },
+
+    /**
+     * Updates the data attribute property
+     */
+    getData: function(){
+        return {  
+            "_id" : this._id,
+            "elementType" : this.elementType,
+            "question" : this.question,
+            "answerKeywords" : this.answerKeywords,
+            "answer" : this.answer
+        };
+    }
+
+  });
+
+</script>
