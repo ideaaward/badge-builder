@@ -67,14 +67,14 @@ Content component for html content such as paragraphs, images, lists
       <wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
       <wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
     </wysiwyg-e>
-    
-    
+
+
     <template is="dom-if" if="[[!edit]]" >
-       <template is="juicy-html" content$="{{text}}" > </template>  
+       <template is="juicy-html" content$="{{text}}" > </template>
     </template>
 
   </template>
-  
+
 
 
 </dom-module>
@@ -96,7 +96,7 @@ Content component for html content such as paragraphs, images, lists
         value: function() {
           return "";
         }
-      },  
+      },
 
       /**
        * The element type. This is the same as the element id
@@ -107,8 +107,8 @@ Content component for html content such as paragraphs, images, lists
         value: function() {
           return "content-html";
         }
-      },   
-      
+      },
+
      /**
        * This is the text that will be displayed in the html editor. The users text.
        * @type {string}
@@ -118,7 +118,7 @@ Content component for html content such as paragraphs, images, lists
         value: function() {
           return "";
         }
-      },     
+      },
 
       /**
        * `edit` indicates that the element should be in WYSIWYG editor mode.
@@ -132,11 +132,11 @@ Content component for html content such as paragraphs, images, lists
       /**
        * `data` contains the edited properties
        */
-      data: {
-        type: Object,
-        readOnly: true,
-        computed: '_dataUpdated(elementType, text)'
-      }
+      // data: {
+      //   type: Object,
+      //   readOnly: true,
+      //   computed: '_dataUpdated(elementType, text)'
+      // }
 
     },
 
@@ -175,7 +175,7 @@ Content component for html content such as paragraphs, images, lists
     toggleEdit: function() {
       this.set('edit', !this.edit);
     },
-    
+
         /**
      * Triggered when edit mode is changed
      */
@@ -188,13 +188,20 @@ Content component for html content such as paragraphs, images, lists
     /**
      * Updates the data attribute property
      */
-    _dataUpdated: function(elementType, text) {
-      var data = {
-        "elementType" : elementType,
-        "text" : text
+    // _dataUpdated: function(elementType, text) {
+    //   var data = {
+    //     "elementType" : elementType,
+    //     "text" : text
+    //   };
+    //   //console.info(this.localName, '^', data);
+    //   return data;
+    // }
+
+    getData: function(){
+      return {
+        elementType: this.elementType,
+        text: this.text
       };
-      //console.info(this.localName, '^', data);
-      return data;
     }
 
   });

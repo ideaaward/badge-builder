@@ -78,7 +78,7 @@ Example:
         value: function() {
           return "yes-no";
         }
-      }, 
+      },
 
       /**
        * The question.
@@ -154,17 +154,17 @@ Example:
       /**
        * `data` contains the edited properties
        */
-      data: {
-        type: Object,
-        readOnly: true,
-        // reflectToAttribute: true, // update attribute
-        // notify: true,
-        // value: function() {
-        //   return {};
-        // },
-        
-        computed: '_dataUpdated(_id, elementType, question, _answer, labelYes, labelNo)'
-      }
+      // data: {
+      //   type: Object,
+      //   readOnly: true,
+      //   // reflectToAttribute: true, // update attribute
+      //   // notify: true,
+      //   // value: function() {
+      //   //   return {};
+      //   // },
+      //
+      //   computed: '_dataUpdated(_id, elementType, question, _answer, labelYes, labelNo)'
+      // }
 
     },
 
@@ -292,18 +292,29 @@ Example:
     /**
      * Updates the data attribute property
      */
-    _dataUpdated: function(id, elementType, question, answer, labelYes, labelNo) {
-      var data = {
-        "_id" : id,
-        "elementType" : elementType,
-        "question" : question,
-        "answer" : answer,
-        "yes" : labelYes,
-        "no" : labelNo
+    // _dataUpdated: function(id, elementType, question, answer, labelYes, labelNo) {
+    //   var data = {
+    //     "_id" : id,
+    //     "elementType" : elementType,
+    //     "question" : question,
+    //     "answer" : answer,
+    //     "yes" : labelYes,
+    //     "no" : labelNo
+    //   };
+    //   //console.info(this.localName, '^', data);
+    //   return data;
+    // },
+
+    getData: function() {
+      return {
+        _id : this._id,
+        elementType : this.elementType,
+        question : this.question,
+        answer : this.answer,
+        yes : this.labelYes,
+        no : this.labelNo
       };
-      //console.info(this.localName, '^', data);
-      return data;
-    },
+    }
 
     // observers: [
     //   '_dataUpdated(question, answer, labelYes, labelNo)'
