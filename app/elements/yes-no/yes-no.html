@@ -2,6 +2,7 @@
 <link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 
 <!--
 Quiz component for question with yes / no response
@@ -27,20 +28,30 @@ Example:
     .question {
       width: 100%;
     }
+    
+    paper-material {
+      text-align: left;
+      padding: 10px 50px;   
+      box-sizing: border-box; 
+      margin-top: 20px;
+      width: 100%; 
+    } 
   </style>
 
   <template>
-    <p class="question" hidden=[[edit]]>[[question]]</p>
-    <div><paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>
+    <paper-material>
+      <p class="question" hidden=[[edit]]>[[question]]</p>
+      <div><paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>
 
-    <paper-radio-group id="options" on-iron-select="_selectAnswer">
-      <paper-radio-button name="yes"><span hidden=[[edit]]>[[labelYes]]</span></paper-radio-button>
-      <paper-input placeholder="Yes" value="{{labelYes}}" hidden=[[!edit]]></paper-input>
-      <paper-radio-button name="no"><span hidden=[[edit]]>[[labelNo]]</span></paper-radio-button>
-      <paper-input placeholder="No" value="{{labelNo}}" hidden=[[!edit]]></paper-input>
-    </paper-radio-group>
+      <paper-radio-group id="options" on-iron-select="_selectAnswer">
+        <paper-radio-button name="yes"><span hidden=[[edit]]>[[labelYes]]</span></paper-radio-button>
+        <paper-input placeholder="Yes" value="{{labelYes}}" hidden=[[!edit]]></paper-input>
+        <paper-radio-button name="no"><span hidden=[[edit]]>[[labelNo]]</span></paper-radio-button>
+        <paper-input placeholder="No" value="{{labelNo}}" hidden=[[!edit]]></paper-input>
+      </paper-radio-group>
 
-    <pre hidden=[[!edit]]>A. [[answer]]</pre>
+      <pre hidden=[[!edit]]>A. [[answer]]</pre>
+    </paper-material>
   </template>
 
 </dom-module>

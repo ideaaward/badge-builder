@@ -5,6 +5,7 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 
 <!-- TODO: make html import -->
 <script src="../../bower_components/lodash/lodash.min.js"></script>
@@ -41,27 +42,37 @@ Example:
     .inline>* {
       display: inline-block;
     }
+    
+    paper-material {
+      text-align: left;
+      padding: 10px 50px;   
+      box-sizing: border-box; 
+      margin-top: 20px;
+      width: 100%; 
+    }  
   </style>
 
   <template>
-    <p class="question" hidden=[[edit]]>[[question]]</p>
-    <div>
-      <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>
-    </div>
-
-    <template id="choices" is="dom-repeat" items="[[_options.list]]" on-dom-change="_templateUpdated">
-      <div class="group">
-        <paper-checkbox id="[[item.key]]" name="[[item.value]]" class="options">
-          <span hidden=[[edit]]>[[item.value]]</span>
-        </paper-checkbox>
-        <paper-input placeholder="Option" value="{{item.value}}" hidden=[[!edit]]></paper-input>
+    <paper-material>
+      <p class="question" hidden=[[edit]]>[[question]]</p>
+      <div>
+        <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>
       </div>
-    </template>
 
-    <div class="inline">
-      <paper-fab mini icon="add" hidden=[[!edit]] on-tap="addOption"></paper-fab>
-      <paper-fab mini icon="remove" hidden=[[!edit]] on-tap="removeOption"></paper-fab>
-    </div>
+      <template id="choices" is="dom-repeat" items="[[_options.list]]" on-dom-change="_templateUpdated">
+        <div class="group">
+          <paper-checkbox id="[[item.key]]" name="[[item.value]]" class="options">
+            <span hidden=[[edit]]>[[item.value]]</span>
+          </paper-checkbox>
+          <paper-input placeholder="Option" value="{{item.value}}" hidden=[[!edit]]></paper-input>
+        </div>
+      </template>
+
+      <div class="inline">
+        <paper-fab mini icon="add" hidden=[[!edit]] on-tap="addOption"></paper-fab>
+        <paper-fab mini icon="remove" hidden=[[!edit]] on-tap="removeOption"></paper-fab>
+      </div>
+    </paper-material>
   </template>
 
 </dom-module>

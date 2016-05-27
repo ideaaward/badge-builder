@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 
 <!--
     Quiz element for long user input (this type of quiz element will not be marked / scored)
@@ -22,16 +23,25 @@
       display: inline-block;  
       width: 50%;
     }
+    
+    paper-material {
+      text-align: left;
+      padding: 10px 50px;   
+      box-sizing: border-box; 
+      margin-top: 20px;
+      width: 100%; 
+    }  
   </style>
 
   <template>
-    <div><paper-input placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>
+    <paper-material hidden=[[!edit]]> 
+      <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>
+    </paper-material>
 
     <template is="dom-if" if="[[!edit]]" >
         <p>[[question]]</p>
         <div><paper-textarea class="answer" placeholder="Answer" value="{{answer}}" rows="5"></paper-textarea></div>
     </template>
-
   </template>
   
 

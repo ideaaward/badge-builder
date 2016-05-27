@@ -4,6 +4,7 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/marked-element/marked-import.html">
 
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 
 <!--
@@ -25,18 +26,27 @@
     .answer {
       width: 50%;
     }
+    
+    paper-material {
+      text-align: left;
+      padding: 10px 50px;   
+      box-sizing: border-box; 
+      margin-top: 20px;
+      width: 100%; 
+    } 
   </style>
 
   <template>
-
-    <div><paper-input placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>   
-    <div><paper-input placeholder="Words to look for in user answer" value="{{answerKeywords}}" hidden=[[!edit]]></paper-input></div>
-
+    <paper-material>
+      <div><paper-input placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>   
+      <div><paper-input placeholder="Words to look for in user answer" value="{{answerKeywords}}" hidden=[[!edit]]></paper-input></div>
+    </paper-material>
+    
     <template is="dom-if" if="[[!edit]]" >
         <p>[[question]]</p>
         <div><paper-input class="answer" placeholder="Answer" value="{{answer}}"></paper-input></div>
     </template>
-
+    
   </template>
   
 
