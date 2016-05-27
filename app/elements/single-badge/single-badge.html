@@ -20,6 +20,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../content-video/content-video.html">
 <link rel="import" href="../content-html/content-html.html">
 <link rel="import" href="../content-button/content-button.html">
+<link rel="import" href="../quiz-short-input/quiz-short-input.html">
+<link rel="import" href="../quiz-long-input/quiz-long-input.html">
 
 <dom-module id="single-badge">
   <template>
@@ -164,6 +166,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.push('_node.elements', {element: el});
 
         },
+        
+        addQuizShortInput: function(question, answerKeywords) {
+          var el = new QuizShortInput();
+
+          el.question = question;
+          el.answerKeywords = answerKeywords;
+          el.edit = false;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+
+        },
+
+        addQuizLongInput: function(question) {
+          var el = new QuizLongInput();
+
+          el.question = question;
+          el.edit = false;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+
+        },
 
         badgeResponse: function (event) {
           var response = this.$.getBadge.lastResponse;
@@ -193,6 +218,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 case "content-button":
                     this.addButton(element.buttonURL, element.buttonText);
                     break;
+                 case "quiz-short-input":
+                    this.addQuizShortInput(element.question, element.answerKeywords);
+                    break;   
+                  case "quiz-long-input":
+                    this.addQuizLongInput(element.question);
+                    break;                                     
                 default:
                    break;
             }

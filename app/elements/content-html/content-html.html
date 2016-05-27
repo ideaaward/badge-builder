@@ -1,17 +1,12 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-
 <link rel="import" href="../../bower_components/iron-media-query/iron-media-query.html">
-
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-
 <link rel="import" href="../../bower_components/iron-overlay-behavior/iron-overlay-behavior.html">
-
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/marked-element/marked-import.html">
-
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 
 
@@ -127,16 +122,7 @@ Content component for html content such as paragraphs, images, lists
         type: Boolean,
         value: true,
         observer: '_editChanged'
-      },
-
-      /**
-       * `data` contains the edited properties
-       */
-      // data: {
-      //   type: Object,
-      //   readOnly: true,
-      //   computed: '_dataUpdated(elementType, text)'
-      // }
+      }
 
     },
 
@@ -175,8 +161,8 @@ Content component for html content such as paragraphs, images, lists
     toggleEdit: function() {
       this.set('edit', !this.edit);
     },
-
-        /**
+    
+     /**
      * Triggered when edit mode is changed
      */
     _editChanged: function(newValue) {
@@ -184,18 +170,6 @@ Content component for html content such as paragraphs, images, lists
         return;
       }
     },
-
-    /**
-     * Updates the data attribute property
-     */
-    // _dataUpdated: function(elementType, text) {
-    //   var data = {
-    //     "elementType" : elementType,
-    //     "text" : text
-    //   };
-    //   //console.info(this.localName, '^', data);
-    //   return data;
-    // }
 
     getData: function(){
       return {
