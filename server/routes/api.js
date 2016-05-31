@@ -74,11 +74,20 @@ router.put('/badges/:id', function (req, res) {
 });
 
 router.get('/badges', function (req, res) {
-  models.Badge.find({}, 'title', function(err, badges) {
+  models.Badge.find({}, 'title author', function (err, badges) {
     if (err) {
       return sendError(res, err);
     }
-    res.json(badges);
+    var resultBadges = [];
+    badges.forEach(function (badge) {
+      resultBadges.push({
+        title: badge.title,
+        _id: badge.id,
+        // TODO: Edit once authentication mandatory
+        userCanDelete: !req.user || (req.user.id === badge.author)
+      });
+    });
+    res.json(resultBadges);
   });
 });
 

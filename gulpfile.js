@@ -222,9 +222,9 @@ gulp.task('nodemon', function (cb) {
   return nodemon({
     script: 'server.js',
     watch: [
-      'server.js',
-      'routes/*.js',
-      'models/*.js'
+      'server/*.js',
+      'server/routes/*.js',
+      'server/models/*.js'
     ]
   })
   .on('start', function () {
