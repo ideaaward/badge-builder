@@ -34,7 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <iron-signals on-iron-signal-home="opened"></iron-signals>
 
-    <p class="subhead m1">Your badges:</p>
+    <p class="subhead m1">Badges:</p>
 
     <iron-ajax id="deleteBadge" handle-as="json" method="DELETE"
       on-response="handleDeleteResponse">
@@ -50,7 +50,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <a href="{{baseUrl}}badges/{{item._id}}" target="_blank">[[item.title]]</a>
               <a data-route="badges" href="{{baseUrl}}edit/{{item._id}}" title="Edit"><iron-icon icon="create"></iron-icon></a>
             </h3>
-            <paper-fab on-tap="badgeDeleted" icon="delete" class="fab"></paper-fab>
+            <template is="dom-if" if="[[item.userCanDelete]]">
+              <paper-fab on-tap="badgeDeleted" icon="delete" class="fab"></paper-fab>
+            </template>
           </paper-material>
         </div>
       </template>

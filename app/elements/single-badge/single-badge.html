@@ -248,7 +248,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               element.classList.add('highlight');
               allCorrect = false;
             } else {
-              element.classList.remove('highlight');
+              if (element.classList) {
+                element.classList.remove('highlight');
+              }
             }
           });
           app.$.toast.text = allCorrect ? 'All correct!' : 'You made mistakes!';
