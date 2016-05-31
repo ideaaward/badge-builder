@@ -10,6 +10,19 @@ var badgeSchema = new mongoose.Schema({
   }
 });
 
+var userSchema = new mongoose.Schema({
+  id: 'string',
+  role: {
+    type: 'string',
+    default: 'user' // 'user', 'author' or 'admin'
+  },
+  date: {
+    type: Date,
+    default: Date.now
+  }
+});
+
 module.exports.init = function (connection) {
   module.exports.Badge = connection.model('Badge', badgeSchema);
+  module.exports.User = connection.model('User', userSchema);
 };
