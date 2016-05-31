@@ -21,26 +21,33 @@
     
     .answer {
       display: inline-block;  
-      width: 50%;
+      width: 100%;
     }
     
     paper-material {
       text-align: left;
-      padding: 10px 50px;   
-      box-sizing: border-box; 
+      padding: 10px 20px; 
       margin-top: 20px;
-      width: 100%; 
     }  
   </style>
 
   <template>
+    <!-- Editor View -->
     <paper-material hidden=[[!edit]]> 
+       <h3>Long Answer Quiz Element</h3>
       <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>
     </paper-material>
 
+    <!-- Badge View -->
     <template is="dom-if" if="[[!edit]]" >
-        <p>[[question]]</p>
-        <div><paper-textarea class="answer" placeholder="Answer" value="{{answer}}" rows="5"></paper-textarea></div>
+      <div class="row">      
+        <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">    
+          <paper-material>  
+            <p>[[question]]</p>
+            <div><paper-textarea class="answer" placeholder="Answer" value="{{answer}}" rows="5"></paper-textarea></div>
+          </paper-material>
+        </div>    
+      </div>            
     </template>
   </template>
   

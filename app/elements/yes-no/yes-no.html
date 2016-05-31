@@ -4,7 +4,7 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 
-<link rel="stylesheet" href="../../bower_components/foundation/css/foundation.css">
+
 
 <!--
 Quiz component for question with yes / no response
@@ -32,45 +32,42 @@ Example:
     }
     
     paper-material {
-      /*text-align: left;*/
-      padding: 10px 50px; 
+      text-align: left;
+      padding: 10px 20px; 
       margin-top: 20px;
     } 
   </style>
 
   <template>
-       
+    <!-- Editor View -->
     <paper-material hidden=[[!edit]]>
+      <h3>Radio Button Quiz Element</h3>
       <div><paper-input class="question" placeholder="Question" value="{{question}}"></paper-input></div>
-
+      
       <paper-radio-group id="options" on-iron-select="_selectAnswer">
         <paper-radio-button name="yes"><span hidden=[[edit]]>[[labelYes]]</span></paper-radio-button>
         <paper-input placeholder="Yes" value="{{labelYes}}" hidden=[[!edit]]></paper-input>
         <paper-radio-button name="no"><span hidden=[[edit]]>[[labelNo]]</span></paper-radio-button>
         <paper-input placeholder="No" value="{{labelNo}}" hidden=[[!edit]]></paper-input>
       </paper-radio-group>
-
+      
       <pre hidden=[[!edit]]>A. [[answer]]</pre>
-    </paper-material>       
-       
+    </paper-material> 
+        
+    <!-- Badge View -->
     <template is="dom-if" if="[[!edit]]" >
-      <div class="row">
-        <div class="large-3 columns" style="color:white;" >...</div>
-        <div class="large-6 columns">
+      <div class="row">      
+        <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
           
           <paper-material>
             <p class="question" hidden=[[edit]]>[[question]]</p>
-
             <paper-radio-group id="options" on-iron-select="_selectAnswer">
               <paper-radio-button name="yes"><span hidden=[[edit]]>[[labelYes]]</span></paper-radio-button>
-              <paper-input placeholder="Yes" value="{{labelYes}}" hidden=[[!edit]]></paper-input>
               <paper-radio-button name="no"><span hidden=[[edit]]>[[labelNo]]</span></paper-radio-button>
-              <paper-input placeholder="No" value="{{labelNo}}" hidden=[[!edit]]></paper-input>
             </paper-radio-group>
-        </paper-material>
+          </paper-material>
           
-        </div>
-        <div class="large-3 columns" hidden=[[!edit]]>...</div>
+        </div>    
       </div>
     </template>
    

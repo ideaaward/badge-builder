@@ -25,15 +25,14 @@ Content component for a button element
     
     paper-material {
       text-align: left;
-      padding: 10px 50px;   
-      box-sizing: border-box; 
+      padding: 10px 20px; 
       margin-top: 20px;
-      width: 100%; 
     }
   </style>
 
   <template>
     <paper-material hidden=[[!edit]]>
+      <h3>Button Element</h3>
       <paper-input placeholder="Button Text" value="{{buttonText}}"></paper-input>
       <paper-input placeholder="Button URL" value="{{buttonURL}}"></paper-input>
     </paper-material>

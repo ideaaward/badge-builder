@@ -23,28 +23,33 @@
       width: 100%;
     }
     
-    .answer {
-      width: 50%;
-    }
-    
     paper-material {
       text-align: left;
-      padding: 10px 50px;   
-      box-sizing: border-box; 
+      padding: 10px 20px; 
       margin-top: 20px;
-      width: 100%; 
     } 
   </style>
 
   <template>
-    <paper-material>
-      <div><paper-input placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>   
-      <div><paper-input placeholder="Words to look for in user answer" value="{{answerKeywords}}" hidden=[[!edit]]></paper-input></div>
-    </paper-material>
+    <!-- Editor View -->
+    <template is="dom-if" if="[[edit]]" >
+      <paper-material>
+         <h3>Short Answer Quiz Element</h3>
+        <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>   
+        <div><paper-input placeholder="Words to look for in user answer" value="{{answerKeywords}}"></paper-input></div>
+      </paper-material>
+    </template>
     
+    <!-- Badge View -->
     <template is="dom-if" if="[[!edit]]" >
-        <p>[[question]]</p>
-        <div><paper-input class="answer" placeholder="Answer" value="{{answer}}"></paper-input></div>
+      <div class="row">      
+        <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">    
+          <paper-material>  
+            <p>[[question]]</p>
+            <div><paper-input placeholder="Answer" value="{{answer}}"></paper-input></div>
+          </paper-material>
+        </div>    
+      </div>
     </template>
     
   </template>

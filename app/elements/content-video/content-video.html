@@ -22,16 +22,15 @@ Content component for embeded video display
    
    paper-material {
       text-align: left;
-      padding: 10px 50px;   
-      box-sizing: border-box; 
+      padding: 10px 20px; 
       margin-top: 20px;
-      width: 100%; 
     }  
   </style>
 
   <template>
     <paper-material hidden="[[!edit]]"> 
-        <paper-input placeholder="Embeded video url" value="{{embededURI}}" ></paper-input>    
+      <h3>Embeded Video Element</h3>
+      <paper-input placeholder="Embeded video url" value="{{embededURI}}" ></paper-input>    
     </paper-material>
     <br/>
      <template is="juicy-html" content$="{{embededURI}}"> </template>
