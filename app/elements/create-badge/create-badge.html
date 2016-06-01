@@ -25,6 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../content-video/content-video.html">
 <link rel="import" href="../content-html/content-html.html">
 <link rel="import" href="../content-button/content-button.html">
+<link rel="import" href="../content-section/content-section.html">
 <link rel="import" href="../quiz-short-input/quiz-short-input.html">
 <link rel="import" href="../quiz-long-input/quiz-long-input.html">
 
@@ -100,9 +101,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-fab icon="av:videocam" on-tap="createVideo" class="blue"></paper-fab><br/>
         <paper-fab icon="icons:link" on-tap="createButton" class="blue"></paper-fab><br/>
         <!--iframe 2.0-->
-        <paper-fab icon="av:play-circle-outline" on-tap="" class="blue"></paper-fab><br/>
+        <!-- <paper-fab icon="av:play-circle-outline" on-tap="" class="blue"></paper-fab><br/> -->
         <!--section divider-->
-        <paper-fab icon="icons:icons:more-horiz" on-tap="" class="blue"></paper-fab><br/>
+        <paper-fab icon="icons:remove" on-tap="createContentSection" class="blue"></paper-fab><br/>
     </div>
 
     <!-- dynamic elements go inside here -->
@@ -256,6 +257,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               return;
             }
           }
+        },
+
+        addContentSection: function(title) {
+          var el = new ContentSection(); //document.createElement("content-section");
+          el.title = title;
+          el.edit = true;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+        },
+
+        createContentSection: function() {
+          this.addContentSection("Section");
         },
 
         addYesNo: function(question, answer, yes, no) {
@@ -447,6 +461,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     break;
                 case "quiz-long-input":
                     this.addQuizLongInput(element.question);
+                    break;
+                case "content-section":
+                    this.addContentSection(element.title);
                     break;
                 default:
                    break;
