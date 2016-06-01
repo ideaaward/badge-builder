@@ -130,7 +130,8 @@ if (authentication) {
             return res.redirect('/login');
           }
           if (ideaResponse.statusCode === 404) {
-            // TODO: Handle case where user not found.
+            var userNotFoundMessage = 'You must first register in the iDEA hub.';
+            return res.redirect('/error?message=' + userNotFoundMessage);
           }
           var parsedBody = JSON.parse(body);
           // TODO: Use the user info.
@@ -142,15 +143,6 @@ if (authentication) {
   );
 }
 
-app.get('/', function (req, res) {
-  if (authentication && !req.isAuthenticated()) {
-    return res.redirect('/login');
-  }
-  res.sendFile('/index.html', {
-    root: appFolder
-  });
-});
-
 app.get('/badges/:id', function (req, res) {
   if (authentication && !req.isAuthenticated()) {
     return res.redirect('/login');
@@ -161,3 +153,12 @@ app.get('/badges/:id', function (req, res) {
 });
 
 app.use('/api', apiRoute);
+
+app.get('/*/', function (req, res) {
+  if (authentication && !req.isAuthenticated()) {
+    return res.redirect('/login');
+  }
+  res.sendFile('/index.html', {
+    root: appFolder
+  });
+});

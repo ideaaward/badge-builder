@@ -33,6 +33,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     function switchPage(route, data) {
+      app.params = data;
       app.route = route;
       app.fire('iron-signal', {
         name: app.route,
@@ -57,6 +58,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       switchPage('create');
     });
 
+    page('/error', function(data) {
+      var values = {};
+      var keyValues = data.querystring.split('&');
+      keyValues.forEach(function (keyValue) {
+        var splitted = keyValue.split('=');
+        values[splitted[0]] = splitted[1];
+      });
+      if (!values.message) {
+        values.message = 'Unknown error occurred.'
+      }
+      switchPage('error', values);
+    });
+
     page('/edit/:_id', function(data) {
       data.edit = true;
       switchPage('create', data);
@@ -71,7 +85,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     // add #! before urls
     page({
-      hashbang: true
+      hashbang: false
     });
 
   });
