@@ -4,6 +4,7 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/marked-element/marked-import.html">
 
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
 
 <!--
@@ -22,21 +23,35 @@
       width: 100%;
     }
     
-    .answer {
-      width: 50%;
-    }
+    paper-material {
+      text-align: left;
+      padding: 10px 20px; 
+      margin-top: 20px;
+    } 
   </style>
 
   <template>
-
-    <div><paper-input placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>   
-    <div><paper-input placeholder="Words to look for in user answer" value="{{answerKeywords}}" hidden=[[!edit]]></paper-input></div>
-
-    <template is="dom-if" if="[[!edit]]" >
-        <p>[[question]]</p>
-        <div><paper-input class="answer" placeholder="Answer" value="{{answer}}"></paper-input></div>
+    <!-- Editor View -->
+    <template is="dom-if" if="[[edit]]" >
+      <paper-material>
+         <h3>Short Answer Quiz Element</h3>
+        <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>   
+        <div><paper-input placeholder="Words to look for in user answer" value="{{answerKeywords}}"></paper-input></div>
+      </paper-material>
     </template>
-
+    
+    <!-- Badge View -->
+    <template is="dom-if" if="[[!edit]]" >
+      <div class="row">      
+        <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">    
+          <paper-material>  
+            <p>[[question]]</p>
+            <div><paper-input placeholder="Answer" value="{{answer}}"></paper-input></div>
+          </paper-material>
+        </div>    
+      </div>
+    </template>
+    
   </template>
   
 

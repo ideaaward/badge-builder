@@ -8,6 +8,7 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/marked-element/marked-import.html">
 <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 
 
 <link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-e.html">
@@ -44,30 +45,37 @@ Content component for html content such as paragraphs, images, lists
       display: inline-block;
       width: 100%;
     }
+    
+    paper-material {
+      text-align: left;
+      padding: 10px 20px; 
+      margin-top: 20px;
+    }
   </style>
 
   <template>
-
-    <wysiwyg-e class="flex" style="height:500px" value="{{text}}" hidden="[[!edit]]">
-      <wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
-      <wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
-      <wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
-      <wysiwyg-tool-clear class="wysiwyg-tool"></wysiwyg-tool-clear>
-      <wysiwyg-tool-link class="wysiwyg-tool"></wysiwyg-tool-link>
-      <wysiwyg-tool-image class="wysiwyg-tool"></wysiwyg-tool-image>
-      <wysiwyg-tool-ordered class="wysiwyg-tool"></wysiwyg-tool-ordered>
-      <wysiwyg-tool-unordered class="wysiwyg-tool"></wysiwyg-tool-unordered>
-      <wysiwyg-tool-justify class="wysiwyg-tool" right center full></wysiwyg-tool-justify>
-      <wysiwyg-tool-heading class="wysiwyg-tool" h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
-      <wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
-      <wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
-    </wysiwyg-e>
-
-
+    <paper-material hidden="[[!edit]]">
+      <h3>Text and Image Content Element</h3>
+        <wysiwyg-e class="flex" style="height:500px" value="{{text}}" >
+          <wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
+          <wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
+          <wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
+          <wysiwyg-tool-clear class="wysiwyg-tool"></wysiwyg-tool-clear>
+          <wysiwyg-tool-link class="wysiwyg-tool"></wysiwyg-tool-link>
+          <wysiwyg-tool-image class="wysiwyg-tool"></wysiwyg-tool-image>
+          <wysiwyg-tool-ordered class="wysiwyg-tool"></wysiwyg-tool-ordered>
+          <wysiwyg-tool-unordered class="wysiwyg-tool"></wysiwyg-tool-unordered>
+          <wysiwyg-tool-justify class="wysiwyg-tool" right center full></wysiwyg-tool-justify>
+          <wysiwyg-tool-heading class="wysiwyg-tool" h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
+          <wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
+          <wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
+        </wysiwyg-e>       
+    </paper-material>
+  
     <template is="dom-if" if="[[!edit]]" >
-       <template is="juicy-html" content$="{{text}}" > </template>
+      <template is="juicy-html" content$="{{text}}" > </template>
     </template>
-
+    
   </template>
 
 

@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 
 <!--
     Quiz element for long user input (this type of quiz element will not be marked / scored)
@@ -20,18 +21,34 @@
     
     .answer {
       display: inline-block;  
-      width: 50%;
+      width: 100%;
     }
+    
+    paper-material {
+      text-align: left;
+      padding: 10px 20px; 
+      margin-top: 20px;
+    }  
   </style>
 
   <template>
-    <div><paper-input placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>
+    <!-- Editor View -->
+    <paper-material hidden=[[!edit]]> 
+       <h3>Long Answer Quiz Element</h3>
+      <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>
+    </paper-material>
 
+    <!-- Badge View -->
     <template is="dom-if" if="[[!edit]]" >
-        <p>[[question]]</p>
-        <div><paper-textarea class="answer" placeholder="Answer" value="{{answer}}" rows="5"></paper-textarea></div>
+      <div class="row">      
+        <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">    
+          <paper-material>  
+            <p>[[question]]</p>
+            <div><paper-textarea class="answer" placeholder="Answer" value="{{answer}}" rows="5"></paper-textarea></div>
+          </paper-material>
+        </div>    
+      </div>            
     </template>
-
   </template>
   
 

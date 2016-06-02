@@ -2,6 +2,9 @@
 <link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+
 
 <!--
 Quiz component for question with yes / no response
@@ -27,21 +30,39 @@ Example:
     .question {
       width: 100%;
     }
+    
+    paper-material {
+      text-align: left;
+      padding: 10px 20px; 
+      margin-top: 20px;
+    } 
   </style>
 
   <template>
-    <p class="question" hidden=[[edit]]>[[question]]</p>
-    <div><paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>
-
-    <paper-radio-group id="options" on-iron-select="_selectAnswer">
-      <paper-radio-button name="yes"><span hidden=[[edit]]>[[labelYes]]</span></paper-radio-button>
-      <paper-input placeholder="Yes" value="{{labelYes}}" hidden=[[!edit]]></paper-input>
-      <paper-radio-button name="no"><span hidden=[[edit]]>[[labelNo]]</span></paper-radio-button>
-      <paper-input placeholder="No" value="{{labelNo}}" hidden=[[!edit]]></paper-input>
-    </paper-radio-group>
-
-    <!-- <pre hidden=[[!edit]]>A. [[answer]]</pre> -->
-    <paper-fab icon="delete" tap="handleDelete" on-tap="_delete" hidden=[[!edit]]></paper-fab>
+    
+  <div class="row">      
+    <div class$=[[calcClass(edit)]] >  
+    
+      <paper-material>
+        <h3 hidden=[[!edit]]>Radio Button Quiz Element</h3>
+        <p class="question" hidden=[[edit]]>[[question]]</p>
+        <div><paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>
+        
+        <paper-radio-group id="options" on-iron-select="_selectAnswer">
+          <paper-radio-button name="yes"><span hidden=[[edit]]>[[labelYes]]</span></paper-radio-button>
+          <paper-input placeholder="Yes" value="{{labelYes}}" hidden=[[!edit]]></paper-input>
+          <paper-radio-button name="no"><span hidden=[[edit]]>[[labelNo]]</span></paper-radio-button>
+          <paper-input placeholder="No" value="{{labelNo}}" hidden=[[!edit]]></paper-input>
+        </paper-radio-group>
+      
+        <!--<pre hidden=[[!edit]]>A. [[answer]]</pre>-->
+      
+        <paper-fab icon="delete" tap="handleDelete" on-tap="_delete" hidden=[[!edit]]></paper-fab>
+      </paper-material> 
+        
+    </div>    
+  </div>   
+           
   </template>
 
 </dom-module>
@@ -225,6 +246,7 @@ Example:
         this._editAnswer();
         return;
       }
+      
       this.set('selectedAnswer', this._isAnswerName(this.$.options.selectedItem.name));
     },
 
@@ -319,11 +341,20 @@ Example:
         yes : this.labelYes,
         no : this.labelNo
       };
-    }
+    },
 
     // observers: [
     //   '_dataUpdated(question, answer, labelYes, labelNo)'
     // ],
+
+
+    calcClass: function(edit){
+      if(edit){
+        return "";
+      }else{
+        return "medium-10 medium-offset-1 large-8 large-offset-2 columns";
+      }     
+    },
 
   });
 
