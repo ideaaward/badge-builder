@@ -124,6 +124,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </paper-material>
             </section>
 
+            <section data-route="admin">
+              <paper-material elevation="1">
+                <page-admin></page-admin>
+              </paper-material>
+            </section>
+
+            <section data-route="error">
+              <div id="error-message">[[params.message]]</div>
+            </section>
+
           </iron-pages>
         </div>
       </paper-scroll-header-panel>

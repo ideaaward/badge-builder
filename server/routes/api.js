@@ -11,18 +11,46 @@ var sendError = function (res, err) {
   res.send(err);
 };
 
+var sendUnauthorized = function (res) {
+  res.statusCode = 401;
+  res.json({
+    message: 'Unauthorized'
+  });
+};
+
+var sendBadRequest = function (res) {
+  res.statusCode = 400;
+  res.json({
+    message: 'Bad Request'
+  });
+};
+
+var requireAdmin = function (req, res, next) {
+  if (req.user.role !== 'admin') {
+    return sendUnauthorized(res);
+  }
+  next();
+};
+
+var requireAuthor = function (req, res, next) {
+  if (!req.user.role || req.user.role === 'user') {
+    return sendUnauthorized(res);
+  }
+  next();
+};
+
 router.get('/badges/:id', function (req, res) {
   models.Badge.findById(req.params.id, function (err, badge) {
     if (err) {
       return sendError(res, err);
     }
     // TODO: Do not include answers in response unless user
-    // is the badge author.
+    // is the badge author or admin.
     res.json(badge);
   });
 });
 
-router.delete('/badges/:id', function (req, res) {
+router.delete('/badges/:id', requireAdmin, function (req, res) {
   models.Badge.remove({
     _id: req.params.id
   }, function (err) {
@@ -35,7 +63,7 @@ router.delete('/badges/:id', function (req, res) {
   });
 });
 
-router.post('/badges', function (req, res) {
+router.post('/badges', requireAuthor, function (req, res) {
   var badge = new models.Badge();
   badge.author = req.user && req.user.id || '';
   badge.title = req.body.title;
@@ -53,11 +81,13 @@ router.post('/badges', function (req, res) {
   });
 });
 
-router.put('/badges/:id', function (req, res) {
+router.put('/badges/:id', requireAuthor, function (req, res) {
   models.Badge.findById(req.params.id, function (err, badge) {
     if (err) {
       return sendError(res, err);
     }
+
+    // TODO: Check that only admins and authors of this badge can update.
 
     badge.title = req.body.title;
     badge.content = helpers.generateIds(req.body.content);
@@ -73,7 +103,7 @@ router.put('/badges/:id', function (req, res) {
   });
 });
 
-router.get('/badges', function (req, res) {
+router.get('/badges', requireAuthor, function (req, res) {
   models.Badge.find({}, 'title author', function (err, badges) {
     if (err) {
       return sendError(res, err);
@@ -83,8 +113,7 @@ router.get('/badges', function (req, res) {
       resultBadges.push({
         title: badge.title,
         _id: badge.id,
-        // TODO: Edit once authentication mandatory
-        userCanDelete: !req.user || (req.user.id === badge.author)
+        userCanDelete: req.user.role === 'admin' || req.user.id === badge.author
       });
     });
     res.json(resultBadges);
@@ -98,6 +127,40 @@ router.put('/badges/:id/answers', function (req, res) {
     }
 
     res.json(helpers.calculateResults(badge, req.body));
+  });
+});
+
+var getUsers = function (role, req, res) {
+  models.User.find({ role: role }, function (err, users) {
+    if (err) {
+      return sendError(res, err);
+    }
+    res.json(users);
+  });
+};
+
+router.get('/admins', requireAdmin, function (req, res) {
+  getUsers('admin', req, res);
+});
+
+router.get('/users', requireAdmin, function (req, res) {
+  getUsers('user', req, res);
+});
+
+router.put('/admins', requireAdmin, function (req, res) {
+  models.User.findOne({ id: req.body.id }, function (err, user) {
+    if (err || user === null) {
+      return sendBadRequest(res);
+    }
+    user.role = 'admin';
+    user.save(function (err) {
+      if (err) {
+        return sendError(res, err);
+      }
+      res.json({
+        id: user.id
+      });
+    });
   });
 });
 
