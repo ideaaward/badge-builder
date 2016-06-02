@@ -10,15 +10,31 @@
       display: inline-block;
       width: 100%;
     }
+    paper-material {
+      text-align: left;
+      padding: 10px 20px; 
+      margin-top: 20px;
+      color: red;
+    } 
+    h3 {
+       text-align: center;
+    }
   </style>
 
   <template>
-    <paper-input placeholder="Section title" value="{{title}}" hidden="[[!edit]]"></paper-input>
+    
+    <paper-material elevation="5" hidden=[[!edit]]>       
+      <h3>Section Divider</h3>
+      <paper-input placeholder="Section title" value="{{title}}" hidden="[[!edit]]"></paper-input>
+    </paper-material>
+        
     <div hidden="[[edit]]">
       <h1>[[title]]</h1>
       <hr />
     </div>
+    
     <content></content>
+          
   </template>
 </dom-module>
 

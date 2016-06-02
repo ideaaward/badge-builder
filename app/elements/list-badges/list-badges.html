@@ -50,9 +50,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <a href="{{baseUrl}}badges/{{item._id}}" target="_blank">[[item.title]]</a>
               <a data-route="badges" href="{{baseUrl}}edit/{{item._id}}" title="Edit"><iron-icon icon="create"></iron-icon></a>
             </h3>
-            <template is="dom-if" if="[[item.userCanDelete]]">
+            <div hidden="[[!item.userCanDelete]]">
               <paper-fab on-tap="badgeDeleted" icon="delete" class="fab"></paper-fab>
-            </template>
+            </div>
           </paper-material>
         </div>
       </template>
