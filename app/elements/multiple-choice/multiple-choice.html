@@ -50,47 +50,33 @@ Example:
     }  
   </style>
 
-  <template>  
-    <!-- Editor View -->
-    <template is="dom-if" if="[[edit]]" >
-      <paper-material>
-        <h3>Multiple Choice Quiz Element</h3>
-        <div>
-          <paper-input class="question" placeholder="Question" value="{{question}}"></paper-input>
-        </div>
+  <template>     
+    
+    <div class="row">      
+      <div class$=[[calcClass(edit)]] >  
+         
+        <paper-material>
+          <h3 hidden=[[!edit]]>Multiple Choice Quiz Element</h3>
+          <p class="question" hidden=[[edit]]>[[question]]</p>
+          <div><paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]></paper-input></div>
 
-        <template id="choices" is="dom-repeat" items="[[_options.list]]" on-dom-change="_templateUpdated" >
-          <div class="group">
-            <paper-checkbox id="[[item.key]]" name="[[item.value]]" class="options"></paper-checkbox>
-            <paper-input placeholder="Option" value="{{item.value}}"></paper-input>
+          <template id="choices" is="dom-repeat" items="[[_options.list]]" on-dom-change="_templateUpdated" >
+            <div class="group">
+              <paper-checkbox id="[[item.key]]" name="[[item.value]]" class="options">
+                <span hidden=[[edit]]>[[item.value]]</span>
+              </paper-checkbox>           
+              <paper-input placeholder="Option" value="{{item.value}}" hidden=[[!edit]]></paper-input>
+            </div>
+          </template>
+
+          <div class="inline">
+            <paper-fab mini icon="add" hidden=[[!edit]] on-tap="addOption"></paper-fab>
+            <paper-fab mini icon="remove" hidden=[[!edit]] on-tap="removeOption"></paper-fab>
           </div>
-        </template>
-
-        <div class="inline">
-          <paper-fab mini icon="add" on-tap="addOption"></paper-fab>
-          <paper-fab mini icon="remove" on-tap="removeOption"></paper-fab>
-        </div>
-      </paper-material>  
-    </template>
-    <!-- Badge View -->
-    <template is="dom-if" if="[[!edit]]" >
-      <div class="row">
-        <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">          
-          <paper-material>
-            <p class="question" hidden=[[edit]]>[[question]]</p>
-           
-            <template id="choices" is="dom-repeat" items="[[_options.list]]" on-dom-change="_templateUpdated">
-              <div class="group">
-                <paper-checkbox id="[[item.key]]" name="[[item.value]]" class="options">
-                  <span hidden=[[edit]]>[[item.value]]</span>
-                </paper-checkbox>
-              </div>       
-            </template>
-            
-          </paper-material>             
-        </div>       
-      </div>    
-    </template>
+        </paper-material>  
+   
+      </div>
+    </div>   
     
   </template>
 
@@ -461,6 +447,14 @@ Example:
     // observers: [
     //   '_listOptionsChanged(_options.list.*)'
     // ]
+    
+    calcClass: function(edit){
+      if(edit){
+        return "";
+      }else{
+        return "medium-10 medium-offset-1 large-8 large-offset-2 columns";
+      }     
+    },   
 
   });
 
