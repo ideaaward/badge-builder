@@ -61,12 +61,12 @@ Example:
           <div><paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]></paper-input></div>
 
           <template id="choices" is="dom-repeat" items="[[_options.list]]" on-dom-change="_templateUpdated" >
-            <div class="group">
+            <!--<div class="group">-->            
               <paper-checkbox id="[[item.key]]" name="[[item.value]]" class="options">
                 <span hidden=[[edit]]>[[item.value]]</span>
-              </paper-checkbox>           
+              </paper-checkbox>
               <paper-input placeholder="Option" value="{{item.value}}" hidden=[[!edit]]></paper-input>
-            </div>
+            <!--</div>-->             
           </template>
 
           <div class="inline">
