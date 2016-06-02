@@ -12,6 +12,8 @@ var badgeSchema = new mongoose.Schema({
 
 var userSchema = new mongoose.Schema({
   id: 'string',
+  name: 'string',
+  imageUrl: 'string',
   role: {
     type: 'string',
     default: 'user' // 'user', 'author' or 'admin'
