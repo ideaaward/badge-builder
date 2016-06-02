@@ -88,15 +88,19 @@ module.exports.init = function (app) {
             return res.redirect('/error?message=' + errors.USER_NOT_IDEA_USER);
           }
           var parsedBody = JSON.parse(body);
-          var user = new models.User();
-          user.id = req.user.id;
-          user.name = parsedBody.name;
-          user.imageUrl = parsedBody.image_url;
-          user.save(function (err, user) {
-            if (err) {
-              return res.redirect('/error?message=' + errors.DATABASE_ERROR_SAVE);
+          models.User.findOne({ 'id': req.user.id }, function (err, user) {
+            if (err || user === null) {
+              user = new models.User();
+              user.id = req.user.id;
             }
-            res.redirect('/');
+            user.name = parsedBody.name;
+            user.imageUrl = parsedBody.image_url;
+            user.save(function (err, user) {
+              if (err) {
+                return res.redirect('/error?message=' + errors.DATABASE_ERROR_SAVE);
+              }
+              res.redirect('/');
+            });
           });
         });
       });

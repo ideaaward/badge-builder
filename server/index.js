@@ -52,10 +52,23 @@ app.use(session({
 
 if (authentication.isEnabled()) {
   authentication.init(app);
+} else {
+  app.use(function (req, res, next) {
+    // Add a dummy user to the requests so that
+    // the rest of the system can be built around
+    // assuming signed in user always exists.
+    req.user = {
+      id: 'dummy',
+      name: 'Dummy User',
+      imageUrl: 'dummy.jpg',
+      role: 'admin'
+    };
+    next();
+  });
 }
 
 app.get('/badges/:id', function (req, res) {
-  if (authentication.isEnabled() && !req.isAuthenticated()) {
+  if (!req.isAuthenticated()) {
     return res.redirect('/login');
   }
   res.sendFile('/badge.html', {
@@ -72,11 +85,14 @@ app.get('/error', function (req, res) {
 });
 
 app.get('/*/', function (req, res) {
-  if (authentication.isEnabled() && !req.isAuthenticated()) {
+  if (!req.isAuthenticated()) {
     return res.redirect('/login');
   }
-  if (authentication.isEnabled() && !req.user.role) {
+  if (!req.user.role) {
     return res.redirect('/error?message=' + errors.USER_NOT_IDEA_USER);
+  }
+  if (req.user.role === 'user') {
+    return res.redirect('/error?message=' + errors.USER_UNAUTHORIZED);
   }
   res.sendFile('/index.html', {
     root: appFolder

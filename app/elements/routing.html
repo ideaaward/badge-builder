@@ -58,6 +58,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       switchPage('create');
     });
 
+    page('/admin', function() {
+      switchPage('admin');
+    });
+
     page('/error', function(data) {
       var values = {};
       var keyValues = data.querystring.split('&');
