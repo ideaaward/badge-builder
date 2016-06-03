@@ -67,7 +67,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           id: {
             type: String
           },
-          sections : {
+          elements : {
             type: Array,
             value: []
           },
@@ -98,7 +98,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this._node = {
             elements: []
           };
-          this.sections = [];
+          this.elements = [];
         },
 
         addContentSection: function(title) {
@@ -206,11 +206,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this._setAppTitle(this.badgeTitle);
           this._setAppTheme(response.content.theme);
           this.badgeContent = JSON.stringify(response.content);
-          var sections = this.response.content.sections;
+          var elements = this.response.content.elements;
 
-          for (var i=0; i<sections.length; i++) {
+          for (var i=0; i<elements.length; i++) {
 
-            var element = sections[i];
+            var element = elements[i];
 
             switch(element.elementType) {
                 case "yes-no":

@@ -10,7 +10,7 @@ test('can pass empty list to id generator', function (t) {
 
 var testBadge = {
   content: {
-    sections: [
+    elements: [
       {
         _id: 'foo',
         answer: true
