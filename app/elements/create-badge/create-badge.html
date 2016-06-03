@@ -125,7 +125,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               elements: []
             }
           },
-          sections : {
+          elements : {
             type: Array,
             value: []
           },
@@ -193,12 +193,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         saveBadge: function (event) {
-          this._updateSections();
+          this._updateElements();
           var body = {
             title: this.$.titleInput.value,
             content: {
               theme: this.badgeTheme,
-              sections: this.sections
+              elements: this.elements
             }
           };
           console.info(this.localName, 'save', body);
@@ -239,7 +239,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this._node = {
             elements: []
           };
-          this.sections = [];
+          this.elements = [];
         },
 
         _onDeleteElement: function(event) {
@@ -402,43 +402,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //console.info(this.localName, '*', changeRecord, this._node.elements);
         },
 
-        _updateSections: function(){
-          this.set('sections', this._getSectionsData());
+        _updateElements: function(){
+          this.set('elements', this._getElementsData());
         },
 
-        _getSectionsData: function(){
+        _getElementsData: function(){
           var i = this._node.elements.length;
-          var sections = [];
+          var elements = [];
           while(i--){
             var el = this._node.elements[i].element;
             var data = el.getData();
             console.log('json', data);
-            sections.unshift(data); // reverse order
+            elements.unshift(data); // reverse order
           }
-          console.log("sections:", sections);
-          return sections;
+          console.log("elements:", elements);
+          return elements;
         },
 
-        _sectionsChanged: function(){
+        _elementsChanged: function(){
           this._test();
         },
 
         _test: function(){
-          this._updateSections();
-          console.info(this.localName, 'DATA', this.sections); // this._node.elements
+          this._updateElements();
+          console.info(this.localName, 'DATA', this.elements); // this._node.elements
         },
 
         // EDIT
         badgeResponse: function(event) {
-          var sections = this.response.content.sections;
+          var elements = this.response.content.elements;
           console.log(this.localName, 'edit', this.response.content);
           this.set('badgeTitle', this.response.title);
           this.set('badgeTheme', this.response.content.theme);
 
 
-          for (var i=0; i<sections.length; i++) {
+          for (var i=0; i<elements.length; i++) {
 
-            var element = sections[i];
+            var element = elements[i];
 
             switch(element.elementType) {
                 case "yes-no":
