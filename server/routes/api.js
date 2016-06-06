@@ -88,11 +88,18 @@ router.get('/author/badges/:id', requireAuthor, function (req, res) {
   });
 });
 
+var updateValues = function (badge, req) {
+  badge.title = req.body.title;
+  badge.consumerKey = req.body.consumerKey;
+  badge.consumerSecret = req.body.consumerSecret;
+  badge.content = helpers.generateIds(req.body.content);
+};
+
 router.post('/author/badges', requireAuthor, function (req, res) {
   var badge = new models.Badge();
+
   badge.author = req.user && req.user.id || '';
-  badge.title = req.body.title;
-  badge.content = helpers.generateIds(req.body.content);
+  updateValues(badge, req);
 
   badge.save(function (err, badge) {
     if (err) {
@@ -115,8 +122,7 @@ router.put('/author/badges/:id', requireAuthor, function (req, res) {
       return sendUnauthorized(res);
     }
 
-    badge.title = req.body.title;
-    badge.content = helpers.generateIds(req.body.content);
+    updateValues(badge, req);
 
     badge.save(function (err) {
       if (err) {
