@@ -81,11 +81,10 @@ router.get('/author/badges/:id', requireAuthor, function (req, res) {
     if (err) {
       return sendError(res, err);
     }
-    if (authorOrAdmin(req, badge)) {
-      res.json(badge);
-    } else {
-      res.json(filterBadge(badge));
+    if (!authorOrAdmin(req, badge)) {
+      return sendUnauthorized(res);
     }
+    res.json(badge);
   });
 });
 
@@ -112,8 +111,9 @@ router.put('/author/badges/:id', requireAuthor, function (req, res) {
     if (err) {
       return sendError(res, err);
     }
-
-    // TODO: Check that only admins and authors of this badge can update.
+    if (!authorOrAdmin(req, badge)) {
+      return sendUnauthorized(res);
+    }
 
     badge.title = req.body.title;
     badge.content = helpers.generateIds(req.body.content);
@@ -136,11 +136,9 @@ router.get('/author/badges', requireAuthor, function (req, res) {
     }
     var resultBadges = [];
     badges.forEach(function (badge) {
-      resultBadges.push({
-        title: badge.title,
-        _id: badge.id,
-        userCanDelete: authorOrAdmin(req, badge)
-      });
+      if (authorOrAdmin(req, badge)) {
+        resultBadges.push(badge);
+      }
     });
     res.json(resultBadges);
   });
