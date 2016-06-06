@@ -72,7 +72,9 @@
        */
       _id: {
         type: String,
-        value: ""
+        value: function() {
+          return "";
+        }
       },  
 
       /**
@@ -105,7 +107,10 @@
        * @type {string}
        */
       answer: {
-        type: String
+        type: String,
+        value: function() {
+          return "";
+        }        
       },
 
       /**
@@ -167,16 +172,25 @@
     /**
      * Updates the data attribute property
      */
-    getData: function(){
-        return {  
-            "_id" : this._id,
-            "elementType" : this.elementType,
-            "question" : this.question,
-            "answerKeywords" : this.answerKeywords,
-            "answer" : this.answer
-        };
-    }
-
+    // getData: function(){
+    //     return {  
+    //         "_id" : this._id,
+    //         "elementType" : this.elementType,
+    //         "question" : this.question,
+    //         "answerKeywords" : this.answerKeywords,
+    //         "answer" : this.answer
+    //     };
+    // }
+    
+    getData: function() {
+      return {
+        _id : this._id,
+        elementType : this.elementType,
+        question : this.question,
+        answerKeywords : this.answerKeywords,
+        answer : this.answer,
+      };
+    },
   });
 
 </script>

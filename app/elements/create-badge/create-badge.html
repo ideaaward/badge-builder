@@ -271,18 +271,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         },
 
-        addContentSection: function(title) {
-          var el = new ContentSection(); //document.createElement("content-section");
-          el.title = title;
-          el.edit = true;
-
-          Polymer.dom(this.$.components).appendChild(el);
-          this.push('_node.elements', {element: el});
-        },
-
-        createContentSection: function() {
-          this.addContentSection("Section");
-        },
+        // QUIZ
 
         addYesNo: function(question, answer, yes, no) {
           var el = new YesNo(); //document.createElement("yes-no");
@@ -326,6 +315,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           this.addMultipleChoice(q.question, q.answer, q.options);
         },
+
+        addQuizShortInput: function(question, answerKeywords) {
+          var el = new QuizShortInput();
+
+          el.question = question;
+          el.answerKeywords = answerKeywords;
+          el.edit = true;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+
+        },
+
+        createQuizShortInput: function() {
+          this.addQuizShortInput();
+        },
+
+        addQuizLongInput: function(question) {
+          var el = new QuizLongInput();
+
+          el.question = question;
+          el.edit = true;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+
+        },
+
+        createQuizLongInput: function() {
+          this.addQuizLongInput();
+        },
+
+        // CONTENT
 
         addVideo: function(embededURI) {
           var el = new ContentVideo(); // var el = document.createElement("content-video");
@@ -372,38 +394,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addButton();
         },
 
-        addQuizShortInput: function(question, answerKeywords) {
-          var el = new QuizShortInput();
-
-          el.question = question;
-          el.answerKeywords = answerKeywords;
+        addContentSection: function(title) {
+          var el = new ContentSection(); //document.createElement("content-section");
+          el.title = title;
           el.edit = true;
 
           Polymer.dom(this.$.components).appendChild(el);
           this.push('_node.elements', {element: el});
-
         },
 
-        createQuizShortInput: function() {
-          this.addQuizShortInput();
+        createContentSection: function() {
+          this.addContentSection("Section");
         },
-
-        addQuizLongInput: function(question) {
-          var el = new QuizLongInput();
-
-          el.question = question;
-          el.edit = true;
-
-          Polymer.dom(this.$.components).appendChild(el);
-          this.push('_node.elements', {element: el});
-
-        },
-
-        createQuizLongInput: function() {
-          this.addQuizLongInput();
-        },
-
-
 
 
         _getRandomQuestion: function(){
