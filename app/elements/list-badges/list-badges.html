@@ -40,7 +40,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       on-response="handleDeleteResponse">
     </iron-ajax>
     <iron-ajax id="getBadges"
-      url="/api/badges" handle-as="json" last-response="{{badgesResponse}}" on-response="badgeResponse" >
+      url="/api/author/badges" handle-as="json" last-response="{{badgesResponse}}" on-response="badgeResponse" >
     </iron-ajax>
     <iron-list id="badgesList" items="[[badgesResponse]]" as="item" >
       <template>
@@ -50,9 +50,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <a href="{{baseUrl}}badges/{{item._id}}" target="_blank">[[item.title]]</a>
               <a data-route="badges" href="{{baseUrl}}edit/{{item._id}}" title="Edit"><iron-icon icon="create"></iron-icon></a>
             </h3>
-            <div hidden="[[!item.userCanDelete]]">
-              <paper-fab on-tap="badgeDeleted" icon="delete" class="fab"></paper-fab>
-            </div>
+            <paper-fab on-tap="badgeDeleted" icon="delete" class="fab"></paper-fab>
           </paper-material>
         </div>
       </template>
@@ -70,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.getBadges.generateRequest();
         },
         badgeDeleted: function (event) {
-          this.$.deleteBadge.url = '/api/badges/' + event.model.item._id;
+          this.$.deleteBadge.url = '/api/author/badges/' + event.model.item._id;
           this.$.deleteBadge.generateRequest();
         },
         badgeResponse: function(event) {

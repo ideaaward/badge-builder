@@ -25,18 +25,25 @@ var sendBadRequest = function (res) {
   });
 };
 
-var requireAdmin = function (req, res, next) {
-  if (req.user.role !== 'admin') {
-    return sendUnauthorized(res);
-  }
-  next();
+var authorOrAdmin = function (req, badge) {
+  return req.user.role === 'admin' || req.user.id === badge.author
 };
 
-var requireAuthor = function (req, res, next) {
-  if (!req.user.role || req.user.role === 'user') {
-    return sendUnauthorized(res);
-  }
-  next();
+var filterBadge = function (badge) {
+  var content = {
+    theme: badge.content.theme,
+    elements: []
+  };
+  badge.content.elements.forEach(function (element) {
+    // Could have used `delete element.answer`, but some
+    // elements currently rely on an answer property.
+    element.answer = '';
+    content.elements.push(element);
+  });
+  return {
+    title: badge.title,
+    content: badge.content
+  };
 };
 
 router.get('/badges/:id', function (req, res) {
@@ -44,79 +51,7 @@ router.get('/badges/:id', function (req, res) {
     if (err) {
       return sendError(res, err);
     }
-    // TODO: Do not include answers in response unless user
-    // is the badge author or admin.
-    res.json(badge);
-  });
-});
-
-router.delete('/badges/:id', requireAdmin, function (req, res) {
-  models.Badge.remove({
-    _id: req.params.id
-  }, function (err) {
-    if (err) {
-      return sendError(res, err);
-    }
-    res.json({
-      message: 'Deleted'
-    });
-  });
-});
-
-router.post('/badges', requireAuthor, function (req, res) {
-  var badge = new models.Badge();
-  badge.author = req.user && req.user.id || '';
-  badge.title = req.body.title;
-  badge.content = helpers.generateIds(req.body.content);
-
-  badge.save(function (err, badge) {
-    if (err) {
-      return sendError(res, err);
-    }
-
-    res.statusCode = 201;
-    res.json({
-      _id: badge._id
-    });
-  });
-});
-
-router.put('/badges/:id', requireAuthor, function (req, res) {
-  models.Badge.findById(req.params.id, function (err, badge) {
-    if (err) {
-      return sendError(res, err);
-    }
-
-    // TODO: Check that only admins and authors of this badge can update.
-
-    badge.title = req.body.title;
-    badge.content = helpers.generateIds(req.body.content);
-
-    badge.save(function (err) {
-      if (err) {
-        return sendError(res, err);
-      }
-      res.json({
-        _id: badge._id
-      });
-    });
-  });
-});
-
-router.get('/badges', requireAuthor, function (req, res) {
-  models.Badge.find({}, 'title author', function (err, badges) {
-    if (err) {
-      return sendError(res, err);
-    }
-    var resultBadges = [];
-    badges.forEach(function (badge) {
-      resultBadges.push({
-        title: badge.title,
-        _id: badge.id,
-        userCanDelete: req.user.role === 'admin' || req.user.id === badge.author
-      });
-    });
-    res.json(resultBadges);
+    res.json(filterBadge(badge));
   });
 });
 
@@ -130,6 +65,121 @@ router.put('/badges/:id/answers', function (req, res) {
   });
 });
 
+/*
+* Author routes
+*/
+
+var requireAuthor = function (req, res, next) {
+  if (!req.user.role || req.user.role === 'user') {
+    return sendUnauthorized(res);
+  }
+  next();
+};
+
+router.get('/author/badges/:id', requireAuthor, function (req, res) {
+  models.Badge.findById(req.params.id, function (err, badge) {
+    if (err) {
+      return sendError(res, err);
+    }
+    if (!authorOrAdmin(req, badge)) {
+      return sendUnauthorized(res);
+    }
+    res.json(badge);
+  });
+});
+
+var updateValues = function (badge, req) {
+  badge.title = req.body.title;
+  badge.consumerKey = req.body.consumerKey;
+  badge.consumerSecret = req.body.consumerSecret;
+  badge.content = helpers.generateIds(req.body.content);
+};
+
+router.post('/author/badges', requireAuthor, function (req, res) {
+  var badge = new models.Badge();
+
+  badge.author = req.user && req.user.id || '';
+  updateValues(badge, req);
+
+  badge.save(function (err, badge) {
+    if (err) {
+      return sendError(res, err);
+    }
+
+    res.statusCode = 201;
+    res.json({
+      _id: badge._id
+    });
+  });
+});
+
+router.put('/author/badges/:id', requireAuthor, function (req, res) {
+  models.Badge.findById(req.params.id, function (err, badge) {
+    if (err) {
+      return sendError(res, err);
+    }
+    if (!authorOrAdmin(req, badge)) {
+      return sendUnauthorized(res);
+    }
+
+    updateValues(badge, req);
+
+    badge.save(function (err) {
+      if (err) {
+        return sendError(res, err);
+      }
+      res.json({
+        _id: badge._id
+      });
+    });
+  });
+});
+
+router.get('/author/badges', requireAuthor, function (req, res) {
+  models.Badge.find({}, 'title author', function (err, badges) {
+    if (err) {
+      return sendError(res, err);
+    }
+    var resultBadges = [];
+    badges.forEach(function (badge) {
+      if (authorOrAdmin(req, badge)) {
+        resultBadges.push(badge);
+      }
+    });
+    res.json(resultBadges);
+  });
+});
+
+router.delete('/author/badges/:id', requireAuthor, function (req, res) {
+  models.Badge.findById(req.params.id, function (err, badge) {
+    if (err) {
+      return sendError(res, err);
+    }
+    if (!authorOrAdmin(req, badge)) {
+      return sendUnauthorized(res);
+    }
+    badge.remove(function (err) {
+      if (err) {
+        return sendError(res, err);
+      }
+      res.json({
+        message: 'Deleted'
+      });
+    });
+  });
+});
+
+/*
+* Admin routes
+*/
+
+var requireAdmin = function (req, res, next) {
+  if (req.user.role !== 'admin') {
+    return sendUnauthorized(res);
+  }
+  next();
+};
+
 var getUsers = function (role, req, res) {
   models.User.find({ role: role }, function (err, users) {
     if (err) {
@@ -139,15 +189,15 @@ var getUsers = function (role, req, res) {
   });
 };
 
-router.get('/admins', requireAdmin, function (req, res) {
+router.get('/admin/admins', requireAdmin, function (req, res) {
   getUsers('admin', req, res);
 });
 
-router.get('/users', requireAdmin, function (req, res) {
+router.get('/admin/users', requireAdmin, function (req, res) {
   getUsers('user', req, res);
 });
 
-router.put('/admins', requireAdmin, function (req, res) {
+router.put('/admin/admins', requireAdmin, function (req, res) {
   models.User.findOne({ id: req.body.id }, function (err, user) {
     if (err || user === null) {
       return sendBadRequest(res);

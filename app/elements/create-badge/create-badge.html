@@ -61,7 +61,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </iron-ajax>
 
     <iron-ajax id="createBadge" handle-as="json" content-type="application/json"
-      url="/api/badges" method="POST"
+      url="/api/author/badges" method="POST"
       on-response="handleCreateResponse">
     </iron-ajax>
 
@@ -71,7 +71,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <h2 class="page-title">[[title]]</h2>
 
-    <paper-input id="titleInput" placeholder="Title" label="Badge" value="{{badgeTitle}}" autofocus required></paper-input>
+    <paper-input id="titleInput" placeholder="Title" label="Badge Title" value="{{badgeTitle}}" autofocus required></paper-input>
+
+    <paper-input id="keyInput" placeholder="Key" label="Consumer Key" value="{{badgeKey}}"></paper-input>
+    <paper-input id="secretInput" placeholder="Secret" label="Consumer Secret" value="{{badgeSecret}}"></paper-input>
 
     <paper-dropdown-menu label="Badge Theme">
       <paper-listbox id="theme" class="dropdown-content" attr-for-selected="value" selected="{{badgeTheme}}" on-iron-select="selectTheme">
@@ -155,7 +158,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
           badgeTitle: {
             type: String,
-            value: "",
+            notifiy: true
+          },
+          badgeKey: {
+            type: String,
+            notifiy: true
+          },
+          badgeSecret: {
+            type: String,
             notifiy: true
           }
         },
@@ -168,7 +178,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             console.log(this.localName, "opened", id);
             this.set('isEditMode', true);
             this.set('id', id);
-            this.$.getBadge.url = '/api/badges/' + id;
+            this.$.getBadge.url = '/api/author/badges/' + id;
             this.$.getBadge.generateRequest();
             return;
           }
@@ -199,11 +209,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             content: {
               theme: this.badgeTheme,
               elements: this.elements
-            }
+            },
+            consumerKey: this.$.keyInput.value,
+            consumerSecret: this.$.secretInput.value
           };
           console.info(this.localName, 'save', body);
           if (this.isEditMode) {
-            this.$.updateBadge.url = '/api/badges/' + this.id;
+            this.$.updateBadge.url = '/api/author/badges/' + this.id;
             this.$.updateBadge.body = body;
             this.$.updateBadge.generateRequest();
           } else {
@@ -433,6 +445,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var elements = this.response.content.elements;
           console.log(this.localName, 'edit', this.response.content);
           this.set('badgeTitle', this.response.title);
+          this.set('badgeKey', this.response.consumerKey);
+          this.set('badgeSecret', this.response.consumerSecret);
           this.set('badgeTheme', this.response.content.theme);
 
 
