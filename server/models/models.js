@@ -3,6 +3,8 @@ var mongoose = require('mongoose');
 var badgeSchema = new mongoose.Schema({
   author: 'string',
   title: 'string',
+  consumerKey: 'string',
+  consumerSecret: 'string',
   content: Object,
   date: {
     type: Date,

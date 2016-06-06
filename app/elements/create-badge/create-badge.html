@@ -61,7 +61,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </iron-ajax>
 
     <iron-ajax id="createBadge" handle-as="json" content-type="application/json"
-      url="/api/badges" method="POST"
+      url="/api/author/badges" method="POST"
       on-response="handleCreateResponse">
     </iron-ajax>
 
@@ -168,7 +168,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             console.log(this.localName, "opened", id);
             this.set('isEditMode', true);
             this.set('id', id);
-            this.$.getBadge.url = '/api/badges/' + id;
+            this.$.getBadge.url = '/api/author/badges/' + id;
             this.$.getBadge.generateRequest();
             return;
           }
@@ -203,7 +203,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           };
           console.info(this.localName, 'save', body);
           if (this.isEditMode) {
-            this.$.updateBadge.url = '/api/badges/' + this.id;
+            this.$.updateBadge.url = '/api/author/badges/' + this.id;
             this.$.updateBadge.body = body;
             this.$.updateBadge.generateRequest();
           } else {

@@ -37,7 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <p class="subhead m1">Admins:</p>
 
     <iron-ajax id="getAdmins"
-      url="/api/admins" handle-as="json" last-response="{{adminsResponse}}" on-response="notifyResize" >
+      url="/api/admin/admins" handle-as="json" last-response="{{adminsResponse}}" on-response="notifyResize" >
     </iron-ajax>
     <iron-list id="adminsList" items="[[adminsResponse]]" as="item" >
       <template>
@@ -50,7 +50,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </iron-list>
 
     <iron-ajax id="addAdminRequest" handle-as="json" content-type="application/json"
-      method="PUT" url="/api/admins"
+      method="PUT" url="/api/admin/admins"
       on-response="handleAddAdminResponse" on-error="handleAddAdminError">
     </iron-ajax>
     <paper-input id="adminInput" placeholder="User identifier"
@@ -64,7 +64,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <p class="subhead m1">Users:</p>
 
     <iron-ajax id="getUsers"
-      url="/api/users" handle-as="json" last-response="{{usersResponse}}" on-response="notifyResize" >
+      url="/api/admin/users" handle-as="json" last-response="{{usersResponse}}" on-response="notifyResize" >
     </iron-ajax>
     <iron-list id="usersList" items="[[usersResponse]]" as="item" >
       <template>
