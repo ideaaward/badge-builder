@@ -248,6 +248,14 @@
       return _.sortBy(selectedOptions);
     },
 
+    /**
+     * method to return user selected answer(s)
+     * @type array
+     */
+    getUserAnswer: function(){
+      return this.selectedOptions();
+    },
+
     _selectHandler: function(e) {
       // check if a "paper-radio-button" (or "paper-radio-button-input" element)
       if (!this.multi && e.target.checked) {

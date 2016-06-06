@@ -22,12 +22,12 @@
       display: inline-block;
       width: 100%;
     }
-    
+
     paper-material {
       text-align: left;
-      padding: 10px 20px; 
+      padding: 10px 20px;
       margin-top: 20px;
-    } 
+    }
   </style>
 
   <template>
@@ -35,25 +35,25 @@
     <template is="dom-if" if="[[edit]]" >
       <paper-material>
          <h3>Short Answer Quiz Element</h3>
-        <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>   
+        <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>
         <div><paper-input placeholder="Words to look for in user answer" value="{{answerKeywords}}"></paper-input></div>
       </paper-material>
     </template>
-    
+
     <!-- Badge View -->
     <template is="dom-if" if="[[!edit]]" >
-      <div class="row">      
-        <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">    
-          <paper-material>  
+      <div class="row">
+        <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+          <paper-material>
             <p>[[question]]</p>
-            <div><paper-input placeholder="Answer" value="{{answer}}"></paper-input></div>
+            <div><paper-input id="helloworld" placeholder="Answer" value="{{answer}}" on-input="_editAnswer"></paper-input></div>
           </paper-material>
-        </div>    
+        </div>
       </div>
     </template>
-    
+
   </template>
-  
+
 
 
 </dom-module>
@@ -72,18 +72,11 @@
        */
       _id: {
         type: String,
-        value: ""
-      },  
+        value: function() {
+          return "";
+        }
+      },
 
-      /**
-       * The element type. This is the same as the element id
-       * @type {string}
-       */
-      elementType: {
-        type: String,
-        value: "quiz-short-input"      
-      },   
-      
       /**
        * The question.
        * @type {string}
@@ -91,7 +84,7 @@
       question: {
         type: String
       },
-         
+
       /**
        * The keywords to look for in a users answer
        * @type {string}
@@ -105,7 +98,11 @@
        * @type {string}
        */
       answer: {
-        type: String
+        type: String,
+        value: function() {
+          return "";
+        },
+        notify: true
       },
 
       /**
@@ -154,7 +151,7 @@
     toggleEdit: function() {
       this.set('edit', !this.edit);
     },
-    
+
      /**
      * Triggered when edit mode is changed
      */
@@ -165,16 +162,27 @@
     },
 
     /**
-     * Updates the data attribute property
+     * Edit the answer
      */
-    getData: function(){
-        return {  
-            "_id" : this._id,
-            "elementType" : this.elementType,
-            "question" : this.question,
-            "answerKeywords" : this.answerKeywords,
-            "answer" : this.answer
-        };
+    _editAnswer: function(){
+       if (this.edit) {
+        return;
+      }
+      //this.set('answer', ans); // NB: two-way binding should set updated `answer` //console.log("ans", this.answer);
+    },
+
+    getData: function() {
+      return {
+        _id : this._id,
+        elementType : this.localName,
+        question : this.question,
+        answerKeywords : this.answerKeywords,
+        answer : this.answerKeywords,
+      };
+    },
+
+    getUserAnswer: function(){
+      return this.answer;
     }
 
   });

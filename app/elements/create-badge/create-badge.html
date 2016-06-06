@@ -345,11 +345,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addButton();
         },
 
-        addQuizShortInput: function(question, answerKeywords) {
+        addQuizShortInput: function(id, question, answerKeywords, answer) {
           var el = new QuizShortInput();
-
+          el._id = id;
           el.question = question;
           el.answerKeywords = answerKeywords;
+          el.answer = answer;
           el.edit = true;
 
           this.addElement(el);
@@ -359,10 +360,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addQuizShortInput();
         },
 
-        addQuizLongInput: function(question) {
+        addQuizLongInput: function(id, question, answer, wordLimit) {
           var el = new QuizLongInput();
-
+          el._id = id;
           el.question = question;
+          el.answer = answer;
+          el.wordLimit = wordLimit;
           el.edit = true;
 
           this.addElement(el);
@@ -462,10 +465,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     this.addButton(element.buttonURL, element.buttonText);
                     break;
                 case "quiz-short-input":
-                    this.addQuizShortInput(element.question, element.answerKeywords);
+                    this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.answer);
                     break;
                 case "quiz-long-input":
-                    this.addQuizLongInput(element.question);
+                    this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit);
                     break;
                 case "content-section":
                     this.addContentSection(element.title);

@@ -1,6 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="deletable-behavior.html">
-<!-- <link rel="import" href="draggable-behavior.html"> -->
 
 <script>
   window.QuizBehaviours = window.QuizBehaviours || {}; // Behavior namespace
@@ -19,12 +18,6 @@
         observer: '_editChanged'
       },
     },
-    // observers: [
-    //   '_editChanged(edit)',
-    // ],
-    // hostAttributes: {
-    //   tabindex: '0'
-    // },
 
     ready: function() {
       this._updateHiddenEditElements();
@@ -61,7 +54,6 @@
 
   QuizBehaviours.EditableBehavior = [
     QuizBehaviours.DeletableBehavior,
-    // QuizBehaviours.DraggableBehavior,
     QuizBehaviours.EditableBehaviorImpl
   ];
 </script>

@@ -153,9 +153,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addElement(el);
         },
 
-        addQuizShortInput: function(question, answerKeywords) {
+        addQuizShortInput: function(id, question, answerKeywords) {
           var el = new QuizShortInput();
-
+          el._id = id;
           el.question = question;
           el.answerKeywords = answerKeywords;
           el.edit = false;
@@ -163,9 +163,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addElement(el);
         },
 
-        addQuizLongInput: function(question) {
+        addQuizLongInput: function(id, question) {
           var el = new QuizLongInput();
-
+          el._id = id;
           el.question = question;
           el.edit = false;
 
@@ -210,10 +210,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     this.addButton(element.buttonURL, element.buttonText);
                     break;
                 case "quiz-short-input":
-                    this.addQuizShortInput(element.question, element.answerKeywords);
+                    this.addQuizShortInput(element._id, element.question, element.answerKeywords);
                     break;
                 case "quiz-long-input":
-                  this.addQuizLongInput(element.question);
+                  this.addQuizLongInput(element._id, element.question);
                   break;
                 case "content-section":
                   this.addContentSection(element.title);
@@ -229,16 +229,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var answers = {};
           this._node.elements.forEach(function (el) {
             var element = el.element;
-            if (element.selectedOptions) {
-              //console.log(element._id, element.selectedOptions());
-              answers[element._id] = element.selectedOptions(); // getSelectedAnswer();
+            if (element.getUserAnswer) {
+              answers[element._id] = element.getUserAnswer();
             }
           });
           this.$.putAnswers.body = answers;
+          console.log("submit user answers:", answers);
           this.$.putAnswers.generateRequest();
         },
         answersResponse: function (event) {
           var response = this.$.putAnswers.lastResponse;
+          console.log("response:", response);
           var allCorrect = true;
           this._node.elements.forEach(function (el) {
             var element = el.element;
