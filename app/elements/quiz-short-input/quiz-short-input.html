@@ -46,7 +46,7 @@
         <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">    
           <paper-material>  
             <p>[[question]]</p>
-            <div><paper-input placeholder="Answer" value="{{answer}}"></paper-input></div>
+            <div><paper-input id="helloworld" placeholder="Answer" value="{{answer}}" on-input="_editAnswer"></paper-input></div>
           </paper-material>
         </div>    
       </div>
@@ -72,7 +72,9 @@
        */
       _id: {
         type: String,
-        value: ""
+        value: function() {
+          return "";
+        }
       },  
 
       /**
@@ -105,7 +107,10 @@
        * @type {string}
        */
       answer: {
-        type: String
+        type: String,
+        value: function() {
+          return "";
+        }        
       },
 
       /**
@@ -165,18 +170,29 @@
     },
 
     /**
-     * Updates the data attribute property
+     * Edit the answer
      */
-    getData: function(){
-        return {  
-            "_id" : this._id,
-            "elementType" : this.elementType,
-            "question" : this.question,
-            "answerKeywords" : this.answerKeywords,
-            "answer" : this.answer
-        };
-    }
+    _editAnswer: function(){
+       if (this.edit) {
+        return;
+      }     
+      
+      var ans = this.$.helloworld.value;
+      
+      this.set('answer', ans);
 
+    },
+    
+    
+    getData: function() {
+      return {
+        _id : this._id,
+        elementType : this.elementType,
+        question : this.question,
+        answerKeywords : this.answerKeywords,
+        answer : this.answer,
+      };
+    },
   });
 
 </script>

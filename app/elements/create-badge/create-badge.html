@@ -271,18 +271,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         },
 
-        addContentSection: function(title) {
-          var el = new ContentSection(); //document.createElement("content-section");
-          el.title = title;
-          el.edit = true;
-
-          Polymer.dom(this.$.components).appendChild(el);
-          this.push('_node.elements', {element: el});
-        },
-
-        createContentSection: function() {
-          this.addContentSection("Section");
-        },
+        // QUIZ
 
         addYesNo: function(question, answer, yes, no) {
           var el = new YesNo(); //document.createElement("yes-no");
@@ -326,6 +315,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           this.addMultipleChoice(q.question, q.answer, q.options);
         },
+
+        addQuizShortInput: function(question, answerKeywords, answer) {
+          var el = new QuizShortInput();
+
+          el.question = question;
+          el.answerKeywords = answerKeywords;
+          el.answer = answer;
+          el.edit = true;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+
+        },
+
+        createQuizShortInput: function() {
+          this.addQuizShortInput(null, null, "");
+        },
+
+        addQuizLongInput: function(question, answer, wordLimit) {
+          var el = new QuizLongInput();
+
+          el.question = question;
+          el.answer = answer;
+          el.wordLimit = wordLimit;
+          el.edit = true;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.push('_node.elements', {element: el});
+
+        },
+
+        createQuizLongInput: function() {
+          this.addQuizLongInput(null, "", null);
+        },
+
+        // CONTENT
 
         addVideo: function(embededURI) {
           var el = new ContentVideo(); // var el = document.createElement("content-video");
@@ -372,38 +397,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addButton();
         },
 
-        addQuizShortInput: function(question, answerKeywords) {
-          var el = new QuizShortInput();
-
-          el.question = question;
-          el.answerKeywords = answerKeywords;
+        addContentSection: function(title) {
+          var el = new ContentSection(); //document.createElement("content-section");
+          el.title = title;
           el.edit = true;
 
           Polymer.dom(this.$.components).appendChild(el);
           this.push('_node.elements', {element: el});
-
         },
 
-        createQuizShortInput: function() {
-          this.addQuizShortInput();
+        createContentSection: function() {
+          this.addContentSection("Section");
         },
-
-        addQuizLongInput: function(question) {
-          var el = new QuizLongInput();
-
-          el.question = question;
-          el.edit = true;
-
-          Polymer.dom(this.$.components).appendChild(el);
-          this.push('_node.elements', {element: el});
-
-        },
-
-        createQuizLongInput: function() {
-          this.addQuizLongInput();
-        },
-
-
 
 
         _getRandomQuestion: function(){
@@ -461,6 +466,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 case "multiple-choice":
                     this.addMultipleChoice(element.question, element.answer, element.options);
                     break;
+                 case "quiz-short-input":
+                    this.addQuizShortInput(element.question, element.answerKeywords, element.answer);
+                    break;
+                case "quiz-long-input":
+                    this.addQuizLongInput(element.question, element.answer, element.wordLimit);
+                    break;                   
+                    
                 case "content-video":
                     this.addVideo(element.embededURI);
                     break;
@@ -469,12 +481,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     break;
                 case "content-button":
                     this.addButton(element.buttonURL, element.buttonText);
-                    break;
-                case "quiz-short-input":
-                    this.addQuizShortInput(element.question, element.answerKeywords);
-                    break;
-                case "quiz-long-input":
-                    this.addQuizLongInput(element.question);
                     break;
                 case "content-section":
                     this.addContentSection(element.title);

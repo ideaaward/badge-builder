@@ -101,15 +101,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.elements = [];
         },
 
-        addContentSection: function(title) {
-          var el = new ContentSection(); //document.createElement("content-section");
-          el.title = title;
-          // el.edit = true;
-
-          Polymer.dom(this.$.components).appendChild(el);
-          this.push('_node.elements', {element: el});
-        },
-
+        // QUIZ 
         addYesNo: function(id, question, answer, yes, no) {
           var el = new YesNo();
 
@@ -140,6 +132,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           Polymer.dom(this.$.components).appendChild(el);
           this.addElement(el);
         },
+        
+        addQuizShortInput: function(id, question, answerKeywords, answer) {
+          var el = new QuizShortInput();
+
+          el._id = id;
+          el.question = question;
+          el.answerKeywords = answerKeywords;
+          el.answer = answer;
+          el.edit = false;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.addElement(el);
+
+        },
+
+        addQuizLongInput: function(id, question, answer, wordLimit) {
+          var el = new QuizLongInput();
+
+          el._id = id;
+          el.question = question;
+          el.answer = answer;
+          el.wordLimit = wordLimit;
+          el.edit = false;
+
+          Polymer.dom(this.$.components).appendChild(el);
+          this.addElement(el);
+
+        },        
+        
+        // CONTENT
 
         addVideo: function(embededURI) {
           var el = new ContentVideo();
@@ -177,27 +199,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         },
 
-        addQuizShortInput: function(question, answerKeywords) {
-          var el = new QuizShortInput();
-
-          el.question = question;
-          el.answerKeywords = answerKeywords;
-          el.edit = false;
+        addContentSection: function(title) {
+          var el = new ContentSection(); //document.createElement("content-section");
+          el.title = title;
+          // el.edit = true;
 
           Polymer.dom(this.$.components).appendChild(el);
           this.push('_node.elements', {element: el});
-
-        },
-
-        addQuizLongInput: function(question) {
-          var el = new QuizLongInput();
-
-          el.question = question;
-          el.edit = false;
-
-          Polymer.dom(this.$.components).appendChild(el);
-          this.push('_node.elements', {element: el});
-
         },
 
         badgeResponse: function (event) {
@@ -213,12 +221,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var element = elements[i];
 
             switch(element.elementType) {
+              // QUIZ
                 case "yes-no":
                     this.addYesNo(element._id, element.question, element.answer, element.yes, element.no);
                     break;
                 case "multiple-choice":
                     this.addMultipleChoice(element._id, element.question, element.answer, element.options);
                     break;
+                case "quiz-short-input":
+                    this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.answer);
+                    break;
+                case "quiz-long-input":
+                    this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit);
+                    break;     
+                // CONTENT                    
                 case "content-video":
                     this.addVideo(element.embededURI);
                     break;
@@ -228,12 +244,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 case "content-button":
                     this.addButton(element.buttonURL, element.buttonText);
                     break;
-                case "quiz-short-input":
-                    this.addQuizShortInput(element.question, element.answerKeywords);
-                    break;
-                case "quiz-long-input":
-                  this.addQuizLongInput(element.question);
-                  break;
                 case "content-section":
                   this.addContentSection(element.title);
                   break;
@@ -246,9 +256,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
           var answers = {};
           this._node.elements.forEach(function (element) {
-            if (element.getSelectedAnswer) {
-              answers[element._id] = element.getSelectedAnswer();
-            }
+            switch(element.elementType){
+              case "yes-no":
+              case "multiple-choice":        
+                if (element.getSelectedAnswer) {
+                  answers[element._id] = element.getSelectedAnswer();
+                }
+                break;
+              case "quiz-short-input":
+              case "quiz-long-input":
+                answers[element._id] = element.answer;
+                break;
+              default:             
+                break;      
+            }                
           });
           this.$.putAnswers.body = answers;
           this.$.putAnswers.generateRequest();
