@@ -16,29 +16,34 @@ module.exports.calculateResults = function (badge, answers) {
   var results = {};
   badge.content.elements.forEach(function (element) {
     var id = element._id;
-
+    
     if (typeof element.answer !== 'undefined') {         
       switch(element.elementType){
         case "yes-no":
         case "multiple-choice":
             results[id] = answers[id] + '' === element.answer + '';
             break;
-        case "quiz-short-input":
-            var ans = element.answer;
-            var score = 0;
+        case "quiz-short-input":  
+            var score = 0;   
+            var keywordsString = element.answerKeywords.toLowerCase().replace(" ", "");
+            var keywordsArray = keywordsString.split(',');
+            var ans = answers[id].toLowerCase();
+            answers[id] = "";
             
-            element.answerKeywords.forEach(function(word) {
+            //Code not tested yet, not sure if this works
+            keywordsArray.forEach(function(word) {
               if(ans.indexOf(word) > -1){
                 score++;
               }              
             }, this);
             
-            if(score >= element.answerKeywords.length){
-              results[id] = answers[id] + 'true';
+            if(score == keywordsArray.length){
+               answers[id] = true;
             }else{
-              esults[id] = answers[id] + 'false';
+               answers[id] = false;
             }
             
+            results[id] = answers[id];           
             break;
         case "quiz-long-input":
             // TODO
