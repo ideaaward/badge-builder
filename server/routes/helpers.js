@@ -30,7 +30,6 @@ module.exports.calculateResults = function (badge, answers) {
             var keywordsArray = keywordsString.split(',');
             answers[id] = "";
             
-            //Code not tested yet, not sure if this works
             keywordsArray.forEach(function(word) {
               if(ans.indexOf(word) > -1){
                 score++;
