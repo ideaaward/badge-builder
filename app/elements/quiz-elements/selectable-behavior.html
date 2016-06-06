@@ -1,0 +1,278 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+
+<!-- TODO: make html import -->
+<script src="../../bower_components/lodash/lodash.min.js"></script>
+
+<script>
+  window.QuizBehaviours = window.QuizBehaviours || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviours.SelectableBehavior */
+  QuizBehaviours.SelectableBehaviorImpl = {
+    properties: {
+      /**
+       * `options` indicates that the number of options to select
+       *
+       * @type boolean
+       * @default false
+       */
+      options: {
+        type: Array,
+        value: function() {
+          return [];
+        },
+        notify: true
+      },
+
+      /**
+       * References for dynamically created elements
+       *
+       * @type boolean
+       * @default false
+       */
+      _options: {
+        type: Array,
+        value: function() {
+          return [];
+        }
+      },
+
+      _optionsContainer: {
+        type: Object
+      },
+
+      /**
+       * `multi` indicates that the element should allow multiple selections.
+       * Use `false` for radio buttons or `true` for checkboxes.
+       *
+       * @type boolean
+       * @default false
+       */
+      multi: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Returns "paper-checkbox" for multiple selection or "paper-radio-button" for single choice.
+       *
+       * @type boolean
+       * @default false
+       */
+      paperElement: {
+        type: String,
+        readOnly: true,
+        computed: '_paperElement(multi)'
+      },
+
+      /**
+       * Include the `shuffle` attribute to randomise the order of the `options`
+       *
+       * @type boolean
+       * @default false
+       */
+      shuffle: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Indicates the DOM elements are ready
+       */
+      _isReady: {
+        type: Boolean,
+        value: false
+      }
+    },
+
+    observers: [
+      '_optionsAddedRemoved(_options.length)'
+    ],
+
+    ready: function() {
+      // create container element
+      this._optionsContainer = document.createElement("div");
+      this._optionsContainer.classList.add("options");
+      Polymer.dom(this).appendChild(this._optionsContainer);
+      //
+      // this.refresh(); // NB: `options` not yet set when creating as dynamic element
+    },
+
+    // factoryImpl: function(options) {
+    //   // NB: `options` will be empty unless passed via constructor
+    //   if(!options){
+    //     return;
+    //   }
+    //   console.info(this.localName, "* constructor:", options);
+    //   this.options = options;
+    //   //
+    //   this.refresh();
+    // },
+
+    attached: function() {
+      this.refresh(); // NB: `options` are now set for creating dynamic elements
+    },
+
+    /**
+     * Removes/adds `options` to DOM
+     */
+    _resetOptions: function() {
+      this.set('_isReady', false);
+      //console.log(this.localName, "set/reset", this.options);
+      // shuffle options
+      if (this.shuffle && this.options.length>0) {
+        this.set('options', _.shuffle(this.options) );
+        //console.log(this.localName, "shuffled options:", this.options);
+      }
+      // (remove option elements)
+      this._removeOptions();
+      // create option elements
+      this._addOptions();
+      this.set('_isReady', true);
+    },
+
+    /**
+     * Refresh view when switching between edit/view mode
+     */
+    refresh: function() {
+      this._resetOptions(); //TODO: The idea of switching modes could be better optimised by toggling visibility of elements rather than modifing the DOM again
+    },
+
+    detached: function() {
+      // // remove option elements
+      // this._removeOptions();
+      // // remove container element
+      // Polymer.dom(this).removeChild(this._optionsContainer);
+    },
+
+    _paperElement: function(multi) {
+      //console.log(this.multi, multi);
+      return (multi) ? "paper-checkbox" : "paper-radio-button";
+    },
+
+    _addOptions: function(){
+      var l = this.options.length;
+      for (var i=0; i<l; i++) {
+        this._addOption(this.options[i]);
+      }
+    },
+
+    _removeOptions: function(){
+      var i = this._options.length;
+      while (i--){
+        this._removeElement( this._options[i] );
+      }
+    },
+
+    _addOption: function(name){
+      var el = document.createElement(this.paperElement);
+      var label = name; // || ''+(this._options.length+1);
+
+      this._appendElementLabel(el, label); //
+      el.name = label; // value & input property
+      el.classList.add('option');
+
+      this._addElement(el);
+      return el;
+    },
+
+    _appendElementLabel: function(el, label) {
+      var textnode = document.createTextNode(label);
+      var labelElement = this.multi ? el.$.checkboxLabel : el.$.radioLabel ; // NB: uses private element selector
+      labelElement.appendChild(textnode);
+    },
+
+    _removeOption: function(){
+      if (this._options.length > 0) {
+        var el = this._options[this._options.length-1];
+        this._removeElement(el);
+        return el;
+      }
+    },
+
+    _addElement: function(element){
+      Polymer.dom(this._optionsContainer).appendChild(element);
+      this.push('_options', element);
+    },
+
+    _removeElement: function(element){
+      Polymer.dom(this._optionsContainer).removeChild(element);
+      this.pop('_options');
+    },
+
+    _optionsAddedRemoved: function(length){
+      // we don't want to fire events while options are being set/reset
+      if (this._isReady) {
+        // console.log(this.localName, "> length", length);
+        this.fire("optionsAddedRemoved", {length: length});
+      }
+    },
+
+    /**
+     * array of `options` to select
+     *
+     * @type array
+     */
+    selectOptions: function(options) {
+      var elements = Polymer.dom(this).querySelectorAll(".option");
+      var i = elements.length;
+      // console.log(this.localName, 'elements:', i);
+      while (i--) {
+        var el = elements[i];
+        var value = el.name;
+        var index = _.findIndex(options, function(v){
+          return (v === value);
+        });
+        el.checked = (index > -1 && value) ? true : false;
+      }
+    },
+
+    /**
+     * gets the selected `options` (sorted alphabetically)
+     *
+     * @type array
+     */
+    selectedOptions: function() {
+      var selectedOptions = [];
+      var elements = Polymer.dom(this).querySelectorAll(".option");
+      var i = elements.length;
+      //console.log(this.localName, 'elements:', i);
+      while (i--) {
+        var el = elements[i];
+        // console.log("item", el.checked, el.name);
+        if (el.checked && el.name) {
+          selectedOptions.unshift(el.name);
+        }
+      }
+      return _.sortBy(selectedOptions);
+    },
+
+    /**
+     * method to return user selected answer(s)
+     * @type array
+     */
+    getUserAnswer: function(){
+      return this.selectedOptions();
+    },
+
+    _selectHandler: function(e) {
+      // check if a "paper-radio-button" (or "paper-radio-button-input" element)
+      if (!this.multi && e.target.checked) {
+        // console.log(this.localName, e.target.name);
+        var singleSelection = (e.target.checked) ? [e.target.name] : [];
+        this.selectOptions(singleSelection);
+      }
+      //console.log(this.localName, e.target.name, e.target.checked, this.selectedOptions() );
+      this.fire("optionsSelected", { selectedItems: this.selectedOptions() });
+    },
+
+    listeners: {
+      'change': '_selectHandler'
+    }
+  };
+
+  QuizBehaviours.SelectableBehavior = [
+    QuizBehaviours.SelectableBehaviorImpl
+  ];
+</script>

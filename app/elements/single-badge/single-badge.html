@@ -15,8 +15,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../behaviors/document-behavior.html">
 
-<link rel="import" href="../yes-no/yes-no.html">
-<link rel="import" href="../multiple-choice/multiple-choice.html">
+<link rel="import" href="../quiz-elements/quiz-single.html">
+<link rel="import" href="../quiz-elements/quiz-multiple.html">
+
 <link rel="import" href="../content-video/content-video.html">
 <link rel="import" href="../content-html/content-html.html">
 <link rel="import" href="../content-button/content-button.html">
@@ -29,6 +30,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style include="shared-styles">
       :host {
         display: block;
+      }
+
+      ::content #components > *{
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      ::content paper-material {
+        padding: 10px;
+        box-sizing: border-box;
+        background: white;
+      }
+
+      ::content .option {
+        margin-right: 30px;
       }
     </style>
 
@@ -101,67 +117,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.elements = [];
         },
 
-        // QUIZ 
-        addYesNo: function(id, question, answer, yes, no) {
-          var el = new YesNo();
+        addContentSection: function(title) {
+          var el = new ContentSection(); //document.createElement("content-section");
+          el.title = title;
+          // el.edit = true;
 
-          el._id = id;
-          el.question = question;
-          el.answer = answer.toString(); //"true";
-          if (yes){
-            el.labelYes = yes;
-          }
-          if (no){
-            el.labelNo = no;
-          }
-          el.edit = false;
-
-          Polymer.dom(this.$.components).appendChild(el);
           this.addElement(el);
         },
-
-        addMultipleChoice: function(id, question, answer, options) {
-          var el = new MultipleChoice();
-
-          el._id = id;
-          el.question = question;
-          el.answer = answer;
-          el.options = options;
-          el.edit = false;
-
-          Polymer.dom(this.$.components).appendChild(el);
-          this.addElement(el);
-        },
-        
-        addQuizShortInput: function(id, question, answerKeywords, answer) {
-          var el = new QuizShortInput();
-
-          el._id = id;
-          el.question = question;
-          el.answerKeywords = answerKeywords;
-          el.answer = answer;
-          el.edit = false;
-
-          Polymer.dom(this.$.components).appendChild(el);
-          this.addElement(el);
-
-        },
-
-        addQuizLongInput: function(id, question, answer, wordLimit) {
-          var el = new QuizLongInput();
-
-          el._id = id;
-          el.question = question;
-          el.answer = answer;
-          el.wordLimit = wordLimit;
-          el.edit = false;
-
-          Polymer.dom(this.$.components).appendChild(el);
-          this.addElement(el);
-
-        },        
-        
-        // CONTENT
 
         addVideo: function(embededURI) {
           var el = new ContentVideo();
@@ -169,12 +131,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           el.embededURI = embededURI;
           el.edit = false;
 
-          Polymer.dom(this.$.components).appendChild(el);
           this.addElement(el);
-        },
-
-        addElement: function (element) {
-          this.push('_node.elements', element);
         },
 
         addHTML: function(text) {
@@ -183,7 +140,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           el.text = text;
           el.edit = false;
 
-          Polymer.dom(this.$.components).appendChild(el);
           this.addElement(el);
         },
 
@@ -194,18 +150,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           el.buttonText = buttonText;
           el.edit = false;
 
-          Polymer.dom(this.$.components).appendChild(el);
-          this.push('_node.elements', {element: el});
-
+          this.addElement(el);
         },
 
-        addContentSection: function(title) {
-          var el = new ContentSection(); //document.createElement("content-section");
-          el.title = title;
-          // el.edit = true;
+        addQuizShortInput: function(id, question, answerKeywords) {
+          var el = new QuizShortInput();
+          el._id = id;
+          el.question = question;
+          el.answerKeywords = answerKeywords;
+          el.edit = false;
 
-          Polymer.dom(this.$.components).appendChild(el);
-          this.push('_node.elements', {element: el});
+          this.addElement(el);
+        },
+
+        addQuizLongInput: function(id, question) {
+          var el = new QuizLongInput();
+          el._id = id;
+          el.question = question;
+          el.edit = false;
+
+          this.addElement(el);
+        },
+
+        addQuizElementType: function(elementType, id, question, options) {
+          var el = document.createElement(elementType);
+          el.edit = false;
+          el._id = id;
+          el.question = question;
+          el.options = options;
+          //
+          this.addElement(el);
+        },
+
+        addElement: function (element) {
+          Polymer.dom(this.$.components).appendChild(element);
+          this.push('_node.elements', {element: element});
         },
 
         badgeResponse: function (event) {
@@ -221,20 +200,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var element = elements[i];
 
             switch(element.elementType) {
-              // QUIZ
-                case "yes-no":
-                    this.addYesNo(element._id, element.question, element.answer, element.yes, element.no);
-                    break;
-                case "multiple-choice":
-                    this.addMultipleChoice(element._id, element.question, element.answer, element.options);
-                    break;
-                case "quiz-short-input":
-                    this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.answer);
-                    break;
-                case "quiz-long-input":
-                    this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit);
-                    break;     
-                // CONTENT                    
                 case "content-video":
                     this.addVideo(element.embededURI);
                     break;
@@ -244,40 +209,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 case "content-button":
                     this.addButton(element.buttonURL, element.buttonText);
                     break;
+                case "quiz-short-input":
+                    this.addQuizShortInput(element._id, element.question, element.answerKeywords);
+                    break;
+                case "quiz-long-input":
+                  this.addQuizLongInput(element._id, element.question);
+                  break;
                 case "content-section":
                   this.addContentSection(element.title);
                   break;
                 default:
-                   break;
+                  this.addQuizElementType(element.elementType, element._id, element.question, element.options); // generic quiz elements
+                  break;
             }
           }
         },
         submitBadge: function (event) {
           this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
           var answers = {};
-          this._node.elements.forEach(function (element) {
-            switch(element.elementType){
-              case "yes-no":
-              case "multiple-choice":        
-                if (element.getSelectedAnswer) {
-                  answers[element._id] = element.getSelectedAnswer();
-                }
-                break;
-              case "quiz-short-input":
-              case "quiz-long-input":
-                answers[element._id] = element.answer;
-                break;
-              default:             
-                break;      
-            }                
+          this._node.elements.forEach(function (el) {
+            var element = el.element;
+            if (element.getUserAnswer) {
+              answers[element._id] = element.getUserAnswer();
+            }
           });
           this.$.putAnswers.body = answers;
+          console.log("submit user answers:", answers);
           this.$.putAnswers.generateRequest();
         },
         answersResponse: function (event) {
           var response = this.$.putAnswers.lastResponse;
+          console.log("response:", response);
           var allCorrect = true;
-          this._node.elements.forEach(function (element) {
+          this._node.elements.forEach(function (el) {
+            var element = el.element;
             if (response[element._id] === false) {
               element.classList.add('highlight');
               allCorrect = false;

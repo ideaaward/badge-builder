@@ -18,40 +18,40 @@
       display: inline-block;
       width: 100%;
     }
-    
+
     .answer {
-      display: inline-block;  
+      display: inline-block;
       width: 100%;
     }
-    
+
     paper-material {
       text-align: left;
-      padding: 10px 20px; 
+      padding: 10px 20px;
       margin-top: 20px;
-    }  
+    }
   </style>
 
   <template>
     <!-- Editor View -->
-    <paper-material hidden=[[!edit]]> 
+    <paper-material hidden=[[!edit]]>
        <h3>Long Answer Quiz Element</h3>
       <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>
-      <div><paper-input placeholder="Word Limit" value="{{wordLimit}}"></paper-input></div>
+      <div><paper-input placeholder="Word Limit" value="{{wordLimit}}" type="number"></paper-input></div>
     </paper-material>
 
     <!-- Badge View -->
     <template is="dom-if" if="[[!edit]]" >
-      <div class="row">      
-        <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">    
-          <paper-material>  
+      <div class="row">
+        <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+          <paper-material>
             <p>[[question]]</p>
             <div><paper-textarea class="answer" placeholder="Answer" value="{{answer}}" rows="5"></paper-textarea></div>
           </paper-material>
-        </div>    
-      </div>            
+        </div>
+      </div>
     </template>
   </template>
-  
+
 
 
 </dom-module>
@@ -73,24 +73,15 @@
         value: function() {
           return "";
         }
-      },  
+      },
 
-      /**
-       * The element type. This is the same as the element id
-       * @type {string}
-       */
-      elementType: {
-        type: String,
-        value: "quiz-long-input"      
-      },   
-      
       /**
        * The question.
        * @type {string}
        */
       question: {
         type: String
-      },        
+      },
 
       /**
        * Is the answer
@@ -100,7 +91,8 @@
         type: String,
         value: function() {
           return "";
-        }        
+        },
+        notify: true
       },
 
       /**
@@ -157,7 +149,7 @@
     toggleEdit: function() {
       this.set('edit', !this.edit);
     },
-    
+
      /**
      * Triggered when edit mode is changed
      */
@@ -173,12 +165,16 @@
     getData: function() {
       return {
         _id : this._id,
-        elementType : this.elementType,
+        elementType : this.localName,
         question : this.question,
-        answer : this.answer,
+        answer : this.wordLimit,
         wordLimit : this.wordLimit
       };
-    },    
+    },
+
+    getUserAnswer: function(){
+      return this.answer;
+    }
 
   });
 
