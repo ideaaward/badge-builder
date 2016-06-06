@@ -333,10 +333,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addQuizShortInput(null, null, "");
         },
 
-        addQuizLongInput: function(question) {
+        addQuizLongInput: function(question, answer, wordLimit) {
           var el = new QuizLongInput();
 
           el.question = question;
+          el.answer = answer;
+          el.wordLimit = wordLimit;
           el.edit = true;
 
           Polymer.dom(this.$.components).appendChild(el);
@@ -345,7 +347,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         createQuizLongInput: function() {
-          this.addQuizLongInput();
+          this.addQuizLongInput(null, "", null);
         },
 
         // CONTENT
@@ -468,7 +470,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     this.addQuizShortInput(element.question, element.answerKeywords, element.answer);
                     break;
                 case "quiz-long-input":
-                    this.addQuizLongInput(element.question);
+                    this.addQuizLongInput(element.question, element.answer, element.wordLimit);
                     break;                   
                     
                 case "content-video":

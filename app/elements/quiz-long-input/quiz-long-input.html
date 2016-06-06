@@ -36,6 +36,7 @@
     <paper-material hidden=[[!edit]]> 
        <h3>Long Answer Quiz Element</h3>
       <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>
+      <div><paper-input placeholder="Word Limit" value="{{wordLimit}}"></paper-input></div>
     </paper-material>
 
     <!-- Badge View -->
@@ -69,7 +70,9 @@
        */
       _id: {
         type: String,
-        value: ""
+        value: function() {
+          return "";
+        }
       },  
 
       /**
@@ -94,7 +97,18 @@
        * @type {string}
        */
       answer: {
-        type: String
+        type: String,
+        value: function() {
+          return "";
+        }        
+      },
+
+      /**
+       * Is the word limit the user must reach to get the points for this question
+       * @type {number}
+       */
+      wordLimit: {
+        type: Number
       },
 
       /**
@@ -156,14 +170,15 @@
     /**
      * Updates the data attribute property
      */
-    getData: function(){
-        return {  
-            "_id" : this._id,
-            "elementType" : this.elementType,
-            "question" : this.question,
-            "answer" : this.answer
-        };
-    }
+    getData: function() {
+      return {
+        _id : this._id,
+        elementType : this.elementType,
+        question : this.question,
+        answer : this.answer,
+        wordLimit : this.wordLimit
+      };
+    },    
 
   });
 

@@ -147,11 +147,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         },
 
-        addQuizLongInput: function(id, question) {
+        addQuizLongInput: function(id, question, answer, wordLimit) {
           var el = new QuizLongInput();
 
           el._id = id;
           el.question = question;
+          el.answer = answer;
+          el.wordLimit = wordLimit;
           el.edit = false;
 
           Polymer.dom(this.$.components).appendChild(el);
@@ -230,7 +232,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.answer);
                     break;
                 case "quiz-long-input":
-                    this.addQuizLongInput(element._id, element.question, element.answer);
+                    this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit);
                     break;     
                 // CONTENT                    
                 case "content-video":

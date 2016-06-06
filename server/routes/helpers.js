@@ -16,6 +16,7 @@ module.exports.calculateResults = function (badge, answers) {
   var results = {};
   badge.content.elements.forEach(function (element) {
     var id = element._id;
+    var ans = answers[id].toLowerCase();
     
     if (typeof element.answer !== 'undefined') {         
       switch(element.elementType){
@@ -27,7 +28,6 @@ module.exports.calculateResults = function (badge, answers) {
             var score = 0;   
             var keywordsString = element.answerKeywords.toLowerCase().replace(" ", "");
             var keywordsArray = keywordsString.split(',');
-            var ans = answers[id].toLowerCase();
             answers[id] = "";
             
             //Code not tested yet, not sure if this works
@@ -45,8 +45,17 @@ module.exports.calculateResults = function (badge, answers) {
             
             results[id] = answers[id];           
             break;
-        case "quiz-long-input":
-            // TODO
+        case "quiz-long-input":           
+            answers[id] = "";
+            var words = countWords(ans);
+
+            if(words >= element.wordLimit){
+               answers[id] = true;
+            }else{
+               answers[id] = false;
+            }
+            
+            results[id] = answers[id]; 
             break;
         default:
             break;      
@@ -59,3 +68,10 @@ module.exports.calculateResults = function (badge, answers) {
   });    
   return results;
 };
+
+function countWords(s){
+    s = s.replace(/(^\s*)|(\s*$)/gi,"");//exclude  start and end white-space
+    s = s.replace(/[ ]{2,}/gi," ");//2 or more space to 1
+    s = s.replace(/\n /,"\n"); // exclude newline with a start spacing
+    return s.split(' ').length; 
+}
