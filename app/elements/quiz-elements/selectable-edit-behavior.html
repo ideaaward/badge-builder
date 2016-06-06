@@ -1,0 +1,123 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="selectable-behavior.html">
+
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+<script>
+  window.QuizBehaviours = window.QuizBehaviours || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviours.SelectableInputBehavior */
+  QuizBehaviours.SelectableEditBehaviorImpl = {
+
+    properties: {
+      /**
+       * `answer` as an array of option strings
+       *
+       * @type array
+       */
+      answer: {
+        type: Array,
+        value: function() {
+          return [];
+        }
+      }
+    },
+
+    // observers: [
+    //   '_updateEditedAnswers(options.*)'
+    // ],
+
+    /**
+     * Update answers in edit mode only
+     */
+    _updateEditedAnswers: function(e) {
+      if (this.edit !== true) {
+        return;
+      }
+      // edit mode
+      var updatedAnswers = e.detail.selectedItems;
+      console.log("updatedAnswers > ", updatedAnswers);
+      this.set('answer', updatedAnswers);
+    },
+
+    /**
+     * Select answers in edit mode only
+     */
+    _selectAnswers: function() {
+      if (this.edit !== true) {
+        return;
+      }
+      // edit mode
+      if (this.answer.length > 0) {
+        // console.info(this.localName, '> select answers:', this.answer, this._options.length);
+        this.selectOptions(this.answer);
+      }
+    },
+
+    /**
+     * Override refresh view with answers selected
+     */
+    refresh: function() {
+      // console.info(this.localName, 'refresh edit mode:', this.edit);
+      this._resetOptions();
+      this._selectAnswers();
+    },
+
+    /** Hook to add paper-input for `edit` mode instead of using a label */
+    _appendElementLabel: function(el, label) {
+      var labelElement = this.multi ? el.$.checkboxLabel : el.$.radioLabel ; // NB: uses private element selector
+      // var containerElement = this.multi ? el.$.checkboxContainer : el.$.radioContainer ; // NB: uses private element selector
+
+      // edit input
+      if (this.edit === true) {
+        // Disable toggling selection when editing input text
+        el._tapHandler = this._tapHandler; // NB: overrides private behavior method
+        //console.log("el", element);
+        var element = document.createElement('paper-input'); //document.createTextNode(label);
+        element.stopKeyboardEventPropagation = true; // NB: we need to allow spaces in input text field so we need to stop key events being passed up to checkbox/radio button
+        element.placeholder = "Option";
+        element.noLabelFloat = true;
+        element.value = label; // NB: this value will not be bindable!
+        labelElement.appendChild(element);
+        return;
+      }
+
+      // view label
+      var textnode = document.createTextNode(label);
+      labelElement.appendChild(textnode);
+    },
+
+    /** Override `iron-button-state` behavior to prevent toggling of checkbox/radio button selected state when trying to editing text */
+    _tapHandler: function(e) {
+      // var elementName = e.target.name || e.target.parentElement.name || e.target.parentElement.parentElement.name;
+      //console.log(this.localName, e.target.id, elementName); // (e.target.id !== "checkboxContainer")
+      if (e.target.id === "input") { // || !elementName
+        return; // when editing text we don't want to toggle the 'checked' property
+      }
+
+      // `iron-button-state` behavior
+      if (this.toggles) {
+       // a tap is needed to toggle the active state
+        this._userActivate(!this.active);
+      } else {
+        this.active = false;
+      }
+    },
+
+    /** Refreshes elements when edit mode is toggled */
+    _handleEditChanged: function(e){
+      //console.log(this.localName, "edit:", e.detail.edit);
+      this.refresh();
+    },
+
+    listeners: {
+      'editChanged': '_handleEditChanged',
+      'optionsSelected': '_updateEditedAnswers'
+    }
+
+  };
+
+  QuizBehaviours.SelectableEditBehavior = [
+    QuizBehaviours.SelectableBehavior,
+    QuizBehaviours.SelectableEditBehaviorImpl
+  ];
+</script>

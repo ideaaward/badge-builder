@@ -1,0 +1,89 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+<link rel="import" href="editable-behavior.html">
+<link rel="import" href="add-remove-behavior.html">
+
+<!--
+Quiz component for question with mutiple choice response (checkbox style)
+
+Example:
+
+    <quiz-multiple question="Which shapes have more than 7 sides?" options='["Pentagon","Heptagon","Nonagon","Decagon"]' shuffle></quiz-multiple>
+
+@demo
+-->
+<dom-module id="quiz-multiple">
+
+  <style>
+    :host {
+      display: block;
+      box-sizing: border-box;
+      @apply(--paper-font-common-base);
+    }
+
+    paper-input {
+      display: inline-block;
+    }
+
+    .question {
+      width: 100%;
+    }
+  </style>
+
+  <template>
+    <paper-material class="content">
+      <h3 class="question" hidden=[[edit]]>[[question]]</h3>
+      <div>
+        <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>
+      </div>
+      <content></content>
+    </paper-material>
+  </template>
+
+  <script>
+    QuizMultiple = Polymer({
+      is: 'quiz-multiple',
+      properties: {
+        /**
+         * The `question` for the quiz element.
+         * @type {string}
+         */
+        question: {
+          type: String
+        },
+
+        /**
+         * `multi` indicates whether the element supports multiple selections.
+         *
+         * @type boolean
+         * @default true
+         */
+        multi: {
+          type: Boolean,
+          readOnly: true,
+          value: true
+        }
+      },
+
+      /**
+       * Returns the JSON data for saving
+       */
+      getData: function() {
+        return {
+          _id : this._id,
+          elementType : this.localName,
+          question : this.question,
+          options : this.options,
+          answer : this.selectedOptions()
+        };
+      },
+
+      behaviors: [
+        QuizBehaviours.AddRemoveBehavior,
+        QuizBehaviours.EditableBehavior
+      ]
+    });
+  </script>
+</dom-module>

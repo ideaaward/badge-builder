@@ -1,0 +1,170 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="helper-behavior.html">
+<!-- <link rel="import" href="selectable-behavior.html"> -->
+<link rel="import" href="selectable-edit-behavior.html">
+
+
+<link rel="import" href="paper-checkbox-input.html">
+<link rel="import" href="paper-radio-button-input.html">
+
+<script>
+  window.QuizBehaviours = window.QuizBehaviours || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviours.AddRemoveBehavior */
+  QuizBehaviours.AddRemoveBehaviorImpl = {
+    properties: {
+      /** Add button element reference */
+      _elementAdd: {
+        type: Object
+      },
+      /** Remove button element reference */
+      _elementRemove: {
+        type: Object
+      },
+      /** Container element reference */
+      _elementContainer: {
+        type: Object
+      }
+    },
+
+    ready: function() {
+      // add container element to the DOM
+      this._elementContainer = document.createElement("div");
+      this._elementContainer.classList.add("edit", "widgets");
+      Polymer.dom(this).appendChild(this._elementContainer);
+
+      // add elements to the DOM
+      this._elementAdd = document.createElement("paper-fab");
+      this._elementAdd.icon = "add";
+      this._elementAdd.mini = true;
+      this._elementAdd.classList.add("widget", "widget-add");
+      Polymer.dom(this._elementContainer).appendChild(this._elementAdd);
+
+      this._elementRemove = document.createElement("paper-fab");
+      this._elementRemove.icon = "remove";
+      this._elementRemove.mini = true;
+      this._elementRemove.classList.add("widget", "widget-remove");
+      Polymer.dom(this._elementContainer).appendChild(this._elementRemove);
+
+      //console.info(this.localName, "Added add/remove buttons");
+      // setup
+      this._optionsAddedRemoved(this._options.length);
+    },
+
+    attached: function() {
+      this.listen(this._elementAdd, 'tap', '_tappedAdd');
+      this.listen(this._elementRemove, 'tap', '_tappedRemove');
+    },
+
+    detached: function() {
+      // remove elements from the DOM
+      this.unlisten(this._elementAdd, 'tap', '_tappedAdd');
+      // Polymer.dom(this._elementContainer).removeChild(this._elementAdd);
+
+      this.unlisten(this._elementRemove, 'tap', '_tappedRemove');
+      // Polymer.dom(this._elementContainer).removeChild(this._elementRemove);
+
+      // remove container element from the DOM
+      // Polymer.dom(this).removeChild(this._elementContainer);
+    },
+
+    /**
+     * Override method to use editable copy of elements
+     */
+    // _paperElement: function(multi) {
+    //   // Use edit versions of elements
+    //   return (multi) ? "paper-checkbox-input" : "paper-radio-button-input";
+    // },
+
+    /**
+     * Add option handler
+     */
+    _tappedAdd: function(e) {
+      //console.info(this.localName, "Tapped add!");
+      this._addOption(); // selectable-behavior method
+    },
+
+    /**
+     * Remove option handler
+     */
+    _tappedRemove: function(e) {
+      //console.info(this.localName, "Tapped remove!");
+      this._removeOption(); // selectable-behavior method
+    },
+
+    /**
+     * Add/remove elements handler
+     */
+    _handleOptionsAddedRemoved: function(e){
+      var length = e.detail.length;
+
+      if (this._elementRemove.disabled == null) {
+        return; // element not ready
+      }
+      //console.log(this.localName, "length", length);
+
+      if (length === 0) {
+        this._elementRemove.disabled = true;
+      } else {
+        this._elementRemove.disabled = false;
+      }
+
+      this.updateOptions(); // NB: beware - we don't want this while setting/resetting elements!
+    },
+
+    // _handleOptionsSelected: function(e){
+    //   var selectedItems = e.detail.selectedItems;
+    //   //console.log("selectedItems:", selectedItems);
+    //   //this.updateOptions();
+    // },
+
+    /**
+     * Text input handler
+     */
+    _handleInputChange: function(e){
+      //console.log(this.localName, "input", e.target.value);
+      this._updateInputOption(e.target, e.target.value);  // manually update the element name
+      this.updateOptions();
+    },
+
+    /**
+     * Hook to update parent option element name using dynamic input element change value
+     */
+    _updateInputOption: function(element, value){
+      var el = this.getParentElement(element, ".option");
+      el.name = value; // manually update the element name
+      //console.log("element", el, value);
+    },
+
+    /**
+     * Updates the options array after editing
+     */
+    updateOptions: function(){
+      var options = [];
+      var elements = this.querySelectorAll(".option");
+      var i = elements.length;
+      while(i--){
+        var el = elements[i];
+        var value = el.name; // NB: element name updates via binding
+        // console.log(i, el.name, el.value, el.checked);
+        if (value){
+          options.unshift(value);
+        }
+      }
+      //console.log("options:", options);
+      this.set('options', options);
+    },
+
+    listeners: {
+      'optionsAddedRemoved': '_handleOptionsAddedRemoved',
+      // 'optionsSelected': '_handleOptionsSelected',
+      'input': '_handleInputChange'
+    }
+  };
+
+  QuizBehaviours.AddRemoveBehavior = [
+    QuizBehaviours.HelperBehavior,
+    // QuizBehaviours.SelectableBehavior,
+    QuizBehaviours.SelectableEditBehavior,
+    QuizBehaviours.AddRemoveBehaviorImpl
+  ];
+</script>
