@@ -1,6 +1,7 @@
 'use strict';
 
-var uuid = require('node-uuid');
+var uuid = require('node-uuid'),
+    _ = require('lodash/core');
 
 module.exports.generateIds = function (content) {
   if (content.length === 0) {
@@ -12,6 +13,39 @@ module.exports.generateIds = function (content) {
   return content;
 };
 
+module.exports.calculatePageResults = function (badge, answers) {
+  var results = {};
+  console.log("\nuser answers:", answers);
+  Object.keys(answers).forEach(function(id){
+    var userAnswer = answers[id];
+    var element = _.find(badge.content.elements, function(o) {
+        return o._id === id;
+      });
+    console.log("id:", id, "\nuser answer:", userAnswer, "\nelement data:\n", element);
+
+    var result = false;
+    switch (element.elementType) {
+      case "quiz-single":
+      case "quiz-multiple":
+        result = isAnswerCorrect(userAnswer, element.answer);
+        break;
+      case "quiz-short-input":
+        result = isShortAnswerCorrect(userAnswer, element.answerKeywords);
+        break;
+      case "quiz-long-input":
+        result = isLongAnswerCorrect(userAnswer, element.wordLimit);
+        break;
+      default:
+        // console.log("Pass", element.elementType); // NB: no content elements will be submitted
+        // result = true;
+        break;
+    }
+    results[id] = result;
+  });
+  console.log("page results:", results);
+  return results;
+};
+
 module.exports.calculateResults = function (badge, answers) {
   var results = {};
   console.log('\nelements:\n', badge.content.elements, '\n=> user answers\n', answers );
@@ -19,60 +53,61 @@ module.exports.calculateResults = function (badge, answers) {
     var id = element._id;
     console.log(id, element.elementType, 'answers:', element.answer);
     if (typeof element.answer !== 'undefined') {
+      var result = false;
+      var userAnswer = answers[id];
       switch(element.elementType){
         case "quiz-single":
         case "quiz-multiple":
-            results[id] = answers[id] + '' === element.answer + '';
+            result = isAnswerCorrect(userAnswer, element.answer);
             break;
         case "quiz-short-input":
-            var score = 0;
-            var keywordsString = element.answerKeywords.toLowerCase().replace(" ", "");
-            var keywordsArray = keywordsString.split(',');
-            var ans = answers[id].toLowerCase();
-            //console.log("short ans:", ans);
-            answers[id] = "";
-
-            keywordsArray.forEach(function(word) {
-              if(ans.indexOf(word) > -1){
-                score++;
-              }
-            }, this);
-
-            if(score == keywordsArray.length){
-               answers[id] = true;
-            }else{
-               answers[id] = false;
-            }
-
-            results[id] = answers[id];
+            result = isShortAnswerCorrect(userAnswer, element.answerKeywords);
             break;
         case "quiz-long-input":
-            var ans = answers[id].toLowerCase();
-            var words = countWords(ans);
-            answers[id] = "";
-            //console.log("long ans:", ans, "words:", words, ">=", element.wordLimit);
-
-            if(words >= element.wordLimit){
-               answers[id] = true;
-            }else{
-               answers[id] = false;
-            }
-
-            results[id] = answers[id];
+            result = isLongAnswerCorrect(userAnswer, element.wordLimit);
             break;
         default:
             console.error("Unknown type");
             break;
       }
+      results[id] = result;
     } else {
       // TODO: Handle content elements without answers better.
       results[id] = true;
     }
 
   });
-  console.log("results:", results);
+  console.log("all results:", results);
   return results;
 };
+
+function isAnswerCorrect(userAnswer, answer) {
+  return (userAnswer + '' === answer + '');
+}
+
+function isShortAnswerCorrect(userAnswer, answer) {
+  var ans = userAnswer.toLowerCase();
+  var score = 0;
+  var keywordsArray = answer.toLowerCase().replace(" ", "").split(',');
+  keywordsArray.forEach(function(word){
+    if (ans.indexOf(word) > -1) {
+      score++;
+    }
+  });
+  if (score == keywordsArray.length) {
+    return true;
+  }
+  return false;
+}
+
+function isLongAnswerCorrect(userAnswer, minNumberOfAnswers) {
+  var ans = userAnswer.toLowerCase();
+  var words = countWords(ans);
+  if (words >= minNumberOfAnswers) {
+    return true;
+  }
+  return false;
+}
 
 function countWords(s){
     if(!s){

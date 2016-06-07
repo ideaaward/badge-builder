@@ -68,7 +68,7 @@ router.put('/badges/:id/answers', function (req, res) {
       return sendError(res, err);
     }
 
-    res.json(helpers.calculateResults(badge, req.body));
+    res.json(helpers.calculatePageResults(badge, req.body));
   });
 });
 
