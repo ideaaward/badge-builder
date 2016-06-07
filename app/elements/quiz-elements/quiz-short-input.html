@@ -1,0 +1,115 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="editable-behavior.html">
+<link rel="import" href="datamodel-behavior.html">
+
+<!--
+    Quiz element for short user input
+-->
+<dom-module id="quiz-short-input">
+
+  <style>
+    :host {
+      display: block;
+      box-sizing: border-box;
+    }
+
+    paper-input {
+      display: inline-block;
+      width: 100%;
+    }
+  </style>
+
+  <template>
+    <paper-material class="content">
+
+      <!-- Editor View -->
+      <template is="dom-if" if="[[edit]]" >
+        <div>
+          <h3>Short Answer Quiz Element</h3>
+          <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>
+          <div><paper-input placeholder="Words to look for in user answer" value="{{answerKeywords}}"></paper-input></div>
+        </div>
+      </template>
+
+      <!-- Badge View -->
+      <template is="dom-if" if="[[!edit]]" >
+        <div class="row">
+          <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+            <p>[[question]]</p>
+            <div><paper-input id="helloworld" placeholder="Answer" value="{{answer}}" on-input="_editAnswer"></paper-input></div>
+          </div>
+        </div>
+      </template>
+
+    <content></content>
+    </paper-material>
+  </template>
+
+  <script>
+
+    QuizShortInput = Polymer({
+
+      is: 'quiz-short-input',
+
+      properties: {
+
+        /**
+         * The question.
+         * @type {string}
+         */
+        question: {
+          type: String
+        },
+
+        /**
+         * The keywords to look for in a users answer
+         * @type {string}
+         */
+        answerKeywords: {
+          type: String
+        },
+
+        /**
+         * User answer input
+         * @type {string}
+         */
+        answer: {
+          type: String,
+          value: function() {
+            return "";
+          },
+          notify: true
+        },
+
+      },
+
+      // Element Lifecycle
+
+      // Element Behavior
+
+      getData: function() {
+        return {
+          _id : this._id,
+          elementType : this.localName,
+          question : this.question,
+          answerKeywords : this.answerKeywords,
+          answer : this.answerKeywords,
+        };
+      },
+
+      getUserAnswer: function(){
+        return this.answer;
+      },
+
+      behaviors: [
+        QuizBehaviours.EditableBehavior,
+        QuizBehaviours.DataModelBehavior
+      ]
+    });
+
+  </script>
+</dom-module>

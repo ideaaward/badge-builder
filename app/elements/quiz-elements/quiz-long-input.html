@@ -1,0 +1,121 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+<link rel="import" href="editable-behavior.html">
+<link rel="import" href="datamodel-behavior.html">
+
+<!--
+    Quiz element for long user input (this type of quiz element will not be marked / scored)
+-->
+<dom-module id="quiz-long-input">
+
+  <style>
+    :host {
+      display: block;
+      box-sizing: border-box;
+    }
+
+    paper-input {
+      display: inline-block;
+      width: 100%;
+    }
+
+    .answer {
+      display: inline-block;
+      width: 100%;
+    }
+  </style>
+
+  <template>
+    <paper-material class="content">
+
+      <!-- Editor View -->
+      <div hidden=[[!edit]]>
+        <h3>Long Answer Quiz Element</h3>
+        <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>
+        <div><paper-input placeholder="Word Limit" value="{{wordLimit}}" type="number"></paper-input></div>
+      </div>
+
+      <!-- Badge View -->
+      <template is="dom-if" if="[[!edit]]">
+        <div class="row">
+          <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+            <p>[[question]]</p>
+            <div><paper-textarea class="answer" placeholder="Answer" value="{{answer}}" rows="5"></paper-textarea></div>
+          </div>
+        </div>
+      </template>
+
+      <content></content>
+    </paper-material>
+  </template>
+
+
+  <script>
+    QuizLongInput = Polymer({
+
+      is: 'quiz-long-input',
+
+      properties: {
+
+        /**
+         * The question.
+         * @type {string}
+         */
+        question: {
+          type: String
+        },
+
+        /**
+         * User answer input
+         * @type {string}
+         */
+        answer: {
+          type: String,
+          value: function() {
+            return "";
+          },
+          notify: true
+        },
+
+        /**
+         * Is the word limit the user must reach to get the points for this question
+         * @type {number}
+         */
+        wordLimit: {
+          type: Number
+        },
+
+      },
+
+      // Element Lifecycle
+
+      // Element Behavior
+
+      /**
+       * Updates the data attribute property
+       */
+      getData: function() {
+        return {
+          _id : this._id,
+          elementType : this.localName,
+          question : this.question,
+          answer : this.wordLimit,
+          wordLimit : this.wordLimit
+        };
+      },
+
+      getUserAnswer: function(){
+        return this.answer;
+      },
+
+      behaviors: [
+        QuizBehaviours.EditableBehavior,
+        QuizBehaviours.DataModelBehavior
+      ]
+    });
+
+  </script>
+</dom-module>

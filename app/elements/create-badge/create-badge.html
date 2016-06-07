@@ -27,8 +27,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../content-html/content-html.html">
 <link rel="import" href="../content-button/content-button.html">
 <link rel="import" href="../content-section/content-section.html">
-<link rel="import" href="../quiz-short-input/quiz-short-input.html">
-<link rel="import" href="../quiz-long-input/quiz-long-input.html">
+<link rel="import" href="../quiz-elements/quiz-short-input.html">
+<link rel="import" href="../quiz-elements/quiz-long-input.html">
 
 
 <dom-module id="create-badge">
@@ -96,25 +96,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       method="PUT" on-response="handleUpdateResponse">
     </iron-ajax>
 
-    <h2 class="page-title">[[title]]</h2>
+    <paper-material class="content">
+      <h2 class="page-title">[[title]]</h2>
 
-    <paper-input id="titleInput" placeholder="Title" label="Badge Title" value="{{badgeTitle}}" autofocus required></paper-input>
+      <paper-input id="titleInput" placeholder="Title" label="Badge Title" value="{{badgeTitle}}" autofocus required></paper-input>
 
-    <paper-input id="keyInput" placeholder="Key" label="Consumer Key" value="{{badgeKey}}"></paper-input>
-    <paper-input id="secretInput" placeholder="Secret" label="Consumer Secret" value="{{badgeSecret}}"></paper-input>
+      <paper-input id="keyInput" placeholder="Key" label="Consumer Key" value="{{badgeKey}}"></paper-input>
+      <paper-input id="secretInput" placeholder="Secret" label="Consumer Secret" value="{{badgeSecret}}"></paper-input>
 
-    <paper-dropdown-menu label="Badge Theme">
-      <paper-listbox id="theme" class="dropdown-content" attr-for-selected="value" selected="{{badgeTheme}}" on-iron-select="selectTheme">
-        <paper-item value="blue"><span class="swatch bg_blue"></span>Blue</paper-item>
-        <paper-item value="green"><span class="swatch bg_green"></span>Green</paper-item>
-        <paper-item value="pink"><span class="swatch bg_pink"></span>Pink</paper-item>
-        <paper-item value="orange"><span class="swatch bg_orange"></span>Orange</paper-item>
-      </paper-listbox>
-    </paper-dropdown-menu>
+      <paper-dropdown-menu label="Badge Theme">
+        <paper-listbox id="theme" class="dropdown-content" attr-for-selected="value" selected="{{badgeTheme}}" on-iron-select="selectTheme">
+          <paper-item value="blue"><span class="swatch bg_blue"></span>Blue</paper-item>
+          <paper-item value="green"><span class="swatch bg_green"></span>Green</paper-item>
+          <paper-item value="pink"><span class="swatch bg_pink"></span>Pink</paper-item>
+          <paper-item value="orange"><span class="swatch bg_orange"></span>Orange</paper-item>
+        </paper-listbox>
+      </paper-dropdown-menu>
 
-    <paper-button on-tap="saveBadge" raised><iron-icon icon="save"></iron-icon>{{saveTitle}}</paper-button>
+      <paper-button on-tap="saveBadge" raised><iron-icon icon="save"></iron-icon>{{saveTitle}}</paper-button>
 
-    <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>Test</paper-button>
+      <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>Test</paper-button>
+    </paper-material>
+
 
     <div class="fab">
         <!-- Quiz -->
@@ -292,7 +295,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         addContentSection: function(title) {
           var el = new ContentSection(); //document.createElement("content-section");
           el.title = title;
-          el.edit = true;
 
           this.addElement(el);
         },
@@ -301,15 +303,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addContentSection("Section");
         },
 
-
-
-
-
         addVideo: function(embededURI) {
           var el = new ContentVideo(); // var el = document.createElement("content-video");
-
           el.embededURI = embededURI;
-          el.edit = true;
 
           this.addElement(el);
         },
@@ -320,9 +316,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         addHTML: function(text) {
           var el = new ContentHTML();
-
           el.text = text;
-          el.edit = true;
 
           this.addElement(el);
         },
@@ -333,10 +327,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         addButton: function(buttonURL, buttonText) {
           var el = new ContentButton();
-
           el.buttonURL = buttonURL;
           el.buttonText = buttonText;
-          el.edit = true;
 
           this.addElement(el);
         },
@@ -351,7 +343,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           el.question = question;
           el.answerKeywords = answerKeywords;
           el.answer = answer;
-          el.edit = true;
 
           this.addElement(el);
         },
@@ -366,7 +357,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           el.question = question;
           el.answer = answer;
           el.wordLimit = wordLimit;
-          el.edit = true;
 
           this.addElement(el);
         },
@@ -375,16 +365,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addQuizLongInput();
         },
 
-
-
-
-        _getRandomQuestion: function(){
-          return this.questions[_.random(this.questions.length-1)];
-        },
-
-        _elementsChanged: function(changeRecord){
-          //console.info(this.localName, '*', changeRecord, this._node.elements);
-        },
+        // _elementsChanged: function(changeRecord){
+        //   //console.info(this.localName, '*', changeRecord, this._node.elements);
+        // },
 
         _updateElements: function(){
           this.set('elements', this._getElementsData());
@@ -401,10 +384,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           console.log("elements:", elements);
           return elements;
-        },
-
-        _elementsChanged: function(){
-          this._test();
         },
 
         _test: function(){
@@ -425,7 +404,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         addQuizElementType: function(elementType, id, question, options, answer) {
           var el = document.createElement(elementType);
-          el.edit = true;
           el._id = id;
           el.question = question;
           el.options = options;
@@ -481,9 +459,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         },
 
-        observers: [
-          '_elementsChanged(_node.elements.length)'
-        ],
+        // observers: [
+        //   '_elementsChanged(_node.elements.length)'
+        // ],
 
         listeners: {
           'deleteElement': "_onDeleteElement"
