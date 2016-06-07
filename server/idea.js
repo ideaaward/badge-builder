@@ -1,12 +1,8 @@
 var url = require('url');
 var http = require('http');
+var https = require('https');
 
-try {
-  var ideaServer = url.parse(process.env.IDEA_API_URL);
-} catch (err) {
-  console.log('Set an environment variable named IDEA_API_URL and retry!');
-  process.exit();
-}
+var ideaServer = url.parse(process.env.IDEA_API_URL || 'https://idea.org.uk/api');
 
 var ideaRequest = function (callback, accessToken, path, body) {
   var headers = {
@@ -15,7 +11,8 @@ var ideaRequest = function (callback, accessToken, path, body) {
   if (body) {
     headers['Content-Type'] = 'application/json'
   }
-  var req = http.request({
+  var library = ideaServer.protocol === 'http:' ? http : https;
+  var req = library.request({
     method: body ? 'POST' : 'GET',
     host: ideaServer.host,
     path: ideaServer.path + path,
