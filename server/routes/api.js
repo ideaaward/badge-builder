@@ -1,7 +1,9 @@
 'use strict';
 
 var express = require('express');
+var mongoose = require('mongoose');
 var models = require('../models/models.js');
+var idea = require('../idea.js');
 var helpers = require('./helpers.js');
 
 var router = express.Router();
@@ -47,12 +49,17 @@ var filterBadge = function (badge) {
 };
 
 router.get('/badges/:id', function (req, res) {
-  models.Badge.findById(req.params.id, function (err, badge) {
-    if (err) {
-      return sendError(res, err);
-    }
-    res.json(filterBadge(badge));
-  });
+  try {
+    var _id = mongoose.Types.ObjectId(req.params.id);
+    models.Badge.findOne({ _id: _id }, function (err, badge) {
+      if (err) {
+        return sendError(res, err);
+      }
+      res.json(filterBadge(badge));
+    });
+  } catch (err) {
+    sendBadRequest(res);
+  }
 });
 
 router.put('/badges/:id/answers', function (req, res) {
@@ -62,6 +69,32 @@ router.put('/badges/:id/answers', function (req, res) {
     }
 
     res.json(helpers.calculateResults(badge, req.body));
+  });
+});
+
+router.post('/badges/:id/answers', function (req, res) {
+  models.Badge.findById(req.params.id, function (err, badge) {
+    if (err) {
+      return sendError(res, err);
+    }
+    var results = helpers.calculateResults(badge, req.body);
+    var allCorrect = true;
+    for (var key in results) {
+      if (results[key] === false) {
+        allCorrect = false;
+        break;
+      }
+    };
+    if (allCorrect) {
+      idea.postResult(req.user.accessToken, {
+        result: 'pass'
+      }, function (response, body) {
+        var passed = body && !body.error;
+        res.json({
+          message: passed ? 'Passed' : body && body.error || 'Failed'
+        })
+      });
+    }
   });
 });
 

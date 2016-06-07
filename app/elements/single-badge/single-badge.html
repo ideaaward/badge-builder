@@ -56,6 +56,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       handle-as="json" on-response="answersResponse">
     </iron-ajax>
 
+    <iron-ajax id="postBadge" method="POST" content-type="application/json"
+      handle-as="json" on-response="postBadgeResponse">
+    </iron-ajax>
+
     <div id="components"></div>
 
     <!--<br/><hr/>
@@ -63,7 +67,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <br/><hr/>-->
 
     <div class="buttonWrapper">
-      <paper-button on-tap="submitBadge" raised><iron-icon icon="forward"></iron-icon>Submit</paper-button>
+      <paper-button on-tap="submitBadgeTapped" raised><iron-icon icon="forward"></iron-icon>Submit</paper-button>
     </div>
   </template>
 
@@ -224,8 +228,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
           }
         },
-        submitBadge: function (event) {
-          this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
+        _collectAnswers: function () {
           var answers = {};
           this._node.elements.forEach(function (el) {
             var element = el.element;
@@ -233,8 +236,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               answers[element._id] = element.getUserAnswer();
             }
           });
-          this.$.putAnswers.body = answers;
-          console.log("submit user answers:", answers);
+          return answers;
+        },
+        submitBadgeTapped: function (event) {
+          this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
+          this.$.putAnswers.body = this._collectAnswers();
           this.$.putAnswers.generateRequest();
         },
         answersResponse: function (event) {
@@ -252,7 +258,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               }
             }
           });
-          app.$.toast.text = allCorrect ? 'All correct!' : 'You made mistakes!';
+          if (allCorrect) {
+            this.postBadge();
+          } else {
+            app.$.toast.text = 'You made mistakes - please try again.';
+            app.$.toast.show();
+          }
+        },
+        postBadge: function () {
+          this.$.postBadge.url = '/api/badges/' + this.id + '/answers';
+          this.$.postBadge.body = this._collectAnswers();
+          this.$.postBadge.generateRequest();
+        },
+        postBadgeResponse: function () {
+          var response = this.$.postBadge.lastResponse;
+          if (response.message === 'Passed') {
+            // TODO: Redirect back to hub once URL to redirect to known.
+            app.$.toast.text = 'Congratulations for completing the badge!';
+          } else {
+            app.$.toast.text = response.message;
+          }
           app.$.toast.show();
         },
         behaviors: [

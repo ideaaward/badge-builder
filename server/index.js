@@ -50,6 +50,21 @@ app.use(session({
   resave: false
 }));
 
+// Temporary middleware to route URL with test badge
+// to some badge that exists in the database.
+app.use(function (req, res, next) {
+  if (req.url.indexOf('test') > 0) {
+    models.Badge.findOne(function (err, badge) {
+      if (!err && badge) {
+        req.url = req.url.replace('test', badge._id);
+      }
+      next();
+    });
+  } else {
+    next();
+  }
+});
+
 if (authentication.isEnabled()) {
   authentication.init(app);
 } else {
@@ -69,7 +84,7 @@ if (authentication.isEnabled()) {
 
 app.get('/badges/:id', function (req, res) {
   if (!req.isAuthenticated()) {
-    return res.redirect('/login');
+    return res.redirect('/badges/' + req.params.id + '/login');
   }
   res.sendFile('/badge.html', {
     root: appFolder
