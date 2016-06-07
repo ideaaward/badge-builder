@@ -124,35 +124,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         addContentSection: function(title) {
           var el = new ContentSection(); //document.createElement("content-section");
           el.title = title;
-          // el.edit = true;
 
           this.addElement(el);
         },
 
         addVideo: function(embededURI) {
           var el = new ContentVideo();
-
           el.embededURI = embededURI;
-          el.edit = false;
 
           this.addElement(el);
         },
 
         addHTML: function(text) {
           var el = new ContentHTML();
-
           el.text = text;
-          el.edit = false;
 
           this.addElement(el);
         },
 
         addButton: function(buttonURL, buttonText) {
           var el = new ContentButton();
-
           el.buttonURL = buttonURL;
           el.buttonText = buttonText;
-          el.edit = false;
 
           this.addElement(el);
         },
@@ -162,7 +155,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           el._id = id;
           el.question = question;
           el.answerKeywords = answerKeywords;
-          el.edit = false;
 
           this.addElement(el);
         },
@@ -171,14 +163,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var el = new QuizLongInput();
           el._id = id;
           el.question = question;
-          el.edit = false;
 
           this.addElement(el);
         },
 
         addQuizElementType: function(elementType, id, question, options) {
           var el = document.createElement(elementType);
-          el.edit = false;
           el._id = id;
           el.question = question;
           el.options = options;
@@ -187,6 +177,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         addElement: function (element) {
+          element.edit = false;
           Polymer.dom(this.$.components).appendChild(element);
           this.push('_node.elements', {element: element});
         },
@@ -238,14 +229,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
           return answers;
         },
-        submitBadgeTapped: function (event) {
-          this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
-          this.$.putAnswers.body = this._collectAnswers();
-          this.$.putAnswers.generateRequest();
-        },
         answersResponse: function (event) {
           var response = this.$.putAnswers.lastResponse;
-          console.log("response:", response);
+          console.log("results:", response);
           var allCorrect = true;
           this._node.elements.forEach(function (el) {
             var element = el.element;
@@ -265,13 +251,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             app.$.toast.show();
           }
         },
+        submitAnswers: function () {
+          console.info("submit answers:", this.id);
+          this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
+          this.$.putAnswers.body = this._collectAnswers();
+          this.$.putAnswers.generateRequest();
+        },
         postBadge: function () {
+          console.info("post badge:", this.id);
           this.$.postBadge.url = '/api/badges/' + this.id + '/answers';
           this.$.postBadge.body = this._collectAnswers();
           this.$.postBadge.generateRequest();
         },
         postBadgeResponse: function () {
           var response = this.$.postBadge.lastResponse;
+          console.info("iDEA results", response);
           if (response.message === 'Passed') {
             // TODO: Redirect back to hub once URL to redirect to known.
             app.$.toast.text = 'Congratulations for completing the badge!';
@@ -279,6 +273,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             app.$.toast.text = response.message;
           }
           app.$.toast.show();
+        },
+        submitBadgeTapped: function (event) {
+          this.submitAnswers();
         },
         behaviors: [
           Page.DocumentBehavior

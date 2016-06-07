@@ -61,6 +61,7 @@ module.exports.calculateResults = function (badge, answers) {
             results[id] = answers[id];
             break;
         default:
+            console.error("Unknown type");
             break;
       }
     } else {
@@ -69,6 +70,7 @@ module.exports.calculateResults = function (badge, answers) {
     }
 
   });
+  console.log("results:", results);
   return results;
 };
 
