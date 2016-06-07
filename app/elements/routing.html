@@ -66,8 +66,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       var values = {};
       var keyValues = data.querystring.split('&');
       keyValues.forEach(function (keyValue) {
-        var splitted = keyValue.split('=');
-        values[splitted[0]] = splitted[1];
+        var split = keyValue.split('=');
+        values[split[0]] = split[1];
       });
       if (!values.message) {
         values.message = 'Unknown error occurred.'

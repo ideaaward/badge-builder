@@ -9,24 +9,22 @@
     <script src="../bower_components/lodash/lodash.js"></script>
 
     <!-- import the element to test -->
-    <link rel="import" href="../elements/yes-no/yes-no.html">
+    <link rel="import" href="../elements/quiz-elements/quiz-single.html">
   </head>
   <body>
 
     <!-- set up your fixtures. -->
-    <yes-no></yes-no>
+    <quiz-single></quiz-single>
 
     <script>
-      var el = document.querySelector('yes-no');
+      var el = document.querySelector('quiz-single');
 
-      suite('<yes-no>', function() {
+      suite('<quiz-single>', function() {
 
-        test('defines the "question" and "answer" property', function() {
-          el.question = "Is the moon made of cheese?";
-          el.answer = "false";
-          assert.isTrue(el.question.length > 0);
-          assert.isTrue(el.answer === "false");
-          assert.isTrue(el._answer === false);
+        test('returns the question in the data', function() {
+          el.question = 'Is the moon made of cheese?';
+          el.answer = 'false';
+          assert.isTrue(el.getData().question === el.question);
         });
 
       });
