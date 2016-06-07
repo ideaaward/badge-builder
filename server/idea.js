@@ -1,8 +1,14 @@
 var url = require('url');
 var http = require('http');
 
-var ideaRequest = function (callback, accessToken, path, body) {
+try {
   var ideaServer = url.parse(process.env.IDEA_API_URL);
+} catch (err) {
+  console.log('Set an environment variable named IDEA_API_URL and retry!');
+  process.exit();
+}
+
+var ideaRequest = function (callback, accessToken, path, body) {
   var headers = {
     'Authorization': 'Bearer ' + accessToken
   };
