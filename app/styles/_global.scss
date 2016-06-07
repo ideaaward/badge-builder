@@ -190,15 +190,16 @@ body#viewer {
 		pointer-events: none;
 	}
 
-	.content {
+  #components {
     padding-top: $png_garter_height + $gap;
-		padding-bottom: $footer_height + $gap;
+		// padding-bottom: $footer_height + $gap;
 		text-align: center;
 	}
-  
+
   .buttonWrapper{
-   padding-top: ($gap*2);
-   padding-bottom: $footer_height + ($gap*5);
+    padding-top: ($gap);
+    padding-bottom: $footer_height + ($gap*5);
+    text-align: center;
   }
 
   // Polymer element styles with custom theme color
