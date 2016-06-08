@@ -41,18 +41,22 @@ module.exports.init = function (app) {
   passport.deserializeUser(function (req, auth0User, done) {
     models.User.findOne({ 'id': auth0User.id }, function (err, user) {
       if (err || user === null) {
-        done(null, null);
+        done(null, false);
       } else {
-        user.accessToken = user.accessTokens[strategy._oauth2._clientId];
-        if (!user.accessToken) {
+        var accessToken = user.accessTokens && user.accessTokens[strategy._oauth2._clientId] || null;
+        if (!accessToken) {
           // If no access token found for the key used for this URL
-          // pass null to done, which means that user is not considered
+          // pass false to done, which means that user is not considered
           // to be authenticated and will get directed through the
           // authentication flow.
           // TODO: Check also access token expiration here.
-          done(null, null);
+          done(null, false);
         } else {
-          done(null, user);
+          done(null, {
+            id: auth0User.id,
+            accessToken: accessToken,
+            role: user.role
+          });
         }
       }
     });
