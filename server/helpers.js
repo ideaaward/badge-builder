@@ -1,7 +1,8 @@
 'use strict';
 
-var uuid = require('node-uuid'),
-    _ = require('lodash/core');
+var uuid = require('node-uuid');
+var _ = require('lodash/core');
+var url = require('url');
 
 module.exports.generateIds = function (content) {
   if (content.length === 0) {
@@ -118,3 +119,13 @@ function countWords(s){
     s = s.replace(/\n /,"\n"); // exclude newline with a start spacing
     return s.split(' ').length;
 }
+
+module.exports.replacePathEnding = function (path, ending) {
+  var pathname = url.parse(path).pathname;
+  var split = pathname.split('/');
+  split.pop();
+  if (ending) {
+    split.push(ending);
+  }
+  return split.length > 1 ? split.join('/') : '/';
+};

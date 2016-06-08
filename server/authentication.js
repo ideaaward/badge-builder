@@ -8,8 +8,12 @@ var jwt = require('jsonwebtoken');
 var models = require('./models/models.js');
 var errors = require('./errors.js');
 var idea = require('./idea.js');
+var helpers = require('./helpers');
 
 var enabled = !!process.env.AUTH0_DOMAIN;
+
+// TODO: Do not edit the global strategy since that may fail
+// to a race condition when many concurrent requests come in.
 var strategy = null;
 
 module.exports.init = function (app) {
@@ -23,36 +27,54 @@ module.exports.init = function (app) {
   }, function (accessToken, refreshToken, profile, done) {
     // Extract info from JWT
     var payload = jwt.decode(accessToken);
-
     done(null, {
       id: payload.sub,
       accessToken: accessToken
     });
   });
   passport.use(strategy);
-  passport.serializeUser(function (auth0User, done) {
-    done(null, auth0User);
+  passport.serializeUser(function (req, auth0User, done) {
+    done(null, {
+      id: auth0User.id
+    });
   });
-  passport.deserializeUser(function (auth0User, done) {
+  passport.deserializeUser(function (req, auth0User, done) {
     models.User.findOne({ 'id': auth0User.id }, function (err, user) {
       if (err || user === null) {
-        done(null, {
-          id: auth0User.id
-        });
+        done(null, null);
       } else {
-        user.accessToken = auth0User.accessToken;
-        done(null, user);
+        user.accessToken = user.accessTokens[strategy._oauth2._clientId];
+        if (!user.accessToken) {
+          // If no access token found for the key used for this URL
+          // pass null to done, which means that user is not considered
+          // to be authenticated and will get directed through the
+          // authentication flow.
+          // TODO: Check also access token expiration here.
+          done(null, null);
+        } else {
+          done(null, user);
+        }
       }
     });
   });
 
-  app.use(function (req, res, next) {
-    var splitPath = req.url.split('?')[0].split('/');
-    if (splitPath[1] === 'badges') {
-      models.Badge.findById(splitPath[2], function (err, badge) {
-        if (err || badge === null) {
-          return res.redirect('/error?message=' + errors.BADGE_NOT_FOUND);
-        }
+  var resetAuth0 = function () {
+    strategy._oauth2._clientId = process.env.AUTH0_CLIENT_ID;
+    strategy._oauth2._clientSecret = process.env.AUTH0_CLIENT_SECRET;
+    strategy._callbackURL = process.env.AUTH0_CALLBACK_URL;
+  };
+
+  app.use('/', function (req, res, next) {
+    resetAuth0();
+    next();
+  });
+
+  app.use(['/badges/:id', '/api/badges/:id'], function (req, res, next) {
+    models.Badge.findById(req.params.id, function (err, badge) {
+      if (err || badge === null) {
+        return res.redirect('/error?message=' + errors.BADGE_NOT_FOUND);
+      }
+      if (badge.consumerKey && badge.consumerSecret) {
         strategy._oauth2._clientId = badge.consumerKey;
         strategy._oauth2._clientSecret = badge.consumerSecret;
         var parsedUrl = url.parse(process.env.AUTH0_CALLBACK_URL);
@@ -60,22 +82,19 @@ module.exports.init = function (app) {
         // TODO: Use above line once using real badges.
         parsedUrl.pathname = '/badges/test/callback';
         strategy._callbackURL = url.format(parsedUrl);
-        next();
-      });
-    } else {
-      strategy._oauth2._clientId = process.env.AUTH0_CLIENT_ID;
-      strategy._oauth2._clientSecret = process.env.AUTH0_CLIENT_SECRET;
-      strategy._callbackURL = process.env.AUTH0_CALLBACK_URL;
+      } else {
+        resetAuth0();
+      }
       next();
-    }
+    });
   });
 
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.get(['/login', '/badges/*/login'], passport.authenticate('oauth2'));
+  app.get(['/login', '/badges/:id/login'], passport.authenticate('oauth2'));
 
-  app.get(['/callback', '/badges/*/callback'],
+  app.get(['/callback', '/badges/:id/callback'],
     passport.authenticate('oauth2',
       {
         failureRedirect: '/error?message=' + errors.AUTHENTICATION_FAILURE
@@ -85,9 +104,8 @@ module.exports.init = function (app) {
       idea.getUser(req.user.accessToken, function (ideaResponse, body) {
         if (ideaResponse.statusCode === 401) {
           // Redirect to login endpoint in case access token
-          // has expired.
-          // TODO: Redirect to correct endpoint if targeting independent badge.
-          return res.redirect('/login');
+          // is rejected.
+          return res.redirect(helpers.replacePathEnding(req.url, 'login'));
         }
         if (ideaResponse.statusCode === 404) {
           return res.redirect('/error?message=' + errors.USER_NOT_IDEA_USER);
@@ -99,13 +117,20 @@ module.exports.init = function (app) {
           }
           user.name = body.name;
           user.imageUrl = body.image_url;
-          user.save(function (err, user) {
+
+          // Store access token so that it can be used in subsequent requests.
+          if (!user.accessTokens) {
+            user.accessTokens = {};
+          }
+          user.accessTokens[strategy._oauth2._clientId] = req.user.accessToken;
+          user.markModified('accessTokens');
+
+          user.save(function (err) {
             if (err) {
               return res.redirect('/error?message=' + errors.DATABASE_ERROR_SAVE);
             }
-            var splitUrl = req.url.split('/');
-            splitUrl.pop();
-            res.redirect(splitUrl.join('/'));
+            var redirectUrl = helpers.replacePathEnding(req.url, '');
+            res.redirect(redirectUrl);
           });
         });
       });
