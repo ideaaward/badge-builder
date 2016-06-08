@@ -34,9 +34,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
 
-      ::content #components > *{
-        margin-top: 10px;
-        margin-bottom: 10px;
+      ::content #components > div > * {
+        margin-top: 20px;
+        margin-bottom: 20px;
       }
 
       ::content paper-material {
@@ -90,7 +90,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           _node : {
             type: Object,
             value: {
-              elements: []
+              elements: [],
+              containers: []
             }
           },
           id: {
@@ -129,11 +130,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         _resetPage: function(){
           // detatch custom elements
-          this._node.elements.forEach(function (element) {
-            Polymer.dom(this.$.components).removeChild(element); // TODO: check elements are being detached
-          });
+          // this._node.elements.forEach(function (element) {
+          //   Polymer.dom(this.$.components).removeChild(element);
+          // });
+
+          // TODO: check child elements are being detached
+          var components = Polymer.dom(this.$.components);
+          while (components.firstChild) components.removeChild(components.firstChild);
+
           this._node = {
-            elements: []
+            elements: [],
+            containers: []
           };
           this.elements = [];
         },
@@ -141,21 +148,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         addContentSection: function(title) {
           var el = new ContentSection(); //document.createElement("content-section");
           el.title = title;
-
           this.addElement(el);
         },
 
         addVideo: function(embededURI) {
           var el = new ContentVideo();
           el.embededURI = embededURI;
-
           this.addElement(el);
         },
 
         addHTML: function(text) {
           var el = new ContentHTML();
           el.text = text;
-
           this.addElement(el);
         },
 
@@ -163,7 +167,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var el = new ContentButton();
           el.buttonURL = buttonURL;
           el.buttonText = buttonText;
-
           this.addElement(el);
         },
 
@@ -172,7 +175,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           el._id = id;
           el.question = question;
           el.answerKeywords = answerKeywords;
-
           this.addElement(el);
         },
 
@@ -180,7 +182,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var el = new QuizLongInput();
           el._id = id;
           el.question = question;
-
           this.addElement(el);
         },
 
@@ -189,14 +190,81 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           el._id = id;
           el.question = question;
           el.options = options;
-          //
           this.addElement(el);
         },
 
         addElement: function (element) {
           element.edit = false;
-          Polymer.dom(this.$.components).appendChild(element);
+          //Polymer.dom(this.$.components).appendChild(element);
+          var container = this._node.containers[this._node.containers.length-1];
+          console.log('append to container', container.id);
+          container.appendChild(element);
           this.push('_node.elements', {element: element});
+        },
+
+        _sectionizeElements: function(elements){
+          var contents = {
+            sections: [], // array of sections
+            sectionTitles: [] // array of section element titles
+          };
+          var sectionElements = []; // array of section elements
+          var l = elements.length;
+          for (var i=0; i<l; i++) {
+            var element = elements[i];
+            if (element.elementType === 'content-section') {
+              contents.sectionTitles.push(element.title);
+              if (sectionElements.length > 0) {
+                contents.sections.push(sectionElements);
+                sectionElements = []; // new section
+              }
+            } else {
+              // add quiz or content element
+              sectionElements.push(element);
+            }
+          }
+          // remaining elements to be added to sections
+          contents.sections.push(sectionElements);
+          return contents;
+        },
+
+        _buildSections: function(contents) {
+          console.log("Build container sections:", contents.sections.length);
+          for (var n=0; n<contents.sections.length; n++) {
+            var sectionElements = contents.sections[n];
+            var containerElement = document.createElement("div");
+            containerElement.id = "section"+n;
+            // add section container element
+            Polymer.dom(this.$.components).appendChild(containerElement);
+            this.push('_node.containers', containerElement);
+
+            for (var i=0; i<sectionElements.length; i++) {
+              var element = sectionElements[i];
+              switch(element.elementType) {
+                case "content-video":
+                  this.addVideo(element.embededURI);
+                  break;
+                case "content-html":
+                  this.addHTML(element.text);
+                  break;
+                case "content-button":
+                  this.addButton(element.buttonURL, element.buttonText);
+                  break;
+                case "quiz-short-input":
+                  this.addQuizShortInput(element._id, element.question, element.answerKeywords);
+                  break;
+                case "quiz-long-input":
+                  this.addQuizLongInput(element._id, element.question);
+                  break;
+                case "content-section":
+                  this.addContentSection(element.title);
+                  break;
+                default:
+                  this.addQuizElementType(element.elementType, element._id, element.question, element.options); // generic quiz elements
+                  break;
+              }
+            }
+
+          }
         },
 
         badgeResponse: function (event) {
@@ -207,36 +275,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.badgeContent = JSON.stringify(response.content);
           var elements = this.response.content.elements;
 
-          for (var i=0; i<elements.length; i++) {
+          var contents = this._sectionizeElements(elements);
+          console.log("contents", contents);
+          this._buildSections(contents);
 
-            var element = elements[i];
+          // for (var i=0; i<elements.length; i++) {
+          //   var element = elements[i];
+          //   switch(element.elementType) {
+          //       case "content-video":
+          //           this.addVideo(element.embededURI);
+          //           break;
+          //       case "content-html":
+          //           this.addHTML(element.text);
+          //           break;
+          //       case "content-button":
+          //           this.addButton(element.buttonURL, element.buttonText);
+          //           break;
+          //       case "quiz-short-input":
+          //           this.addQuizShortInput(element._id, element.question, element.answerKeywords);
+          //           break;
+          //       case "quiz-long-input":
+          //         this.addQuizLongInput(element._id, element.question);
+          //         break;
+          //       case "content-section":
+          //         this.addContentSection(element.title);
+          //         break;
+          //       default:
+          //         this.addQuizElementType(element.elementType, element._id, element.question, element.options); // generic quiz elements
+          //         break;
+          //   }
+          // }
 
-            switch(element.elementType) {
-                case "content-video":
-                    this.addVideo(element.embededURI);
-                    break;
-                case "content-html":
-                    this.addHTML(element.text);
-                    break;
-                case "content-button":
-                    this.addButton(element.buttonURL, element.buttonText);
-                    break;
-                case "quiz-short-input":
-                    this.addQuizShortInput(element._id, element.question, element.answerKeywords);
-                    break;
-                case "quiz-long-input":
-                  this.addQuizLongInput(element._id, element.question);
-                  break;
-                case "content-section":
-                  this.addContentSection(element.title);
-                  break;
-                default:
-                  this.addQuizElementType(element.elementType, element._id, element.question, element.options); // generic quiz elements
-                  break;
-            }
-          }
           this.restartQuiz();
         },
+
         _collectAnswers: function () {
           var answers = {};
           this._node.elements.forEach(function (el) {
@@ -252,25 +324,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log("results:", response);
           var allCorrect = true;
 
-          var element = this.$.components.selectedItem;
-          if (response[element._id] === true){
-            element.classList.remove('wrong');
-          } else {
-            element.classList.add('wrong');
-            allCorrect = false;
+          // var element = this.$.components.selectedItem;
+          // if (response[element._id] === true){
+          //   element.classList.remove('wrong');
+          // } else {
+          //   element.classList.add('wrong');
+          //   allCorrect = false;
+          // }
+
+          var sectionChildren = this.$.components.selectedItem.children;
+          for (var i=0; i<sectionChildren.length; i++) {
+            var element = sectionChildren[i];
+            if (response[element._id] === false) {
+              element.classList.add('wrong');
+              allCorrect = false;
+            } else {
+              element.classList.remove('wrong');
+            }
           }
-          //
-          // this._node.elements.forEach(function (el) {
-          //   var element = el.element;
-          //   if (response[element._id] === false) {
-          //     element.classList.add('highlight');
-          //     allCorrect = false;
-          //   } else {
-          //     if (element.classList) {
-          //       element.classList.remove('highlight');
-          //     }
-          //   }
-          // });
+
           if (allCorrect) {
             this.next(); //this.postBadge();
           } else {
@@ -305,9 +377,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         _collectPageAnswers: function(){
           var answers = {};
 
-          var element = this.$.components.selectedItem; // NB: only one element atm
-          if (element.getUserAnswer) {
-            answers[element._id] = element.getUserAnswer();
+          // var element = this.$.components.selectedItem; // NB: only one element atm
+          // if (element.getUserAnswer) {
+          //   answers[element._id] = element.getUserAnswer();
+          // }
+
+          var sectionChildren = this.$.components.selectedItem.children;
+          for (var i=0; i<sectionChildren.length; i++) {
+            var element = sectionChildren[i];
+            console.log('childNodes element:', element);
+            if (element.getUserAnswer) {
+              answers[element._id] = element.getUserAnswer();
+            }
           }
 
           return answers;
@@ -315,8 +396,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         submitPageAnswers: function () {
           var userAnswers = this._collectPageAnswers();
           if (_.isEmpty(userAnswers)){
-            console.info("no user answers - skip");
-            this.next();
+            console.info("No user answers - skip");
+            // this.next();
             return;
           }
           console.info("submit page answers:", this.id, userAnswers);
@@ -340,16 +421,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.$.components.selectNext();
             return;
           }
+          // last page - display completed screen
           this.$.message.open();
         },
         _quizPageSelected: function(e) {
-          //console.log(this.localName, "page selected:", e); // e.stopPropagation();
-          // NB: the paper-list box will also trigger an iron-selected event, but I'm only interested in the iron-selected event from this iron-page element
+          // NB: the paper-list box will also trigger an iron-selected event, but I'm only interested in the iron-selected event from this element's iron-page
           if (e.target != this.$.components) {
             return;
           }
           //var selectedPage = e.target.selected;
-
+          // update button label text for page change
           var buttonLabel = this.isInProgress() ? "Next" : "Submit" ;
           this.set("buttonLabel", buttonLabel);
         },
@@ -359,9 +440,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         submitBadgeTapped: function (event) {
           if (this.isInProgress()) {
-            this.submitPageAnswers(); //this.next(); // TODO: check answer(s) in progress
+            // checks answers on current page, and if correct goes to next page
+            this.submitPageAnswers();
           } else {
-            this.submitAnswers();
+            this.submitAnswers(); // checks all answers
           }
         },
 
