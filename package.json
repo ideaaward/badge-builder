@@ -36,6 +36,7 @@
     "gulp-useref": "^2.1.0",
     "gulp-vulcanize": "^6.0.0",
     "jsonwebtoken": "^7.0.0",
+    "lodash": "^4.13.1",
     "merge-stream": "^1.0.0",
     "mongoose": "^4.4.17",
     "node-uuid": "^1.4.7",

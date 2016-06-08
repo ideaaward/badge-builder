@@ -12,6 +12,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/iron-signals/iron-signals.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 
 <link rel="import" href="../behaviors/document-behavior.html">
 
@@ -32,9 +34,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
 
-      ::content #components > *{
-        margin-top: 10px;
-        margin-bottom: 10px;
+      ::content #components > div > * {
+        margin-top: 20px;
+        margin-bottom: 20px;
       }
 
       ::content paper-material {
@@ -60,14 +62,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       handle-as="json" on-response="postBadgeResponse">
     </iron-ajax>
 
-    <div id="components"></div>
+    <paper-dialog id="message" modal>
+      <h2>[[message]]</h2>
+      <div class="buttons">
+        <paper-button dialog-confirm>Ok</paper-button>
+      </div>
+    </paper-dialog>
 
-    <!--<br/><hr/>
+    <iron-pages id="components" on-iron-select="_quizPageSelected"></iron-pages>
+
+    <!--
     <code hidden>{{badgeContent}}</code>
-    <br/><hr/>-->
+    -->
 
     <div class="buttonWrapper">
-      <paper-button on-tap="submitBadgeTapped" raised><iron-icon icon="forward"></iron-icon>Submit</paper-button>
+      <paper-button on-tap="submitBadgeTapped" raised><iron-icon icon="forward"></iron-icon>[[buttonLabel]]</paper-button>
     </div>
   </template>
 
@@ -81,7 +90,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           _node : {
             type: Object,
             value: {
-              elements: []
+              elements: [],
+              containers: []
             }
           },
           id: {
@@ -100,6 +110,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           response: {
             type: Object,
             notify: true
+          },
+          buttonLabel: {
+            type: String,
+            value: "Submit"
+          },
+          message: {
+            type: String,
+            value: "Completed badge"
           }
         },
 
@@ -112,11 +130,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         _resetPage: function(){
           // detatch custom elements
-          this._node.elements.forEach(function (element) {
-            Polymer.dom(this.$.components).removeChild(element); // TODO: check elements are being detached
-          });
+          // this._node.elements.forEach(function (element) {
+          //   Polymer.dom(this.$.components).removeChild(element);
+          // });
+
+          // TODO: check child elements are being detached
+          var components = Polymer.dom(this.$.components);
+          while (components.firstChild) components.removeChild(components.firstChild);
+
           this._node = {
-            elements: []
+            elements: [],
+            containers: []
           };
           this.elements = [];
         },
@@ -124,36 +148,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         addContentSection: function(title) {
           var el = new ContentSection(); //document.createElement("content-section");
           el.title = title;
-          // el.edit = true;
-
           this.addElement(el);
         },
 
         addVideo: function(embededURI) {
           var el = new ContentVideo();
-
           el.embededURI = embededURI;
-          el.edit = false;
-
           this.addElement(el);
         },
 
         addHTML: function(text) {
           var el = new ContentHTML();
-
           el.text = text;
-          el.edit = false;
-
           this.addElement(el);
         },
 
         addButton: function(buttonURL, buttonText) {
           var el = new ContentButton();
-
           el.buttonURL = buttonURL;
           el.buttonText = buttonText;
-          el.edit = false;
-
           this.addElement(el);
         },
 
@@ -162,8 +175,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           el._id = id;
           el.question = question;
           el.answerKeywords = answerKeywords;
-          el.edit = false;
-
           this.addElement(el);
         },
 
@@ -171,24 +182,89 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var el = new QuizLongInput();
           el._id = id;
           el.question = question;
-          el.edit = false;
-
           this.addElement(el);
         },
 
         addQuizElementType: function(elementType, id, question, options) {
           var el = document.createElement(elementType);
-          el.edit = false;
           el._id = id;
           el.question = question;
           el.options = options;
-          //
           this.addElement(el);
         },
 
         addElement: function (element) {
-          Polymer.dom(this.$.components).appendChild(element);
+          element.edit = false;
+          //Polymer.dom(this.$.components).appendChild(element);
+          var container = this._node.containers[this._node.containers.length-1];
+          console.log('append to container', container.id);
+          container.appendChild(element);
           this.push('_node.elements', {element: element});
+        },
+
+        _sectionizeElements: function(elements){
+          var contents = {
+            sections: [], // array of sections
+            sectionTitles: [] // array of section element titles
+          };
+          var sectionElements = []; // array of section elements
+          var l = elements.length;
+          for (var i=0; i<l; i++) {
+            var element = elements[i];
+            if (element.elementType === 'content-section') {
+              contents.sectionTitles.push(element.title);
+              if (sectionElements.length > 0) {
+                contents.sections.push(sectionElements);
+                sectionElements = []; // new section
+              }
+            } else {
+              // add quiz or content element
+              sectionElements.push(element);
+            }
+          }
+          // remaining elements to be added to sections
+          contents.sections.push(sectionElements);
+          return contents;
+        },
+
+        _buildSections: function(contents) {
+          console.log("Build container sections:", contents.sections.length);
+          for (var n=0; n<contents.sections.length; n++) {
+            var sectionElements = contents.sections[n];
+            var containerElement = document.createElement("div");
+            containerElement.id = "section"+n;
+            // add section container element
+            Polymer.dom(this.$.components).appendChild(containerElement);
+            this.push('_node.containers', containerElement);
+
+            for (var i=0; i<sectionElements.length; i++) {
+              var element = sectionElements[i];
+              switch(element.elementType) {
+                case "content-video":
+                  this.addVideo(element.embededURI);
+                  break;
+                case "content-html":
+                  this.addHTML(element.text);
+                  break;
+                case "content-button":
+                  this.addButton(element.buttonURL, element.buttonText);
+                  break;
+                case "quiz-short-input":
+                  this.addQuizShortInput(element._id, element.question, element.answerKeywords);
+                  break;
+                case "quiz-long-input":
+                  this.addQuizLongInput(element._id, element.question);
+                  break;
+                case "content-section":
+                  this.addContentSection(element.title);
+                  break;
+                default:
+                  this.addQuizElementType(element.elementType, element._id, element.question, element.options); // generic quiz elements
+                  break;
+              }
+            }
+
+          }
         },
 
         badgeResponse: function (event) {
@@ -199,35 +275,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.badgeContent = JSON.stringify(response.content);
           var elements = this.response.content.elements;
 
-          for (var i=0; i<elements.length; i++) {
+          var contents = this._sectionizeElements(elements);
+          console.log("contents", contents);
+          this._buildSections(contents);
 
-            var element = elements[i];
+          // for (var i=0; i<elements.length; i++) {
+          //   var element = elements[i];
+          //   switch(element.elementType) {
+          //       case "content-video":
+          //           this.addVideo(element.embededURI);
+          //           break;
+          //       case "content-html":
+          //           this.addHTML(element.text);
+          //           break;
+          //       case "content-button":
+          //           this.addButton(element.buttonURL, element.buttonText);
+          //           break;
+          //       case "quiz-short-input":
+          //           this.addQuizShortInput(element._id, element.question, element.answerKeywords);
+          //           break;
+          //       case "quiz-long-input":
+          //         this.addQuizLongInput(element._id, element.question);
+          //         break;
+          //       case "content-section":
+          //         this.addContentSection(element.title);
+          //         break;
+          //       default:
+          //         this.addQuizElementType(element.elementType, element._id, element.question, element.options); // generic quiz elements
+          //         break;
+          //   }
+          // }
 
-            switch(element.elementType) {
-                case "content-video":
-                    this.addVideo(element.embededURI);
-                    break;
-                case "content-html":
-                    this.addHTML(element.text);
-                    break;
-                case "content-button":
-                    this.addButton(element.buttonURL, element.buttonText);
-                    break;
-                case "quiz-short-input":
-                    this.addQuizShortInput(element._id, element.question, element.answerKeywords);
-                    break;
-                case "quiz-long-input":
-                  this.addQuizLongInput(element._id, element.question);
-                  break;
-                case "content-section":
-                  this.addContentSection(element.title);
-                  break;
-                default:
-                  this.addQuizElementType(element.elementType, element._id, element.question, element.options); // generic quiz elements
-                  break;
-            }
-          }
+          this.restartQuiz();
         },
+
         _collectAnswers: function () {
           var answers = {};
           this._node.elements.forEach(function (el) {
@@ -238,40 +319,52 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
           return answers;
         },
-        submitBadgeTapped: function (event) {
-          this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
-          this.$.putAnswers.body = this._collectAnswers();
-          this.$.putAnswers.generateRequest();
-        },
         answersResponse: function (event) {
           var response = this.$.putAnswers.lastResponse;
-          console.log("response:", response);
+          console.log("results:", response);
           var allCorrect = true;
-          this._node.elements.forEach(function (el) {
-            var element = el.element;
+
+          // var element = this.$.components.selectedItem;
+          // if (response[element._id] === true){
+          //   element.classList.remove('wrong');
+          // } else {
+          //   element.classList.add('wrong');
+          //   allCorrect = false;
+          // }
+
+          var sectionChildren = this.$.components.selectedItem.children;
+          for (var i=0; i<sectionChildren.length; i++) {
+            var element = sectionChildren[i];
             if (response[element._id] === false) {
-              element.classList.add('highlight');
+              element.classList.add('wrong');
               allCorrect = false;
             } else {
-              if (element.classList) {
-                element.classList.remove('highlight');
-              }
+              element.classList.remove('wrong');
             }
-          });
+          }
+
           if (allCorrect) {
-            this.postBadge();
+            this.next(); //this.postBadge();
           } else {
             app.$.toast.text = 'You made mistakes - please try again.';
             app.$.toast.show();
           }
         },
+        submitAnswers: function () {
+          console.info("submit answers:", this.id);
+          this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
+          this.$.putAnswers.body = this._collectAnswers();
+          this.$.putAnswers.generateRequest();
+        },
         postBadge: function () {
+          console.info("post badge:", this.id);
           this.$.postBadge.url = '/api/badges/' + this.id + '/answers';
           this.$.postBadge.body = this._collectAnswers();
           this.$.postBadge.generateRequest();
         },
         postBadgeResponse: function () {
           var response = this.$.postBadge.lastResponse;
+          console.info("iDEA results", response);
           if (response.message === 'Passed') {
             // TODO: Redirect back to hub once URL to redirect to known.
             app.$.toast.text = 'Congratulations for completing the badge!';
@@ -280,6 +373,80 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           app.$.toast.show();
         },
+
+        _collectPageAnswers: function(){
+          var answers = {};
+
+          // var element = this.$.components.selectedItem; // NB: only one element atm
+          // if (element.getUserAnswer) {
+          //   answers[element._id] = element.getUserAnswer();
+          // }
+
+          var sectionChildren = this.$.components.selectedItem.children;
+          for (var i=0; i<sectionChildren.length; i++) {
+            var element = sectionChildren[i];
+            console.log('childNodes element:', element);
+            if (element.getUserAnswer) {
+              answers[element._id] = element.getUserAnswer();
+            }
+          }
+
+          return answers;
+        },
+        submitPageAnswers: function () {
+          var userAnswers = this._collectPageAnswers();
+          if (_.isEmpty(userAnswers)){
+            console.info("No user answers - skip");
+            // this.next();
+            return;
+          }
+          console.info("submit page answers:", this.id, userAnswers);
+          this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
+          this.$.putAnswers.body = userAnswers;
+          this.$.putAnswers.generateRequest();
+        },
+
+        // Pages
+        selectedPage: function() {
+          return this.$.components.selected;
+        },
+        totalPages: function() {
+          return this.$.components.items.length;
+        },
+        isInProgress: function() {
+          return (this.selectedPage() < this.totalPages()-1);
+        },
+        next: function() {
+          if (this.isInProgress()){
+            this.$.components.selectNext();
+            return;
+          }
+          // last page - display completed screen
+          this.$.message.open();
+        },
+        _quizPageSelected: function(e) {
+          // NB: the paper-list box will also trigger an iron-selected event, but I'm only interested in the iron-selected event from this element's iron-page
+          if (e.target != this.$.components) {
+            return;
+          }
+          //var selectedPage = e.target.selected;
+          // update button label text for page change
+          var buttonLabel = this.isInProgress() ? "Next" : "Submit" ;
+          this.set("buttonLabel", buttonLabel);
+        },
+        restartQuiz: function(pageNo) {
+          this.$.components.selected = 0;
+        },
+
+        submitBadgeTapped: function (event) {
+          if (this.isInProgress()) {
+            // checks answers on current page, and if correct goes to next page
+            this.submitPageAnswers();
+          } else {
+            this.submitAnswers(); // checks all answers
+          }
+        },
+
         behaviors: [
           Page.DocumentBehavior
         ]
