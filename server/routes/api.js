@@ -4,7 +4,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var models = require('../models/models.js');
 var idea = require('../idea.js');
-var helpers = require('./helpers.js');
+var helpers = require('../helpers.js');
 
 var router = express.Router();
 

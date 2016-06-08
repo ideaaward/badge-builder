@@ -20,6 +20,7 @@ var userSchema = new mongoose.Schema({
     type: 'string',
     default: 'user' // 'user', 'author' or 'admin'
   },
+  accessTokens: 'mixed', // { <consumerKey>: <accessToken> }
   date: {
     type: Date,
     default: Date.now
