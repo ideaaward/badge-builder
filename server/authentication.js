@@ -49,15 +49,18 @@ module.exports.init = function (app) {
           // pass false to done, which means that user is not considered
           // to be authenticated and will get directed through the
           // authentication flow.
-          // TODO: Check also access token expiration here.
-          done(null, false);
-        } else {
-          done(null, {
-            id: auth0User.id,
-            accessToken: accessToken,
-            role: user.role
-          });
+          return done(null, false);
         }
+        var payload = jwt.decode(accessToken);
+        if (Date.now() > payload.exp * 1000) {
+          // Access token is expired so authenticate again.
+          return done(null, false);
+        }
+        done(null, {
+          id: auth0User.id,
+          accessToken: accessToken,
+          role: user.role
+        });
       }
     });
   });

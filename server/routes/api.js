@@ -89,6 +89,10 @@ router.post('/badges/:id/answers', function (req, res) {
       idea.postResult(req.user.accessToken, {
         result: 'pass'
       }, function (response, body) {
+        console.log('iDEA response with status code ' +
+          response.statusCode + ':\n' +
+          JSON.stringify(body)
+        );
         var passed = body && !body.error;
         res.json({
           message: passed ? 'Passed' : body && body.error || 'Failed'
