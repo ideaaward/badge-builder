@@ -365,13 +365,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         postBadgeResponse: function () {
           var response = this.$.postBadge.lastResponse;
           console.info("iDEA results", response);
-          if (response.message === 'Passed') {
-            this.set('message', 'Congratulations for completing the badge');
-            // TODO: Redirect back to hub once URL to redirect to known.
+          if (response.error) {
+            this.set('message', response.error);
+            this.$.message.open();
           } else {
-            this.set('message', response.message);
+            window.location = response.redirectUrl;
           }
-          this.$.message.open();
         },
 
         _collectPageAnswers: function(){

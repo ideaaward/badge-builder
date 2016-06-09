@@ -93,10 +93,16 @@ router.post('/badges/:id/answers', function (req, res) {
           response.statusCode + ':\n' +
           JSON.stringify(body)
         );
-        var passed = body && !body.error;
-        res.json({
-          message: passed ? 'Passed' : body && body.error || 'Failed'
-        })
+        var passed = body && body.result === 'success';
+        if (passed) {
+          res.json({
+            redirectUrl: body.redirect_uri
+          });
+        } else {
+          res.json({
+            error: body && body.error || 'Failure when posting results'
+          });
+        }
       });
     }
   });
