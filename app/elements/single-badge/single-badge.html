@@ -14,6 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-signals/iron-signals.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
 
 <link rel="import" href="../behaviors/document-behavior.html">
 
@@ -69,6 +70,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </div>
     </paper-dialog>
 
+    <div id="section">
+      <h1>[[sectionTitle]]</h1>
+      <paper-progress value="[[progress]]" id="progress"></paper-progress>
+    </div>
+
     <iron-pages id="components" on-iron-select="_quizPageSelected"></iron-pages>
 
     <!--
@@ -118,6 +124,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           message: {
             type: String,
             value: "Completed badge"
+          },
+          progress: {
+            type: Number,
+            value: 0
+          },
+          sectionTitle: {
+            type: String,
+            value: ""
           }
         },
 
@@ -209,6 +223,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           };
           var sectionElements = []; // array of section elements
           var l = elements.length;
+          if (l>0 && elements[0] != 'content-section') {
+            contents.sectionTitles.push("Intro"); // if no section at start then default to 'Intro'
+          }
           for (var i=0; i<l; i++) {
             var element = elements[i];
             if (element.elementType === 'content-section') {
@@ -233,6 +250,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var sectionElements = contents.sections[n];
             var containerElement = document.createElement("div");
             containerElement.id = "section"+n;
+            containerElement.title = contents.sectionTitles[n];
             // add section container element
             Polymer.dom(this.$.components).appendChild(containerElement);
             this.push('_node.containers', containerElement);
@@ -278,33 +296,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var contents = this._sectionizeElements(elements);
           console.log("contents", contents);
           this._buildSections(contents);
-
-          // for (var i=0; i<elements.length; i++) {
-          //   var element = elements[i];
-          //   switch(element.elementType) {
-          //       case "content-video":
-          //           this.addVideo(element.embededURI);
-          //           break;
-          //       case "content-html":
-          //           this.addHTML(element.text);
-          //           break;
-          //       case "content-button":
-          //           this.addButton(element.buttonURL, element.buttonText);
-          //           break;
-          //       case "quiz-short-input":
-          //           this.addQuizShortInput(element._id, element.question, element.answerKeywords);
-          //           break;
-          //       case "quiz-long-input":
-          //         this.addQuizLongInput(element._id, element.question);
-          //         break;
-          //       case "content-section":
-          //         this.addContentSection(element.title);
-          //         break;
-          //       default:
-          //         this.addQuizElementType(element.elementType, element._id, element.question, element.options); // generic quiz elements
-          //         break;
-          //   }
-          // }
 
           this.restartQuiz();
         },
@@ -396,7 +387,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var userAnswers = this._collectPageAnswers();
           if (_.isEmpty(userAnswers)){
             console.info("No user answers - skip");
-            // this.next();
+            this.next();
             return;
           }
           console.info("submit page answers:", this.id, userAnswers);
@@ -422,6 +413,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           this.postBadge();
         },
+        _getSectionTitle: function() {
+          var id = 'section'+this.selectedPage();
+          var section = Polymer.dom(this.$.components).querySelector("#"+id);
+          console.log('^ section', section.title, id);
+          if (section) {
+            return section.title;
+          }
+          return "";
+        },
+
         _quizPageSelected: function(e) {
           // NB: the paper-list box will also trigger an iron-selected event, but I'm only interested in the iron-selected event from this element's iron-page
           if (e.target != this.$.components) {
@@ -431,12 +432,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // update button label text for page change
           var buttonLabel = this.isInProgress() ? "Next" : "Submit" ;
           this.set("buttonLabel", buttonLabel);
+          // update section title
+          this.set('sectionTitle', this._getSectionTitle() );
         },
         restartQuiz: function(pageNo) {
           this.$.components.selected = 0;
         },
 
+        _updateProgress: function() {
+          var progress = (this.selectedPage()+1) / this.totalPages() * 100;
+          this.set('progress', progress);
+        },
+
         submitBadgeTapped: function (event) {
+          this._updateProgress();
           if (this.isInProgress()) {
             // checks answers on current page, and if correct goes to next page
             this.submitPageAnswers();

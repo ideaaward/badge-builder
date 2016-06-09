@@ -162,6 +162,22 @@ body#viewer {
 		top: $gap*2;
 	}
 
+  #title {
+    position: absolute;
+    top: 0;
+    left: $png_garter_width;
+    height: $png_garter_height;
+    display: table;
+    padding: $gap;
+    box-sizing: border-box;
+  }
+
+  #title h1 {
+    color: $white;
+    vertical-align: middle;
+    display: table-cell;
+  }
+
   #garter {
     @include backgroundSizes($png_garter_width, $png_garter_height, $png_garter, 3);
     // @include backgroundX($png_garter);
@@ -189,6 +205,14 @@ body#viewer {
 		bottom: 0;
 		pointer-events: none;
 	}
+
+  #section {
+    text-align: center;
+  }
+
+  #progress {
+    margin: 0 auto;
+  }
 
   #components {
     padding-top: $png_garter_height + $gap;
