@@ -104,7 +104,7 @@ module.exports.init = function (app) {
   app.get(['/callback', '/badges/:id/callback'],
     passport.authenticate('oauth2',
       {
-        failureRedirect: '/error?message=' + errors.AUTHENTICATION_FAILURE
+        failureRedirect: '/error?message=' + errors.AUTHENTICATION_FAILURE // Happens if user rejects authorization
       }
     ),
     function (req, res) {

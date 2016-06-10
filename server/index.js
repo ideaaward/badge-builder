@@ -29,7 +29,11 @@ mongoose.connection.on('connected', function () {
   startServer();
 });
 
-var appFolder = process.argv[2] === 'dist' ? 'dist' : 'app';
+var appFolder = process.argv[2] === 'dist' ? '.' : 'app';
+if (process.env.NODE_ENV === 'production') {
+  appFolder = '.';
+}
+console.log('Serving from ' + appFolder + ' folder...');
 var rootPath = path.join(__dirname, '..', appFolder);
 var staticFolder = '/static';
 
@@ -44,6 +48,7 @@ app.use(session({
   }),
   cookie: {
     // TODO: update when served over a secure connection
+    // secure: process.env.NODE_ENV === 'production'
     secure: false
   },
   saveUninitialized: false,
