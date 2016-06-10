@@ -42,27 +42,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     // Routes
-    page('*', scrollToTop, closeDrawer, function(ctx, next) {
+    page('*', scrollToTop, function (ctx, next) {
       next();
     });
 
-    page('/', function() {
+    page('/', function () {
       switchPage('home');
     });
 
-    page(app.baseUrl, function() {
+    page(app.baseUrl, function () {
       switchPage('home');
     });
 
-    page('/create', function() {
+    page('/create', function () {
       switchPage('create');
     });
 
-    page('/admin', function() {
+    page('/admin', function () {
       switchPage('admin');
     });
 
-    page('/error', function(data) {
+    page('/error', function (data) {
       var values = {};
       var keyValues = data.querystring.split('&');
       keyValues.forEach(function (keyValue) {
@@ -75,13 +75,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       switchPage('error', values);
     });
 
-    page('/edit/:_id', function(data) {
+    page('/edit/:_id', function (data) {
       data.edit = true;
       switchPage('create', data);
     });
 
+    page('/badges/:_id', function () {
+      // This route needs to be registered, but no need to do anything
+      // because this is the "static page" for a single badge
+    });
+
     // 404
-    page('*', function() {
+    page('*', function () {
       app.$.toast.text = 'Can\'t find: ' + window.location.href  + '. Redirected you to Home Page';
       app.$.toast.show();
       page.redirect(app.baseUrl);

@@ -133,10 +133,23 @@ gulp.task('copy', function() {
   // Copy over only the bower_components we need
   // These are things which cannot be vulcanized
   var bower = gulp.src([
-    'app/bower_components/{webcomponentsjs,platinum-sw,sw-toolbox,promise-polyfill}/**/*'
+    'app/bower_components/{webcomponentsjs,platinum-sw,sw-toolbox,promise-polyfill,' +
+    'lodash,foundation}/**/*'
   ]).pipe(gulp.dest(dist('bower_components')));
 
-  return merge(app, bower)
+  var scripts = gulp.src([
+    'app/scripts/*'
+  ]).pipe(gulp.dest(dist('scripts')));
+
+  var server = gulp.src([
+    'server/**/*'
+  ]).pipe(gulp.dest(dist('server')));
+
+  var rootFiles = gulp.src([
+    'package.json', 'server.js'
+  ]).pipe(gulp.dest(dist()));
+
+  return merge(app, bower, scripts, server, rootFiles)
     .pipe($.size({
       title: 'copy'
     }));
@@ -262,11 +275,6 @@ gulp.task('serve', ['styles', 'elements', 'nodemon'], function() {
   gulp.watch(['app/styles/**/*.css'], ['styles', reload]);
   gulp.watch(['app/elements/**/*.css'], ['elements', reload]);
   gulp.watch(['app/images/**/*'], reload);
-});
-
-// Build and serve the output from the dist build
-gulp.task('serve:dist', ['default'], function() {
-  // TODO: Run node and pass dist
 });
 
 // Build production files, the default task
