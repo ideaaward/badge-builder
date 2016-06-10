@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="deletable-behavior.html">
+<link rel="import" href="draggable-behavior.html">
 
 <script>
   window.QuizBehaviours = window.QuizBehaviours || {}; // Behavior namespace
@@ -53,6 +54,7 @@
   };
 
   QuizBehaviours.EditableBehavior = [
+    QuizBehaviours.DraggableBehavior,
     QuizBehaviours.DeletableBehavior,
     QuizBehaviours.EditableBehaviorImpl
   ];

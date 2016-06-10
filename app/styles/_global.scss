@@ -93,6 +93,20 @@ paper-fab.blue {
 	margin-right: $gap/2;
 }
 
+// Sortable styles
+.sortable-chosen {
+  opacity: 0.5;
+}
+
+.sortable-chosen paper-material {
+  border: 2px dashed grey;
+}
+
+.drag-handle {
+  cursor: move;
+  cursor: -webkit-grabbing;
+}
+
 /* Viewer styles only */
 
 body#viewer {

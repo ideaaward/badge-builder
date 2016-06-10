@@ -22,7 +22,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../quiz-elements/quiz-single.html">
 <link rel="import" href="../quiz-elements/quiz-multiple.html">
-
 <link rel="import" href="../content-video/content-video.html">
 <link rel="import" href="../content-html/content-html.html">
 <link rel="import" href="../content-button/content-button.html">
@@ -30,6 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../quiz-elements/quiz-short-input.html">
 <link rel="import" href="../quiz-elements/quiz-long-input.html">
 
+<link rel="import" href="../../bower_components/Sortable/Sortable.html">
 
 <dom-module id="create-badge">
   <template>
@@ -62,6 +62,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         transform: translateY(-50%);
         top: 50%;
         right: 10px;
+      }
+
+      ::content .drag-handle {
+        position: absolute;
+        top: 0;
+        right: 0;
+        color: grey;
       }
 
       span,
@@ -188,6 +195,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           badgeSecret: {
             type: String,
             notifiy: true
+          },
+          _sortable: {
+            type: Object
           }
         },
 
@@ -215,6 +225,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           this.set('saveTitle', "Save");
           this.set('title', "Create Badge");
+          // enable drag & drop when switching into edit mode
+          if (this._sortable) {
+            console.log('->', this._sortable.options.disabled);
+            this._sortable.options.disabled = (this.isEdit) ? false : true;
+          }
         },
 
         selectTheme: function(event) {
@@ -374,16 +389,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         _getElementsData: function(){
-          var i = this._node.elements.length;
-          var elements = [];
+          var elementsData = [];
+          var elements = Polymer.dom(this.$.components).querySelectorAll('.draggable'); //this._node.elements
+          var i = elements.length;
           while(i--){
-            var el = this._node.elements[i].element;
+            var el = elements[i]; //elements[i].element;
             var data = el.getData();
             console.log('json', data);
-            elements.unshift(data); // reverse order
+            elementsData.unshift(data); // reverse order
           }
-          console.log("elements:", elements);
-          return elements;
+          console.log("elementsData:", elementsData);
+          return elementsData;
         },
 
         _test: function(){
@@ -414,6 +430,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         addElement: function (element) {
           element.edit = true;
+          element.classList.add("draggable");
           Polymer.dom(this.$.components).appendChild(element);
           this.push('_node.elements', {element: element});
         },
@@ -457,6 +474,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
           }
+          this._applyDragAndDrop();
+        },
+
+        _applyDragAndDrop: function() {
+          var container = this.$.components;
+          this._sortable = Sortable.create(container, {
+            draggable: ".draggable",
+            handle: ".drag-handle",
+            disabled: !this.isEditMode,
+            scroll: true,
+            animation: 200
+          });
         },
 
         // observers: [

@@ -10,7 +10,8 @@
     "polymer": "Polymer/polymer#^1.2.0",
     "juicy-html": "^1.1.0",
     "wysiwyg-e": "*",
-    "foundation": "~5.4.7"
+    "foundation": "~5.4.7",
+    "Sortable": "sortable.js#^1.4.2"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

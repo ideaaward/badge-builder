@@ -1,0 +1,22 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
+
+<script>
+  window.QuizBehaviours = window.QuizBehaviours || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviours.DraggableBehavior */
+  QuizBehaviours.DraggableBehaviorImpl = {
+
+    ready: function() {
+      // add draggable element to the DOM
+      var element = document.createElement("iron-icon");
+      element.icon = "editor:drag-handle";
+      element.classList.add("edit", "drag-handle");
+      Polymer.dom(this).appendChild(element);
+    }
+
+  };
+
+  QuizBehaviours.DraggableBehavior = [
+    QuizBehaviours.DraggableBehaviorImpl
+  ];
+</script>
