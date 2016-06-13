@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "test": "gulp test:local",
+    "test": "gulp test",
     "start": "node server.js"
   },
   "dependencies": {

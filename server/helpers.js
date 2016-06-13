@@ -16,10 +16,8 @@ module.exports.generateIds = function (content) {
 
 module.exports.calculateResults = function (badge, answers) {
   var results = {};
-  console.log('\nelements:\n', badge.content.elements, '\n=> user answers\n', answers );
   badge.content.elements.forEach(function (element) {
     var id = element._id;
-    console.log(id, element.elementType, 'answers:', element.answer);
     if (typeof element.answer !== 'undefined') {
       var result = false;
       var userAnswer = answers[id];
@@ -40,13 +38,8 @@ module.exports.calculateResults = function (badge, answers) {
             break;
       }
       results[id] = result;
-    } else {
-      // TODO: Handle content elements without answers better.
-      results[id] = true;
     }
-
   });
-  console.log("all results:", results);
   return results;
 };
 
