@@ -3,13 +3,12 @@
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
 
-<!-- TODO: make html import -->
-<script src="../../bower_components/lodash/lodash.min.js"></script>
+<link rel="import" href="scripts/lodash.html">
 
 <script>
-  window.QuizBehaviours = window.QuizBehaviours || {}; // Behavior namespace
-  /** @polymerBehavior QuizBehaviours.SelectableBehavior */
-  QuizBehaviours.SelectableBehaviorImpl = {
+  window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviors.SelectableBehavior */
+  QuizBehaviors.SelectableBehaviorImpl = {
     properties: {
       /**
        * `options` indicates that the number of options to select
@@ -27,6 +26,7 @@
 
       /**
        * References for dynamically created elements
+       * TODO: Remove this and use query selector to perform add/remove functions
        *
        * @type boolean
        * @default false
@@ -38,6 +38,11 @@
         }
       },
 
+      /**
+       * Reference for dynamic option elements container
+       *
+       * @type object
+       */
       _optionsContainer: {
         type: Object
       },
@@ -202,7 +207,7 @@
     },
 
     _optionsAddedRemoved: function(length){
-      // we don't want to fire events while options are being set/reset
+      // NB: we don't want to fire events while options are being set/reset
       if (this._isReady) {
         // console.log(this.localName, "> length", length);
         this.fire("optionsAddedRemoved", {length: length});
@@ -272,7 +277,7 @@
     }
   };
 
-  QuizBehaviours.SelectableBehavior = [
-    QuizBehaviours.SelectableBehaviorImpl
+  QuizBehaviors.SelectableBehavior = [
+    QuizBehaviors.SelectableBehaviorImpl
   ];
 </script>

@@ -28,6 +28,7 @@ module.exports.calculatePageResults = function (badge, answers) {
     switch (element.elementType) {
       case "quiz-single":
       case "quiz-multiple":
+      case "quiz-ordered-list":
         result = isAnswerCorrect(userAnswer, element.answer);
         break;
       case "quiz-short-input":
@@ -59,6 +60,7 @@ module.exports.calculateResults = function (badge, answers) {
       switch(element.elementType){
         case "quiz-single":
         case "quiz-multiple":
+        case "quiz-ordered-list":
             result = isAnswerCorrect(userAnswer, element.answer);
             break;
         case "quiz-short-input":

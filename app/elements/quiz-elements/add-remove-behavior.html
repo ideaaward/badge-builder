@@ -1,24 +1,40 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="helper-behavior.html">
-<link rel="import" href="selectable-edit-behavior.html">
 
 <script>
-  window.QuizBehaviours = window.QuizBehaviours || {}; // Behavior namespace
-  /** @polymerBehavior QuizBehaviours.AddRemoveBehavior */
-  QuizBehaviours.AddRemoveBehaviorImpl = {
+  window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviors.AddRemoveBehavior */
+  QuizBehaviors.AddRemoveBehaviorImpl = {
     properties: {
+
       /** Add button element reference */
       _elementAdd: {
         type: Object
       },
+
       /** Remove button element reference */
       _elementRemove: {
         type: Object
       },
+
       /** Container element reference */
       _elementContainer: {
         type: Object
+      },
+
+      /**
+       * `options` indicates that the number of options to select
+       *
+       * @type boolean
+       * @default false
+       */
+      options: {
+        type: Array,
+        value: function(){
+          return [];
+        }
       }
+
     },
 
     ready: function() {
@@ -41,13 +57,14 @@
       Polymer.dom(this._elementContainer).appendChild(this._elementRemove);
 
       //console.info(this.localName, "Added add/remove buttons");
-      // setup
-      this._optionsAddedRemoved(this._options.length);
     },
 
     attached: function() {
       this.listen(this._elementAdd, 'tap', '_tappedAdd');
       this.listen(this._elementRemove, 'tap', '_tappedRemove');
+
+      // disable delete button if no options
+      this._optionsLengthChanged(this.options.length);
     },
 
     detached: function() {
@@ -76,6 +93,8 @@
     _tappedAdd: function(e) {
       //console.info(this.localName, "Tapped add!");
       this._addOption(); // selectable-behavior method
+      // NB: we don't need to update options until input text has been entered
+      this._disableDeleteButton(false); // enables delete button
     },
 
     /**
@@ -84,26 +103,43 @@
     _tappedRemove: function(e) {
       //console.info(this.localName, "Tapped remove!");
       this._removeOption(); // selectable-behavior method
+      this.updateOptions();
+      this._optionsLengthChanged(this.options.length); // disables delete button if no more options remain
+    },
+
+    /**
+     * Overridable methods
+     */
+    _addOption: function(name){
+      console.log("added option:", name);
+    },
+    _removeOption: function(name){
+      console.log("removed option:", name);
     },
 
     /**
      * Add/remove elements handler
      */
-    _handleOptionsAddedRemoved: function(e){
+    _handleOptionsAddedRemoved: function(e) {
       var length = e.detail.length;
+      // console.log("handle added/removed options:", length);
+      this._optionsLengthChanged(length);
 
-      if (this._elementRemove.disabled == null) {
-        return; // element not ready
-      }
-      //console.log(this.localName, "length", length);
-
-      if (length === 0) {
-        this._elementRemove.disabled = true;
-      } else {
-        this._elementRemove.disabled = false;
-      }
-
+      // Update options after add/remove action
       this.updateOptions(); // NB: beware - we don't want this while setting/resetting elements!
+    },
+
+    _optionsLengthChanged: function(length) {
+      //console.log(this.localName, "options length:", length);
+      if (length === 0) {
+        this._disableDeleteButton(true);
+      } else {
+        this._disableDeleteButton(false);
+      }
+    },
+
+    _disableDeleteButton: function(disabled){
+      this._elementRemove.disabled = disabled;
     },
 
     /**
@@ -133,26 +169,25 @@
       var i = elements.length;
       while(i--){
         var el = elements[i];
-        var value = el.name; // NB: element name updates via binding
-        // console.log(i, el.name, el.value, el.checked);
+        var value = el.name || el.title; // NB: element name updates via binding
+        //console.log(i, value, el.name, el.value, el.checked);
         if (value){
           options.unshift(value);
         }
       }
-      //console.log("options:", options);
+      // console.log("> update options:", options);
       this.set('options', options);
     },
 
     listeners: {
+      'optionsChanged': 'updateOptions',
       'optionsAddedRemoved': '_handleOptionsAddedRemoved',
-      // 'optionsSelected': '_handleOptionsSelected',
       'input': '_handleInputChange'
     }
   };
 
-  QuizBehaviours.AddRemoveBehavior = [
-    QuizBehaviours.HelperBehavior,
-    QuizBehaviours.SelectableEditBehavior,
-    QuizBehaviours.AddRemoveBehaviorImpl
+  QuizBehaviors.AddRemoveBehavior = [
+    QuizBehaviors.HelperBehavior,
+    QuizBehaviors.AddRemoveBehaviorImpl
   ];
 </script>

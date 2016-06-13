@@ -4,6 +4,7 @@
 
 <link rel="import" href="editable-behavior.html">
 <link rel="import" href="add-remove-behavior.html">
+<link rel="import" href="selectable-edit-behavior.html">
 <link rel="import" href="datamodel-behavior.html">
 
 <!--
@@ -82,9 +83,10 @@ Example:
       },
 
       behaviors: [
-        QuizBehaviours.AddRemoveBehavior,
-        QuizBehaviours.EditableBehavior,
-        QuizBehaviours.DataModelBehavior
+        QuizBehaviors.AddRemoveBehavior,
+        QuizBehaviors.SelectableEditBehavior,
+        QuizBehaviors.EditableBehavior,
+        QuizBehaviors.DataModelBehavior
       ]
     });
   </script>
