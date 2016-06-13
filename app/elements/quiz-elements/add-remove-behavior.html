@@ -94,6 +94,7 @@
       //console.info(this.localName, "Tapped add!");
       this._addOption(); // selectable-behavior method
       // NB: we don't need to update options until input text has been entered
+      this._disableDeleteButton(false); // enables delete button
     },
 
     /**
@@ -103,6 +104,7 @@
       //console.info(this.localName, "Tapped remove!");
       this._removeOption(); // selectable-behavior method
       this.updateOptions();
+      this._optionsLengthChanged(this.options.length); // disables delete button if no more options remain
     },
 
     /**
@@ -120,6 +122,7 @@
      */
     _handleOptionsAddedRemoved: function(e) {
       var length = e.detail.length;
+      // console.log("handle added/removed options:", length);
       this._optionsLengthChanged(length);
 
       // Update options after add/remove action
@@ -127,16 +130,16 @@
     },
 
     _optionsLengthChanged: function(length) {
-      if (this._elementRemove.disabled == null) {
-        return; // element not ready
-      }
       //console.log(this.localName, "options length:", length);
-
       if (length === 0) {
-        this._elementRemove.disabled = true;
+        this._disableDeleteButton(true);
       } else {
-        this._elementRemove.disabled = false;
+        this._disableDeleteButton(false);
       }
+    },
+
+    _disableDeleteButton: function(disabled){
+      this._elementRemove.disabled = disabled;
     },
 
     /**
@@ -172,7 +175,7 @@
           options.unshift(value);
         }
       }
-      // console.log("> options:", options);
+      // console.log("> update options:", options);
       this.set('options', options);
     },
 
