@@ -3,9 +3,9 @@
 <link rel="import" href="draggable-behavior.html">
 
 <script>
-  window.QuizBehaviours = window.QuizBehaviours || {}; // Behavior namespace
-  /** @polymerBehavior QuizBehaviours.EditableBehavior */
-  QuizBehaviours.EditableBehaviorImpl = {
+  window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviors.EditableBehavior */
+  QuizBehaviors.EditableBehaviorImpl = {
     properties: {
       /**
        * `edit` indicates that the element should be in WYSIWYG editor mode.
@@ -53,9 +53,9 @@
     }
   };
 
-  QuizBehaviours.EditableBehavior = [
-    QuizBehaviours.DraggableBehavior,
-    QuizBehaviours.DeletableBehavior,
-    QuizBehaviours.EditableBehaviorImpl
+  QuizBehaviors.EditableBehavior = [
+    QuizBehaviors.DraggableBehavior,
+    QuizBehaviors.DeletableBehavior,
+    QuizBehaviors.EditableBehaviorImpl
   ];
 </script>

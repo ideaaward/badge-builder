@@ -1,10 +1,11 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="editable-behavior.html">
 <link rel="import" href="add-remove-behavior.html">
-<link rel="import" href="selectable-edit-behavior.html">
+<link rel="import" href="orderable-edit-behavior.html">
 <link rel="import" href="datamodel-behavior.html">
 
 <!--
@@ -16,7 +17,7 @@ Example:
 
 @demo
 -->
-<dom-module id="quiz-multiple">
+<dom-module id="quiz-ordered-list">
 
   <style>
     :host {
@@ -32,6 +33,39 @@ Example:
     .question {
       width: 100%;
     }
+
+    ::content ol {
+      list-style-position: outside;
+      /*padding: 0;*/
+      box-sizing: border-box;
+      /*width: 100%;*/
+      display: flex; /* required to display in single line */
+      flex-direction: column;
+    }
+
+    ::content ol > li {
+      position: relative;
+      width: 100%;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+
+    ::content ol > li:before {
+      float: left;
+    }
+
+    ::content ol > li paper-input {
+      display: inline-block;
+      width: calc(100% - 40px);
+    }
+
+    ::content .drag-item {
+      position: absolute;
+      right: 0;
+      color: grey;
+      cursor: move;
+      cursor: -webkit-grabbing;
+    }
   </style>
 
   <template>
@@ -40,13 +74,14 @@ Example:
       <div>
         <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>
       </div>
+      <!-- <ol id="list"></ol> -->
       <content></content>
     </paper-material>
   </template>
 
   <script>
-    QuizMultiple = Polymer({
-      is: 'quiz-multiple',
+    QuizSelection = Polymer({
+      is: 'quiz-ordered-list',
       properties: {
         /**
          * The `question` for the quiz element.
@@ -54,18 +89,6 @@ Example:
          */
         question: {
           type: String
-        },
-
-        /**
-         * `multi` indicates whether the element supports multiple selections.
-         *
-         * @type boolean
-         * @default true
-         */
-        multi: {
-          type: Boolean,
-          readOnly: true,
-          value: true
         }
       },
 
@@ -73,18 +96,19 @@ Example:
        * Returns the JSON data for saving
        */
       getData: function() {
+        this._updateEditedAnswers();
         return {
           _id : this._id,
           elementType : this.localName,
           question : this.question,
           options : this.options,
-          answer : this.selectedOptions()
+          answer : this.answer
         };
       },
 
       behaviors: [
         QuizBehaviors.AddRemoveBehavior,
-        QuizBehaviors.SelectableEditBehavior,
+        QuizBehaviors.OrderableEditBehavior,
         QuizBehaviors.EditableBehavior,
         QuizBehaviors.DataModelBehavior
       ]

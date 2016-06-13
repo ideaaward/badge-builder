@@ -4,9 +4,9 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 
 <script>
-  window.QuizBehaviours = window.QuizBehaviours || {}; // Behavior namespace
-  /** @polymerBehavior QuizBehaviours.SelectableInputBehavior */
-  QuizBehaviours.SelectableEditBehaviorImpl = {
+  window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviors.SelectableInputBehavior */
+  QuizBehaviors.SelectableEditBehaviorImpl = {
 
     properties: {
       /**
@@ -35,7 +35,7 @@
       }
       // edit mode
       var updatedAnswers = e.detail.selectedItems;
-      console.log("updatedAnswers > ", updatedAnswers);
+      //console.log("updatedAnswers > ", updatedAnswers);
       this.set('answer', updatedAnswers);
     },
 
@@ -116,8 +116,8 @@
 
   };
 
-  QuizBehaviours.SelectableEditBehavior = [
-    QuizBehaviours.SelectableBehavior,
-    QuizBehaviours.SelectableEditBehaviorImpl
+  QuizBehaviors.SelectableEditBehavior = [
+    QuizBehaviors.SelectableBehavior,
+    QuizBehaviors.SelectableEditBehaviorImpl
   ];
 </script>

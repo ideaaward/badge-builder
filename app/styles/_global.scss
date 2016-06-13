@@ -98,13 +98,14 @@ paper-fab.blue {
   opacity: 0.5;
 }
 
-.sortable-chosen paper-material {
+.sortable-chosen > paper-material {
   border: 2px dashed grey;
 }
 
 .drag-handle {
   cursor: move;
   cursor: -webkit-grabbing;
+  color: grey;
 }
 
 /* Viewer styles only */
@@ -238,6 +239,35 @@ body#viewer {
     padding-top: ($gap);
     padding-bottom: $footer_height + ($gap*5);
     text-align: center;
+  }
+
+  ol.options {
+    cursor: move;
+    cursor: -webkit-grabbing;
+
+    list-style-position: outside;
+    margin: $gap;
+  }
+
+  ol.options li {
+    // display: block;
+    margin: 2px $gap;
+    padding: $gap;
+    box-sizing: border-box;
+    border: 2px solid grey;
+    color: grey;
+  }
+
+  ol.options .sortable-chosen {
+    opacity: 0.5;
+  }
+
+  ol.options .sortable-chosen {
+    border: 2px dashed grey;
+  }
+
+  ol.options .drag-item {
+    color: grey;
   }
 
   // Polymer element styles with custom theme color
