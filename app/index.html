@@ -55,15 +55,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        in this file. All other imports should go in elements.html -->
   <link rel="import" href="/static/elements/elements.html">
 
-  <!-- Configure your routes here -->
-  <link rel="import" href="/static/elements/routing.html">
-
   <!-- For shared styles, shared-styles.html import in elements.html -->
   <style is="custom-style" include="shared-styles"></style>
 </head>
 
 <body unresolved>
+  <!-- build:remove -->
   <span id="browser-sync-binding"></span>
+  <!-- endbuild -->
+
   <template is="dom-bind" id="app">
 
     <paper-drawer-panel id="paperDrawerPanel">
@@ -164,6 +164,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   </template>
 
+  <!-- build:js /static/bower_components/lodash/lodash.min.js -->
+  <script src="/static/bower_components/lodash/lodash.min.js"></script>
+  <!-- endbuild-->
   <!-- build:js /static/scripts/app.js -->
   <script src="/static/scripts/app.js"></script>
   <!-- endbuild-->

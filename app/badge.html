@@ -40,7 +40,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 
 <body unresolved id="viewer">
+  <!-- build:remove -->
   <span id="browser-sync-binding"></span>
+  <!-- endbuild -->
   <template is="dom-bind" id="app">
 
     <!-- Main Toolbar -->
@@ -63,6 +65,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   </template>
 
+  <!-- build:js /static/bower_components/lodash/lodash.min.js -->
+  <script src="/static/bower_components/lodash/lodash.min.js"></script>
+  <!-- endbuild-->
   <!-- build:js /static/scripts/app.js -->
   <script src="/static/scripts/app.js"></script>
   <!-- endbuild-->

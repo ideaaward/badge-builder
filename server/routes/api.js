@@ -113,7 +113,7 @@ router.post('/badges/:id/answers', function (req, res) {
 */
 
 var requireAuthor = function (req, res, next) {
-  if (!req.user.role || req.user.role === 'user') {
+  if (!req.user || !req.user.role || req.user.role === 'user') {
     return sendUnauthorized(res);
   }
   next();
@@ -217,7 +217,7 @@ router.delete('/author/badges/:id', requireAuthor, function (req, res) {
 */
 
 var requireAdmin = function (req, res, next) {
-  if (req.user.role !== 'admin') {
+  if (!req.user || req.user.role !== 'admin') {
     return sendUnauthorized(res);
   }
   next();
