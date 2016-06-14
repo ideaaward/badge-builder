@@ -111,8 +111,10 @@
       el.appendChild(handlerElement);
 
       // view label
+      var p = document.createElement("p");
       var textnode = document.createTextNode(label);
-      el.appendChild(textnode);
+      p.appendChild(textnode);
+      el.appendChild(p);
     },
 
     _addElement: function(element){
