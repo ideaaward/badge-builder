@@ -147,8 +147,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- Quiz -->
         <paper-fab icon="radio-button-checked" on-tap="createYesNo"></paper-fab>
         <paper-fab icon="check-box" on-tap="createMultipleChoice"></paper-fab>
-        <paper-fab icon="editor:format-list-numbered" on-tap="createQuizOrderedList"></paper-fab>
-        <!-- <paper-fab icon="editor:format-line-spacing" on-tap="createQuizDraggable"></paper-fab> -->
+        <paper-fab icon="editor:format-line-spacing" on-tap="createQuizOrderedList"></paper-fab>
+        <paper-fab icon="av:shuffle" on-tap="createQuizDraggable"></paper-fab>
         <paper-fab icon="editor:short-text" on-tap="createQuizShortInput"></paper-fab>
         <paper-fab icon="editor:format-align-left" on-tap="createQuizLongInput"></paper-fab>
         <!-- Content -->
@@ -186,7 +186,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
           isEditMode : {
             type: Boolean,
-            value: false,
+            value: true,
             observer: '_changeEditMode'
           },
           title: {
@@ -218,17 +218,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         opened: function (event) {
           this._resetPage();
-          // if edit mode
+          // edit mode
           if (event.detail && event.detail.params){
             var id = event.detail.params._id;
             console.log(this.localName, "opened", id);
-            this.set('isEditMode', true);
             this.set('id', id);
             this.$.getBadge.url = '/api/author/badges/' + id;
             this.$.getBadge.generateRequest();
             return;
           }
-          this.set('isEditMode', false);
         },
 
         _changeEditMode: function(isEditMode) {
@@ -468,11 +466,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.set('badgeSecret', this.response.consumerSecret);
           this.set('badgeTheme', this.response.content.theme);
 
-
           for (var i=0; i<elements.length; i++) {
-
             var element = elements[i];
-
             switch(element.elementType) {
                 case "content-video":
                     this.addVideo(element.embededURI);
@@ -496,13 +491,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.answer); // generic quiz elements
                   break;
             }
-
           }
-          this._applyDragAndDrop();
         },
 
         _applyDragAndDrop: function() {
           var container = this.$.components;
+          console.log("container", container);
           this._sortable = Sortable.create(container, {
             draggable: ".draggable",
             handle: ".drag-handle",
@@ -510,6 +504,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             scroll: true,
             animation: 200
           });
+        },
+
+        attached: function() {
+          this._applyDragAndDrop();
         },
 
         detached: function() {
