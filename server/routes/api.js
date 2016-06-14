@@ -67,8 +67,7 @@ router.put('/badges/:id/answers', function (req, res) {
     if (err) {
       return sendError(res, err);
     }
-
-    res.json(helpers.calculatePageResults(badge, req.body));
+    res.json(helpers.calculateResults(badge, req.body));
   });
 });
 
@@ -84,7 +83,7 @@ router.post('/badges/:id/answers', function (req, res) {
         allCorrect = false;
         break;
       }
-    };
+    }
     if (allCorrect) {
       idea.postResult(req.user.accessToken, {
         result: 'pass'

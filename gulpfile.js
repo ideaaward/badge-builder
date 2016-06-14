@@ -25,6 +25,7 @@ var packageJson = require('./package.json');
 var crypto = require('crypto');
 var sass = require('gulp-sass');
 var bower = require('gulp-bower');
+var exec = require('child_process').exec;
 
 var AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
@@ -292,3 +293,11 @@ gulp.task('default', ['clean'], function(cb) {
 // Load tasks for web-component-tester
 // Adds tasks for `gulp test:local` and `gulp test:remote`
 require('web-component-tester').gulp.init(gulp);
+
+gulp.task('test', ['test:local'], function (cb) {
+  exec('node server/tests/testHelpers.js', function (err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    cb(err);
+  });
+});
