@@ -29,11 +29,11 @@
        * Include the `shuffle` attribute to randomise the order of the `options`
        *
        * @type boolean
-       * @default false
+       * @default true
        */
       shuffle: {
         type: Boolean,
-        value: false
+        value: true
       },
 
       /**
@@ -162,6 +162,7 @@
       return answers;
     },
 
+    // TODO: we should reshuffle if by chance the shuffled order equals the answer order
     _shuffle: function(){
       // shuffle options
       if (this.shuffle && this.options.length>0) {
