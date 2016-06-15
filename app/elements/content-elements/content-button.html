@@ -31,9 +31,18 @@ Content component for a button element
 
   <template>
     <paper-material hidden=[[!edit]]>
-      <h3>Button Element</h3>
-      <paper-input placeholder="Button Text" value="{{buttonText}}"></paper-input>
-      <paper-input placeholder="Button URL" value="{{buttonURL}}"></paper-input>
+      <div>
+        <h3>Button Element</h3>           
+        <paper-tooltip>This is button element. This will be displayed to the user as a simple button with the text that you provide below. This is useful if you would like to link users to external learning resources.</paper-tooltip>
+      </div>
+      <div>
+        <paper-input placeholder="Button Text" value="{{buttonText}}"></paper-input>
+        <paper-tooltip>This text will be used as the the label of the button</paper-tooltip>
+      </div>
+      <div>
+        <paper-input placeholder="Button URL" value="{{buttonURL}}"></paper-input>
+        <paper-tooltip>This is the URL that user's will be linked to when the press the button. It will open in a new tab. Please ensure this is a valid and working URL.</paper-tooltip>
+      </div>
       <content></content>
     </paper-material>
     

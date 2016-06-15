@@ -33,9 +33,18 @@
 
       <!-- Editor View -->
       <div hidden=[[!edit]]>
-        <h3>Long Answer Quiz Element</h3>
-        <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>
-        <div><paper-input placeholder="Word Limit" value="{{wordLimit}}" type="number"></paper-input></div>
+        <div>
+          <h3>Long Answer Quiz Element</h3>
+          <paper-tooltip>This is a "long answer" question. You can ask users an open ended question and award them points for writing a long answer. You can set the limit for the minimum amount of words the user has to write to get the points for this type of question.</paper-tooltip>
+        </div>
+        <div>
+          <paper-input placeholder="Question" value="{{question}}"></paper-input>
+          <paper-tooltip>This is the question that will be displayed to the user.</paper-tooltip>
+        </div>
+        <div>
+          <paper-input placeholder="Word Limit" value="{{wordLimit}}" type="number"></paper-input>
+          <paper-tooltip>Enter a number value for the minimum amount of words the user has to write to get the points for this question.</paper-tooltip>
+          </div>
       </div>
 
       <!-- Badge View -->

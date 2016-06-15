@@ -29,9 +29,18 @@
       <!-- Editor View -->
       <template is="dom-if" if="[[edit]]" >
         <div>
-          <h3>Short Answer Quiz Element</h3>
-          <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>
-          <div><paper-input placeholder="Words to look for in user answer" value="{{answerKeywords}}"></paper-input></div>
+          <div>
+            <h3>Short Answer Quiz Element</h3>
+            <paper-tooltip>This is a "short answer" question. Use this type of question when you want the user to write a specfic answer to the question. Using the "short answer" element, you can define the words you are looking for in the users answer; if the user's answer contains All of the words you are looking for, they will get the points for this question. For example, if you ask: "What is the definition of Economics?", you can look for the words "resources, allocating, scarce, demand, supply". If the user enters all of those words in their answer, they pass. </paper-tooltip>
+          </div>
+          <div>
+            <paper-input placeholder="Question" value="{{question}}"></paper-input>
+            <paper-tooltip>This is the question that will be displayed to the user.</paper-tooltip>  
+          </div>
+          <div>
+            <paper-input placeholder="Words to look for in user answer. Seperate by commas e.g. apple, banana, cherry" value="{{answerKeywords}}"></paper-input>
+            <paper-tooltip>Seperate each word with a comma. These are the words you want to find in the user's answer. All of these words must be found in the answer for the user to get this question right. </paper-tooltip>  
+          </div>
         </div>
       </template>
 

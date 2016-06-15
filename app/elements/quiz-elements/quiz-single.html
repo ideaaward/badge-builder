@@ -36,10 +36,10 @@ Example:
 
   <template>
     <paper-material class="content">
+        <h3 hidden=[[!edit]]>Single Choice Quiz Element</h3>
+        <paper-tooltip hidden=[[!edit]]>This is a single choice question where only one option can be selected and there is only one correct answer. You can use the + and - buttons to add and delete options that the user can select. After you have listed all of the options available to the user, select the radio button for the option which is the correct answer to this question.</paper-tooltip>
       <h3 class="question" hidden=[[edit]]>[[question]]</h3>
-      <div>
-        <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>
-      </div>
+      <div><paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>
       <content></content>
     </paper-material>
   </template>

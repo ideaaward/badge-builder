@@ -36,10 +36,10 @@ Example:
 
   <template>
     <paper-material class="content">
+      <h3 hidden=[[!edit]]>Multiple Choice Quiz Element</h3>
+      <paper-tooltip hidden=[[!edit]]>This is a multiple choice question where many options can be selected and there can be more than one correct answer. You can use the + and - buttons to add and delete options that the user can select. After you have listed all of the options available to the user, tick the boxes to indicate the correct answers for this question. Remember, multiple choice indicates to the user to select more than one box.</paper-tooltip>
       <h3 class="question" hidden=[[edit]]>[[question]]</h3>
-      <div>
-        <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>
-      </div>
+      <div><paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>
       <content></content>
     </paper-material>
   </template>
