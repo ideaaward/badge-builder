@@ -5,6 +5,7 @@
 
 <link rel="import" href="../behaviors/editable-behavior.html">
 <link rel="import" href="../behaviors/datamodel-behavior.html">
+<link rel="import" href="../behaviors/hint-behavior.html">
 
 <!--
     Quiz element for long user input (this type of quiz element will not be marked / scored)
@@ -33,19 +34,36 @@
 
       <!-- Editor View -->
       <div hidden=[[!edit]]>
-        <h3>Long Answer Quiz Element</h3>
-        <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>
-        <div><paper-input placeholder="Word Limit" value="{{wordLimit}}" type="number"></paper-input></div>
+        <div>
+          <h3>Long Answer Quiz Element</h3>
+          <paper-tooltip>This is a "long answer" question. You can ask users an open ended question and award them points for writing a long answer. You can set the limit for the minimum amount of words the user has to write to get the points for this type of question.</paper-tooltip>
+        </div>
+        <div>
+          <paper-input placeholder="Question" value="{{question}}"></paper-input>
+          <paper-tooltip>This is the question that will be displayed to the user.</paper-tooltip>
+        </div>
+        <div>
+          <paper-input placeholder="Word Limit" value="{{wordLimit}}" type="number"></paper-input>
+          <paper-tooltip>Enter a number value for the minimum amount of words the user has to write to get the points for this question.</paper-tooltip>
+        </div>
+        <div>
+          <paper-input placeholder="Hint Text" value="{{hintText}}"></paper-input>
+          <paper-tooltip>Enter the hint you want to display to user's if they get this question wrong</paper-tooltip>
+        </div>                    
       </div>
 
       <!-- Badge View -->
       <template is="dom-if" if="[[!edit]]">
-        <div class="row">
+        <div class="row">         
           <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
             <p>[[question]]</p>
             <div><paper-textarea class="answer" placeholder="Answer" value="{{answer}}" rows="5"></paper-textarea></div>
-          </div>
+          </div>      
         </div>
+        <br/>
+        <div class="hint_error" hidden=[[!showHint]]>
+          <p>[[hintText]]</p>
+        </div>         
       </template>
 
       <content></content>
@@ -101,7 +119,9 @@
           elementType : this.localName,
           question : this.question,
           answer : this.wordLimit,
-          wordLimit : this.wordLimit
+          wordLimit : this.wordLimit,
+          hintText : this.hintText,
+          showHint: this.showHint
         };
       },
 
@@ -111,7 +131,8 @@
 
       behaviors: [
         QuizBehaviors.EditableBehavior,
-        QuizBehaviors.DataModelBehavior
+        QuizBehaviors.DataModelBehavior,
+        QuizBehaviors.HintBehavior
       ]
     });
 

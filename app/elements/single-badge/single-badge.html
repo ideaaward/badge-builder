@@ -184,26 +184,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addElement(el);
         },
 
-        addQuizShortInput: function(id, question, answerKeywords) {
+        addQuizShortInput: function(id, question, answerKeywords, hintText) {
           var el = new QuizShortInput();
           el._id = id;
           el.question = question;
           el.answerKeywords = answerKeywords;
+          el.hintText = hintText;
           this.addElement(el);
         },
 
-        addQuizLongInput: function(id, question) {
+        addQuizLongInput: function(id, question, hintText) {
           var el = new QuizLongInput();
           el._id = id;
           el.question = question;
+          el.hintText = hintText;
           this.addElement(el);
         },
 
-        addQuizElementType: function(elementType, id, question, options) {
+        addQuizElementType: function(elementType, id, question, options, hintText) {
           var el = document.createElement(elementType);
           el._id = id;
           el.question = question;
           el.options = options;
+          el.hintText = hintText;
           el.shuffle = true;
           this.addElement(el);
         },
@@ -272,13 +275,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   this.addContentSection(element.title);
                   break;                 
                 case "quiz-short-input":
-                  this.addQuizShortInput(element._id, element.question, element.answerKeywords);
+                  this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.hintText);
                   break;
                 case "quiz-long-input":
-                  this.addQuizLongInput(element._id, element.question);
+                  this.addQuizLongInput(element._id, element.question, element.hintText);
                   break;
                 default:
-                  this.addQuizElementType(element.elementType, element._id, element.question, element.options); // generic quiz elements
+                  this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.hintText); // generic quiz elements
                   break;
               }
             }
@@ -329,9 +332,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var element = sectionChildren[i];
             if (response[element._id] === false) {
               element.classList.add('wrong');
+              element.showHint = true;
               allCorrect = false;
             } else {
               element.classList.remove('wrong');
+              element.showHint = false;
             }
           }
 
