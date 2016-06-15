@@ -329,7 +329,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         createContentSection: function() {
-          this.addContentSection("Section");
+          this.addContentSection("Section Title");
         },
 
         addVideo: function(embededURI) {
@@ -366,12 +366,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addButton();
         },
 
-        addQuizShortInput: function(id, question, answerKeywords, answer) {
+        addQuizShortInput: function(id, question, answerKeywords, answer, hintText, showHint) {
           var el = new QuizShortInput();
           el._id = id;
           el.question = question;
           el.answerKeywords = answerKeywords;
           el.answer = answer;
+          el.hintText = hintText;
+          el.showHint = showHint;
 
           this.addElement(el);
         },
@@ -380,12 +382,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addQuizShortInput();
         },
 
-        addQuizLongInput: function(id, question, answer, wordLimit) {
+        addQuizLongInput: function(id, question, answer, wordLimit, hintText, showHint) {
           var el = new QuizLongInput();
           el._id = id;
           el.question = question;
           el.answer = answer;
           el.wordLimit = wordLimit;
+          el.hintText = hintText;
+          el.showHint = showHint;
 
           this.addElement(el);
         },
@@ -451,12 +455,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addElement(el);
         },
 
-        addQuizElementType: function(elementType, id, question, options, answer) {
+        addQuizElementType: function(elementType, id, question, options, answer, hintText, showHint) {
           var el = document.createElement(elementType);
           el._id = id;
           el.question = question;
           el.options = options;
           el.answer = answer;
+          el.hintText = hintText;
+          el.showHint = showHint;
           //
           this.addElement(el);
         },
@@ -489,20 +495,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 case "content-button":
                     this.addButton(element.buttonURL, element.buttonText);
                     break;
+                case "content-section":
+                    this.addContentSection(element.title);
+                    break;
                 case "quiz-short-input":
-                    this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.answer);
+                    this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.answer, element.hintText, element.showHint);
                     break;
                 case "quiz-long-input":
-                    this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit);
+                    this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit, element.hintText, element.showHint);
                     break;
                 case "quiz-list-groups":
                     this.addQuizListGroups(element._id, element.question, element.answer);
                     break;
-                case "content-section":
-                    this.addContentSection(element.title);
-                    break;
                 default:
-                  this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.answer); // generic quiz elements
+                  this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.answer, element.hintText, element.showHint); // generic quiz elements
                   break;
             }
           }

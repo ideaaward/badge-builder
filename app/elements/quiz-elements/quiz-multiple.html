@@ -6,6 +6,7 @@
 <link rel="import" href="../behaviors/add-remove-behavior.html">
 <link rel="import" href="../behaviors/selectable-edit-behavior.html">
 <link rel="import" href="../behaviors/datamodel-behavior.html">
+<link rel="import" href="../behaviors/hint-behavior.html">
 
 <!--
 Quiz component for question with mutiple choice response (checkbox style)
@@ -36,11 +37,20 @@ Example:
 
   <template>
     <paper-material class="content">
+      <h3 hidden=[[!edit]]>Multiple Choice Quiz Element</h3>
+      <paper-tooltip hidden=[[!edit]]>This is a multiple choice question where many options can be selected and there can be more than one correct answer. You can use the + and - buttons to add and delete options that the user can select. After you have listed all of the options available to the user, tick the boxes to indicate the correct answers for this question. Remember, multiple choice indicates to the user to select more than one box.</paper-tooltip>
       <h3 class="question" hidden=[[edit]]>[[question]]</h3>
-      <div>
-        <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>
-      </div>
+      <div><paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>
+
+      <div hidden=[[!edit]]>
+        <paper-input class="question" placeholder="Hint Text" value="{{hintText}}"></paper-input>
+        <paper-tooltip>Enter the hint you want to display to user's if they get this question wrong</paper-tooltip>
+      </div>        
       <content></content>
+      <br/>
+	    <div class="hint_error" hidden=[[!showHint]]>
+        <p>[[hintText]]</p>
+      </div>
     </paper-material>
   </template>
 
@@ -78,7 +88,9 @@ Example:
           elementType : this.localName,
           question : this.question,
           options : this.options,
-          answer : this.selectedOptions()
+          answer : this.selectedOptions(),
+          hintText : this.hintText,
+          showHint: this.showHint
         };
       },
 
@@ -86,7 +98,8 @@ Example:
         QuizBehaviors.AddRemoveBehavior,
         QuizBehaviors.SelectableEditBehavior,
         QuizBehaviors.EditableBehavior,
-        QuizBehaviors.DataModelBehavior
+        QuizBehaviors.DataModelBehavior,
+        QuizBehaviors.HintBehavior
       ]
     });
   </script>

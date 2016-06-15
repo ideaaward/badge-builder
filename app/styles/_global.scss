@@ -287,4 +287,10 @@ body#viewer {
 	.wrong {
 		border: 1px $error solid;
 	}
+
+  .hint_error {
+      color: #D8000C;
+      background-color: #FFBABA;
+  }
+
 }
