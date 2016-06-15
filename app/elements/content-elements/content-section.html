@@ -1,0 +1,77 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="../behaviors/editable-behavior.html">
+<link rel="import" href="../behaviors/datamodel-behavior.html">
+
+<dom-module id="content-section">
+  <style>
+    :host {
+      display: block;
+      box-sizing: border-box;
+    }
+    paper-input {
+      display: inline-block;
+      width: 100%;
+    }
+    paper-material {
+      text-align: left;
+      padding: 10px 20px; 
+      margin-top: 20px;
+      color: red;
+    } 
+    h3 {
+       text-align: center;
+    }
+  </style>
+
+  <template>
+    
+    <paper-material elevation="5" hidden=[[!edit]]>       
+      <h3>Section Divider</h3>
+      <paper-input placeholder="Section title" value="{{title}}" hidden="[[!edit]]"></paper-input>
+      <content></content>
+    </paper-material>
+        
+    <div hidden="[[edit]]">
+      <h1>[[title]]</h1>
+      <hr />
+    </div>
+          
+  </template>
+</dom-module>
+
+<script>
+  /** Content component for sections dividers */
+  ContentSection = Polymer({
+    is: 'content-section',
+    properties: {
+
+      /**
+       * The section title
+       * @type {string}
+       */
+      title: {
+        type: String,
+        value: function() {
+          return "";
+        }
+      }
+
+    },
+
+    // Element Behavior
+
+    getData: function(){
+      return {
+        elementType : this.localName,
+        title : this.title
+      };
+    },
+
+    behaviors: [
+      QuizBehaviors.EditableBehavior,
+      QuizBehaviors.DataModelBehavior
+    ]   
+
+  });
+</script>

@@ -1,0 +1,89 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+<link rel="import" href="../behaviors/editable-behavior.html">
+<link rel="import" href="../behaviors/datamodel-behavior.html">
+
+<!--
+Content component for a button element
+-->
+<dom-module id="content-button">
+
+  <style>
+    :host {
+      display: block;
+      box-sizing: border-box;
+    }
+
+    paper-input {           
+      display: inline-block;
+      width: 100%; 
+    }
+    
+    paper-material {
+      text-align: left;
+      padding: 10px 20px; 
+      margin-top: 20px;
+    }
+  </style>
+
+  <template>
+    <paper-material hidden=[[!edit]]>
+      <h3>Button Element</h3>
+      <paper-input placeholder="Button Text" value="{{buttonText}}"></paper-input>
+      <paper-input placeholder="Button URL" value="{{buttonURL}}"></paper-input>
+      <content></content>
+    </paper-material>
+    
+    <template is="dom-if" if="[[!edit]]" ><br/>
+        <a href="{{buttonURL}}" target="_blank"><paper-button raised>{{buttonText}}</paper-button></a>
+    </template>
+
+  </template>
+
+
+
+</dom-module>
+
+<script>
+
+  ContentButton= Polymer({
+    is: 'content-button',
+    properties: {
+
+      /**
+       * The URL the button will link to
+       * @type {string}
+       */
+      buttonURL: {
+        type: String,
+      },
+
+     /**
+       * The text that will be displayed on the button
+       * @type {string}
+       */
+      buttonText: {
+        type: String,
+      }
+
+    },
+
+    getData: function(){
+      return {
+        elementType: this.localName,
+        buttonURL: this.buttonURL,
+        buttonText: this.buttonText
+      };
+    },
+
+    behaviors: [
+      QuizBehaviors.EditableBehavior,
+      QuizBehaviors.DataModelBehavior
+    ]    
+
+  });
+
+</script>
