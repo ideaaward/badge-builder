@@ -27,8 +27,10 @@
 <link rel="import" href="../../bower_components/wysiwyg-e/tools/undo.html">
 <link rel="import" href="../../bower_components/wysiwyg-e/tools/redo.html">
 
-
 <link rel="import" href="../../bower_components/juicy-html/juicy-html.html">
+
+<link rel="import" href="../behaviors/editable-behavior.html">
+<link rel="import" href="../behaviors/datamodel-behavior.html">
 
 <!--
 Content component for html content such as paragraphs, images, lists
@@ -69,7 +71,8 @@ Content component for html content such as paragraphs, images, lists
           <wysiwyg-tool-heading class="wysiwyg-tool" h1 h2 h3 h4 h5 h6></wysiwyg-tool-heading>
           <wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
           <wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
-        </wysiwyg-e>       
+        </wysiwyg-e> 
+        <content></content>      
     </paper-material>
   
     <template is="dom-if" if="[[!edit]]" >
@@ -85,32 +88,8 @@ Content component for html content such as paragraphs, images, lists
 <script>
 
   ContentHTML = Polymer({
-
     is: 'content-html',
-
     properties: {
-
-      /**
-       * The id of the element
-       * @type {string}
-       */
-      _id: {
-        type: String,
-        value: function() {
-          return "";
-        }
-      },
-
-      /**
-       * The element type. This is the same as the element id
-       * @type {string}
-       */
-      elementType: {
-        type: String,
-        value: function() {
-          return "content-html";
-        }
-      },
 
      /**
        * This is the text that will be displayed in the html editor. The users text.
@@ -121,70 +100,22 @@ Content component for html content such as paragraphs, images, lists
         value: function() {
           return "";
         }
-      },
-
-      /**
-       * `edit` indicates that the element should be in WYSIWYG editor mode.
-       */
-      edit: {
-        type: Boolean,
-        value: true,
-        observer: '_editChanged'
       }
 
-    },
-
-    // Element Lifecycle
-
-    ready: function() {
-      // `ready` is called after all elements have been configured, but
-      // propagates bottom-up. This element's children are ready, but parents
-      // are not.
-      //
-      // This is the point where you should make modifications to the DOM (when
-      // necessary), or kick off any processes the element wants to perform.
-    },
-
-    attached: function() {
-      // `attached` fires once the element and its parents have been inserted
-      // into a document.
-      //
-      // This is a good place to perform any work related to your element's
-      // visual state or active behavior (measuring sizes, beginning animations,
-      // loading resources, etc).
-    },
-
-    detached: function() {
-      // The analog to `attached`, `detached` fires when the element has been
-      // removed from a document.
-      //
-      // Use this to clean up anything you did in `attached`.
     },
 
     // Element Behavior
-
-    /**
-     * Toggle edit mode
-     */
-    toggleEdit: function() {
-      this.set('edit', !this.edit);
-    },
-    
-     /**
-     * Triggered when edit mode is changed
-     */
-    _editChanged: function(newValue) {
-      if (!this.edit) {
-        return;
-      }
-    },
-
     getData: function(){
       return {
-        elementType: this.elementType,
+        elementType: this.localName,
         text: this.text
       };
-    }
+    },
+
+    behaviors: [
+      QuizBehaviors.EditableBehavior,
+      QuizBehaviors.DataModelBehavior
+    ]   
 
   });
 
