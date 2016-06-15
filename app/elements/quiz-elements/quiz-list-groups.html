@@ -4,8 +4,10 @@
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 
 <link rel="import" href="editable-behavior.html">
+<!-- <link rel="import" href="add-remove-new-behavior.html"> -->
 <link rel="import" href="add-remove-behavior.html">
 <link rel="import" href="orderable-edit-behavior.html">
+<link rel="import" href="multi-orderable-behavior.html">
 <link rel="import" href="datamodel-behavior.html">
 
 <!--
@@ -13,11 +15,11 @@ Quiz component for question with mutiple choice response (checkbox style)
 
 Example:
 
-    <quiz-ordered-list question="Order the polygons by number of sides (largest to smallest):" options='["Decagon","Heptagon","Pentagon","Nonagon"]' shuffle></quiz-multiple>
+    <quiz-list-groups question="Order the polygons by number of sides (largest to smallest):" options='["Decagon","Heptagon","Pentagon","Nonagon"]' shuffle></quiz-list-groups>
 
 @demo
 -->
-<dom-module id="quiz-ordered-list">
+<dom-module id="quiz-list-groups">
 
   <style>
     :host {
@@ -66,13 +68,36 @@ Example:
       cursor: move;
       cursor: -webkit-grabbing;
     }
+
+    /*
+    ::content quiz-ordered-list {
+      width: auto;
+      float: left;
+    }
+
+    ::content .container:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    */
+
+    ::content .container{
+      display: flex;
+      flex-wrap: wrap;
+      /*justify-content: space-around;*/
+    }
+
+    ::content quiz-ordered-list{
+      flex: 1 0 320px;
+    }
   </style>
 
   <template>
     <paper-material class="content">
       <h3 class="question" hidden=[[edit]]>[[question]]</h3>
       <div>
-        <paper-input class="question" placeholder="[[_placeholder]]" value="{{question}}" hidden=[[!edit]]></paper-input>
+        <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>
       </div>
       <content></content>
     </paper-material>
@@ -80,7 +105,7 @@ Example:
 
   <script>
     QuizSelection = Polymer({
-      is: 'quiz-ordered-list',
+      is: 'quiz-list-groups',
       properties: {
         /**
          * The `question` for the quiz element.
@@ -90,9 +115,20 @@ Example:
           type: String
         },
 
-        _placeholder: {
+        /** iron-icon icons */
+        _iconAdd: {
           type: String,
-          value: "Question"
+          value: "add-box"
+        },
+        _iconRemove: {
+          type: String,
+          value: "indeterminate-check-box"
+        },
+
+        /** add only mode */
+        _isAddOnly: {
+          type: Boolean,
+          value: true
         }
       },
 
@@ -112,7 +148,8 @@ Example:
 
       behaviors: [
         QuizBehaviors.AddRemoveBehavior,
-        QuizBehaviors.OrderableEditBehavior,
+        // QuizBehaviors.OrderableEditBehavior,
+        QuizBehaviors.MultiOrderableBehavior,
         QuizBehaviors.EditableBehavior,
         QuizBehaviors.DataModelBehavior
       ]

@@ -33,6 +33,22 @@
         value: function(){
           return [];
         }
+      },
+
+      /** iron-icon icons */
+      _iconAdd: {
+        type: String,
+        value: "add"
+      },
+      _iconRemove: {
+        type: String,
+        value: "remove"
+      },
+
+      /** add only mode */
+      _isAddOnly: {
+        type: Boolean,
+        value: false
       }
 
     },
@@ -45,23 +61,28 @@
 
       // add elements to the DOM
       this._elementAdd = document.createElement("paper-fab");
-      this._elementAdd.icon = "add";
+      this._elementAdd.icon = this._iconAdd;
       this._elementAdd.mini = true;
       this._elementAdd.classList.add("widget", "widget-add");
       Polymer.dom(this._elementContainer).appendChild(this._elementAdd);
 
-      this._elementRemove = document.createElement("paper-fab");
-      this._elementRemove.icon = "remove";
-      this._elementRemove.mini = true;
-      this._elementRemove.classList.add("widget", "widget-remove");
-      Polymer.dom(this._elementContainer).appendChild(this._elementRemove);
+      if (!this._isAddOnly) {
+        this._elementRemove = document.createElement("paper-fab");
+        this._elementRemove.icon = this._iconRemove;
+        this._elementRemove.mini = true;
+        this._elementRemove.classList.add("widget", "widget-remove");
+        Polymer.dom(this._elementContainer).appendChild(this._elementRemove);
+      }
 
-      //console.info(this.localName, "Added add/remove buttons");
+
     },
 
     attached: function() {
       this.listen(this._elementAdd, 'tap', '_tappedAdd');
-      this.listen(this._elementRemove, 'tap', '_tappedRemove');
+
+      if (!this._isAddOnly) {
+        this.listen(this._elementRemove, 'tap', '_tappedRemove');
+      }
 
       // disable delete button if no options
       this._optionsLengthChanged(this.options.length);
@@ -72,8 +93,10 @@
       this.unlisten(this._elementAdd, 'tap', '_tappedAdd');
       // Polymer.dom(this._elementContainer).removeChild(this._elementAdd);
 
-      this.unlisten(this._elementRemove, 'tap', '_tappedRemove');
-      // Polymer.dom(this._elementContainer).removeChild(this._elementRemove);
+      if (!this._isAddOnly) {
+        this.unlisten(this._elementRemove, 'tap', '_tappedRemove');
+        // Polymer.dom(this._elementContainer).removeChild(this._elementRemove);
+      }
 
       // remove container element from the DOM
       // Polymer.dom(this).removeChild(this._elementContainer);

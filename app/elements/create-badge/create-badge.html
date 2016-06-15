@@ -25,6 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../quiz-elements/quiz-single.html">
 <link rel="import" href="../quiz-elements/quiz-multiple.html">
 <link rel="import" href="../quiz-elements/quiz-ordered-list.html">
+<link rel="import" href="../quiz-elements/quiz-list-groups.html">
 <link rel="import" href="../content-video/content-video.html">
 <link rel="import" href="../content-html/content-html.html">
 <link rel="import" href="../content-button/content-button.html">
@@ -70,7 +71,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: inline-block;
       }
 
-      ::content paper-fab.delete {
+      paper-fab.delete {
         position: absolute;
         /*transform: translateY(-50%);
         top: 50%;*/
@@ -78,7 +79,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         bottom: 10px;
       }
 
-      ::content .drag-handle {
+      .drag-handle {
         position: absolute;
         top: 0;
         right: 0;
@@ -158,7 +159,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!--iframe 2.0-->
         <!-- <paper-fab icon="av:play-circle-outline" on-tap="" class="blue"></paper-fab> -->
         <!--section divider-->
-        <paper-fab icon="remove" on-tap="createContentSection" class="blue"></paper-fab>
+        <paper-fab icon="av:web-asset" on-tap="createContentSection" class="blue"></paper-fab>
     </div>
 
     <!-- dynamic elements go inside here -->
@@ -437,7 +438,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         createQuizDraggable: function(){
-          console.log("TODO"); //TODO
+          var el = document.createElement('quiz-list-groups');
+          this.addElement(el);
         },
 
         addQuizElementType: function(elementType, id, question, options, answer) {
