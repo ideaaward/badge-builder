@@ -3,19 +3,18 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 
-<link rel="import" href="editable-behavior.html">
-<!-- <link rel="import" href="add-remove-new-behavior.html"> -->
-<link rel="import" href="add-remove-behavior.html">
-<link rel="import" href="orderable-edit-behavior.html">
-<link rel="import" href="multi-orderable-behavior.html">
-<link rel="import" href="datamodel-behavior.html">
+<link rel="import" href="../behaviors/editable-behavior.html">
+<link rel="import" href="../behaviors/add-remove-behavior.html">
+<link rel="import" href="../behaviors/orderable-edit-behavior.html">
+<link rel="import" href="../behaviors/multi-orderable-behavior.html">
+<link rel="import" href="../behaviors/datamodel-behavior.html">
 
 <!--
 Quiz component for question with mutiple choice response (checkbox style)
 
 Example:
 
-    <quiz-list-groups question="Order the polygons by number of sides (largest to smallest):" options='["Decagon","Heptagon","Pentagon","Nonagon"]' shuffle></quiz-list-groups>
+    <quiz-list-groups question="Help Santa organise things in the right place:" groups='["Presents","Reindeer"]' items='["Rudolph","Toys","Dasher","Dancer","Sweets","Candy Canes","Prancer"]' shuffle></quiz-list-groups>
 
 @demo
 -->
@@ -85,16 +84,18 @@ Example:
     ::content .container{
       display: flex;
       flex-wrap: wrap;
-      /*justify-content: space-around;*/
+      justify-content: space-between;
     }
 
     ::content quiz-ordered-list{
-      flex: 1 0 320px;
+      flex: 1 1 320px;
+      margin: 5px;
     }
+
   </style>
 
   <template>
-    <paper-material class="content">
+    <paper-material class="content" elevation="1">
       <h3 class="question" hidden=[[edit]]>[[question]]</h3>
       <div>
         <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>
@@ -141,7 +142,8 @@ Example:
           _id : this._id,
           elementType : this.localName,
           question : this.question,
-          options : this.options,
+          groups : this.groups,
+          items : this.items,
           answer : this.answer
         };
       },

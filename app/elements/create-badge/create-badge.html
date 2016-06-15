@@ -24,14 +24,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../quiz-elements/quiz-single.html">
 <link rel="import" href="../quiz-elements/quiz-multiple.html">
-<link rel="import" href="../quiz-elements/quiz-ordered-list.html">
-<link rel="import" href="../quiz-elements/quiz-list-groups.html">
-<link rel="import" href="../content-video/content-video.html">
-<link rel="import" href="../content-html/content-html.html">
-<link rel="import" href="../content-button/content-button.html">
-<link rel="import" href="../content-section/content-section.html">
 <link rel="import" href="../quiz-elements/quiz-short-input.html">
 <link rel="import" href="../quiz-elements/quiz-long-input.html">
+<link rel="import" href="../quiz-elements/quiz-ordered-list.html">
+<link rel="import" href="../quiz-elements/quiz-list-groups.html">
+<link rel="import" href="../content-elements/content-video.html">
+<link rel="import" href="../content-elements/content-html.html">
+<link rel="import" href="../content-elements/content-button.html">
+<link rel="import" href="../content-elements/content-section.html">
 
 <link rel="import" href="../../bower_components/Sortable/Sortable.html">
 
@@ -394,6 +394,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addQuizLongInput();
         },
 
+        addQuizListGroups: function(id, question, answer) {
+          var el = document.createElement('quiz-list-groups');
+          el._id = id;
+          el.question = question;
+          el.answer = answer;
+          //
+          this.addElement(el);
+        },
+
         // _elementsChanged: function(changeRecord){
         //   //console.info(this.localName, '*', changeRecord, this._node.elements);
         // },
@@ -485,6 +494,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     break;
                 case "quiz-long-input":
                     this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit);
+                    break;
+                case "quiz-list-groups":
+                    this.addQuizListGroups(element._id, element.question, element.answer);
                     break;
                 case "content-section":
                     this.addContentSection(element.title);

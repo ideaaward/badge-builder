@@ -13,10 +13,12 @@ var testBadge = {
     elements: [
       {
         _id: 'foo',
-        answer: true
+        elementType: 'quiz-single',
+        answer: [true]
       },
       {
         _id: 'bar',
+        elementType: 'quiz-multiple',
         answer: ['foo', 'bar']
       }
     ]
@@ -26,7 +28,7 @@ var testBadge = {
 test('test right answers', function (t) {
   var results = helpers.calculateResults(testBadge,
     {
-      foo: true,
+      foo: [true],
       bar: ['foo', 'bar']
     }
   );

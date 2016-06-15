@@ -82,10 +82,9 @@
 
       if (!this._isAddOnly) {
         this.listen(this._elementRemove, 'tap', '_tappedRemove');
+        // disable delete button if no options
+        this._optionsLengthChanged(this.options.length);
       }
-
-      // disable delete button if no options
-      this._optionsLengthChanged(this.options.length);
     },
 
     detached: function() {
