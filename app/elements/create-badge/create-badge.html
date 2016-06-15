@@ -368,12 +368,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addButton();
         },
 
-        addQuizShortInput: function(id, question, answerKeywords, answer) {
+        addQuizShortInput: function(id, question, answerKeywords, answer, hintText) {
           var el = new QuizShortInput();
           el._id = id;
           el.question = question;
           el.answerKeywords = answerKeywords;
           el.answer = answer;
+          el.hintText = hintText;
 
           this.addElement(el);
         },
@@ -382,12 +383,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addQuizShortInput();
         },
 
-        addQuizLongInput: function(id, question, answer, wordLimit) {
+        addQuizLongInput: function(id, question, answer, wordLimit, hintText) {
           var el = new QuizLongInput();
           el._id = id;
           el.question = question;
           el.answer = answer;
           el.wordLimit = wordLimit;
+          el.hintText = hintText;
 
           this.addElement(el);
         },
@@ -443,12 +445,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log("TODO"); //TODO
         },
 
-        addQuizElementType: function(elementType, id, question, options, answer) {
+        addQuizElementType: function(elementType, id, question, options, answer, hintText) {
           var el = document.createElement(elementType);
           el._id = id;
           el.question = question;
           el.options = options;
           el.answer = answer;
+          el.hintText = hintText;
           //
           this.addElement(el);
         },
@@ -484,17 +487,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 case "content-button":
                     this.addButton(element.buttonURL, element.buttonText);
                     break;
-                case "quiz-short-input":
-                    this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.answer);
-                    break;
-                case "quiz-long-input":
-                    this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit);
-                    break;
                 case "content-section":
                     this.addContentSection(element.title);
                     break;
+                case "quiz-short-input":
+                    this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.answer, element.hintText);
+                    break;
+                case "quiz-long-input":
+                    this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit, element.hintText);
+                    break;
                 default:
-                  this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.answer); // generic quiz elements
+                  this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.answer, element.hintText); // generic quiz elements
                   break;
             }
 

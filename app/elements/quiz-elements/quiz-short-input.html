@@ -5,6 +5,7 @@
 
 <link rel="import" href="../behaviors/editable-behavior.html">
 <link rel="import" href="../behaviors/datamodel-behavior.html">
+<link rel="import" href="../behaviors/hint-behavior.html">
 
 <!--
     Quiz element for short user input
@@ -41,6 +42,10 @@
             <paper-input placeholder="Words to look for in user answer. Seperate by commas e.g. apple, banana, cherry" value="{{answerKeywords}}"></paper-input>
             <paper-tooltip>Seperate each word with a comma. These are the words you want to find in the user's answer. All of these words must be found in the answer for the user to get this question right. </paper-tooltip>  
           </div>
+          <div>
+            <paper-input placeholder="Hint Text" value="{{hintText}}"></paper-input>
+            <paper-tooltip>Enter the hint you want to display to user's if they get this question wrong</paper-tooltip>
+          </div>           
         </div>
       </template>
 
@@ -103,6 +108,7 @@
           question : this.question,
           answerKeywords : this.answerKeywords,
           answer : this.answerKeywords,
+          hintText : this.hintText
         };
       },
 

@@ -5,6 +5,7 @@
 
 <link rel="import" href="../behaviors/editable-behavior.html">
 <link rel="import" href="../behaviors/datamodel-behavior.html">
+<link rel="import" href="../behaviors/hint-behavior.html">
 
 <!--
     Quiz element for long user input (this type of quiz element will not be marked / scored)
@@ -44,7 +45,11 @@
         <div>
           <paper-input placeholder="Word Limit" value="{{wordLimit}}" type="number"></paper-input>
           <paper-tooltip>Enter a number value for the minimum amount of words the user has to write to get the points for this question.</paper-tooltip>
-          </div>
+        </div>
+        <div>
+          <paper-input placeholder="Hint Text" value="{{hintText}}"></paper-input>
+          <paper-tooltip>Enter the hint you want to display to user's if they get this question wrong</paper-tooltip>
+        </div>                    
       </div>
 
       <!-- Badge View -->
@@ -110,7 +115,8 @@
           elementType : this.localName,
           question : this.question,
           answer : this.wordLimit,
-          wordLimit : this.wordLimit
+          wordLimit : this.wordLimit,
+          hintText : this.hintText
         };
       },
 

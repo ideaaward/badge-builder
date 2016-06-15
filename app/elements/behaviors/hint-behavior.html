@@ -1,0 +1,25 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<script>
+  window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviors.HintBehaviorImpl */
+  QuizBehaviors.HintBehaviorImpl = {
+    properties: {
+      /**
+       * `hintText` is the text that will be displayed to users if they get a question wrong
+       *
+       * @type String
+       * @default "Try again"
+       */
+      hintText: {
+        type: String,
+        value: "Try again"
+      }
+
+    }
+  };
+
+  QuizBehaviors.HintBehavior = [
+    QuizBehaviors.HintBehaviorImpl
+  ];
+</script>

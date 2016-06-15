@@ -7,6 +7,7 @@
 <link rel="import" href="../behaviors/add-remove-behavior.html">
 <link rel="import" href="../behaviors/orderable-edit-behavior.html">
 <link rel="import" href="../behaviors/datamodel-behavior.html">
+<link rel="import" href="../behaviors/hint-behavior.html">
 
 <!--
 Quiz component for question with mutiple choice response (checkbox style)
@@ -75,6 +76,10 @@ Example:
       <h3 class="question" hidden=[[edit]]>[[question]]</h3>
       <div><paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input></div>
       <!-- <ol id="list"></ol> -->
+      <div hidden=[[!edit]]>
+        <paper-input class="question" placeholder="Hint Text" value="{{hintText}}"></paper-input>
+        <paper-tooltip>Enter the hint you want to display to user's if they get this question wrong</paper-tooltip>
+      </div>  
       <content></content>
     </paper-material>
   </template>
@@ -102,7 +107,8 @@ Example:
           elementType : this.localName,
           question : this.question,
           options : this.options,
-          answer : this.answer
+          answer : this.answer,
+          hintText : this.hintText
         };
       },
 
