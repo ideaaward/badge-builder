@@ -54,12 +54,16 @@
 
       <!-- Badge View -->
       <template is="dom-if" if="[[!edit]]">
-        <div class="row">
+        <div class="row">         
           <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
             <p>[[question]]</p>
             <div><paper-textarea class="answer" placeholder="Answer" value="{{answer}}" rows="5"></paper-textarea></div>
-          </div>
+          </div>      
         </div>
+        <br/>
+        <div class="hint_error" hidden=[[!showHint]]>
+          <p>[[hintText]]</p>
+        </div>         
       </template>
 
       <content></content>
@@ -116,7 +120,8 @@
           question : this.question,
           answer : this.wordLimit,
           wordLimit : this.wordLimit,
-          hintText : this.hintText
+          hintText : this.hintText,
+          showHint: this.showHint
         };
       },
 
@@ -126,7 +131,8 @@
 
       behaviors: [
         QuizBehaviors.EditableBehavior,
-        QuizBehaviors.DataModelBehavior
+        QuizBehaviors.DataModelBehavior,
+        QuizBehaviors.HintBehavior
       ]
     });
 

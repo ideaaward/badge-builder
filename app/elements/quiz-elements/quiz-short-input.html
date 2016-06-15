@@ -57,6 +57,10 @@
             <div><paper-input id="helloworld" placeholder="Answer" value="{{answer}}"></paper-input></div>
           </div>
         </div>
+        <br/>
+        <div class="hint_error" hidden=[[!showHint]]>
+          <p>[[hintText]]</p>
+        </div>
       </template>
 
     <content></content>
@@ -108,7 +112,8 @@
           question : this.question,
           answerKeywords : this.answerKeywords,
           answer : this.answerKeywords,
-          hintText : this.hintText
+          hintText : this.hintText,
+          showHint: this.showHint
         };
       },
 
@@ -118,7 +123,8 @@
 
       behaviors: [
         QuizBehaviors.EditableBehavior,
-        QuizBehaviors.DataModelBehavior
+        QuizBehaviors.DataModelBehavior,
+        QuizBehaviors.HintBehavior
       ]
     });
 

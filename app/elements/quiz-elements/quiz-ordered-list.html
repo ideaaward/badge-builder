@@ -81,6 +81,10 @@ Example:
         <paper-tooltip>Enter the hint you want to display to user's if they get this question wrong</paper-tooltip>
       </div>  
       <content></content>
+
+      <div class="hint_error" hidden=[[!showHint]]>
+        <p>[[hintText]]</p>
+      </div>     
     </paper-material>
   </template>
 
@@ -108,7 +112,8 @@ Example:
           question : this.question,
           options : this.options,
           answer : this.answer,
-          hintText : this.hintText
+          hintText : this.hintText,
+          showHint: this.showHint
         };
       },
 
@@ -116,7 +121,8 @@ Example:
         QuizBehaviors.AddRemoveBehavior,
         QuizBehaviors.OrderableEditBehavior,
         QuizBehaviors.EditableBehavior,
-        QuizBehaviors.DataModelBehavior
+        QuizBehaviors.DataModelBehavior,
+        QuizBehaviors.HintBehavior
       ]
     });
   </script>

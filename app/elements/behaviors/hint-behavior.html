@@ -9,11 +9,20 @@
        * `hintText` is the text that will be displayed to users if they get a question wrong
        *
        * @type String
-       * @default "Try again"
        */
       hintText: {
         type: String,
-        value: "Try again"
+      },
+
+      /**
+       * `showHint` is the boolean value used to determine if the user got a question wrong or right.
+       *
+       * @type Boolean
+       * @default false
+       */
+      showHint: {
+        type: Boolean,
+        value: false
       }
 
     }

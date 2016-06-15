@@ -368,13 +368,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addButton();
         },
 
-        addQuizShortInput: function(id, question, answerKeywords, answer, hintText) {
+        addQuizShortInput: function(id, question, answerKeywords, answer, hintText, showHint) {
           var el = new QuizShortInput();
           el._id = id;
           el.question = question;
           el.answerKeywords = answerKeywords;
           el.answer = answer;
           el.hintText = hintText;
+          el.showHint = showHint;
 
           this.addElement(el);
         },
@@ -383,13 +384,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addQuizShortInput();
         },
 
-        addQuizLongInput: function(id, question, answer, wordLimit, hintText) {
+        addQuizLongInput: function(id, question, answer, wordLimit, hintText, showHint) {
           var el = new QuizLongInput();
           el._id = id;
           el.question = question;
           el.answer = answer;
           el.wordLimit = wordLimit;
           el.hintText = hintText;
+          el.showHint = showHint;
 
           this.addElement(el);
         },
@@ -445,13 +447,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log("TODO"); //TODO
         },
 
-        addQuizElementType: function(elementType, id, question, options, answer, hintText) {
+        addQuizElementType: function(elementType, id, question, options, answer, hintText, showHint) {
           var el = document.createElement(elementType);
           el._id = id;
           el.question = question;
           el.options = options;
           el.answer = answer;
           el.hintText = hintText;
+          el.showHint = showHint;
           //
           this.addElement(el);
         },
@@ -491,13 +494,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     this.addContentSection(element.title);
                     break;
                 case "quiz-short-input":
-                    this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.answer, element.hintText);
+                    this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.answer, element.hintText, element.showHint);
                     break;
                 case "quiz-long-input":
-                    this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit, element.hintText);
+                    this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit, element.hintText, element.showHint);
                     break;
                 default:
-                  this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.answer, element.hintText); // generic quiz elements
+                  this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.answer, element.hintText, element.showHint); // generic quiz elements
                   break;
             }
 
