@@ -237,7 +237,9 @@ body#viewer {
     text-align: center;
   }
 
-  ol.options {
+  // lists
+
+  .options {
     cursor: move;
     cursor: -webkit-grabbing;
 
@@ -245,7 +247,7 @@ body#viewer {
     margin: $gap;
   }
 
-  ol.options li {
+  .options li {
     // display: block;
     margin: 2px $gap;
     padding: 0;
@@ -254,21 +256,21 @@ body#viewer {
     color: $grey;
   }
 
-    ol.options li p {
-      color: $black;
-      margin: 0;
-      padding: $gap;
-    }
+  .options li p, .groups li p {
+    color: $black;
+    margin: 0;
+    padding: $gap $gap*4;
+  }
 
-  ol.options .sortable-chosen {
+  .options .sortable-chosen {
     opacity: 0.5;
   }
 
-  ol.options .sortable-chosen {
+  .options .sortable-chosen, .groups .sortable-chosen {
     border: 2px dashed $grey;
   }
 
-  ol.options .drag-item {
+  .options .drag-item {
     color: $grey;
     height: 100%;
   }

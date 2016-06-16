@@ -14,7 +14,7 @@ Quiz component for question with mutiple choice response (checkbox style)
 
 Example:
 
-    <quiz-list-groups question="Help Santa organise things in the right place:" groups='["Presents","Reindeer"]' items='["Rudolph","Toys","Dasher","Dancer","Sweets","Candy Canes","Prancer"]' shuffle></quiz-list-groups>
+    <quiz-list-groups question="Help Santa organise things in the right place:" answer='[{"group":"Reindeer","items":["Dancer","Dasher","Prancer"]},{"group":"Presents","items":["Toys","Chocolate","Candy"]}]'></quiz-list-groups>
 
 @demo
 -->
@@ -109,7 +109,7 @@ Example:
   </template>
 
   <script>
-    QuizSelection = Polymer({
+    Polymer({
       is: 'quiz-list-groups',
       properties: {
         /**
@@ -154,7 +154,6 @@ Example:
 
       behaviors: [
         QuizBehaviors.AddRemoveBehavior,
-        // QuizBehaviors.OrderableEditBehavior,
         QuizBehaviors.MultiOrderableBehavior,
         QuizBehaviors.EditableBehavior,
         QuizBehaviors.DataModelBehavior

@@ -23,7 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../quiz-elements/quiz-short-input.html">
 <link rel="import" href="../quiz-elements/quiz-long-input.html">
 <link rel="import" href="../quiz-elements/quiz-ordered-list.html">
-<link rel="import" href="../quiz-elements/quiz-list-groups.html">
+<link rel="import" href="../quiz-elements/quiz-groups.html">
 <link rel="import" href="../content-elements/content-video.html">
 <link rel="import" href="../content-elements/content-html.html">
 <link rel="import" href="../content-elements/content-button.html">
@@ -203,6 +203,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addElement(el);
         },
 
+        addQuizListGroups: function(id, question, groups, items, hintText) {
+          var el = new QuizGroups();
+          el._id = id;
+          el.question = question;
+          el.groups = groups;
+          el.items = items;
+          el.hintText = hintText;
+          this.addElement(el);
+        },
+
         addQuizElementType: function(elementType, id, question, options, hintText) {
           var el = document.createElement(elementType);
           el._id = id;
@@ -280,6 +290,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   break;
                 case "quiz-long-input":
                   this.addQuizLongInput(element._id, element.question, element.hintText);
+                  break;
+                case "quiz-list-groups":
+                  this.addQuizListGroups(element._id, element.question, element.groups, element.items, element.hintText);
                   break;
                 default:
                   this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.hintText); // generic quiz elements

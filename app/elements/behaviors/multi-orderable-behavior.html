@@ -4,7 +4,6 @@
 <link rel="import" href="../../bower_components/Sortable/Sortable.html">
 
 <link rel="import" href="../quiz-elements/quiz-ordered-list.html">
-
 <link rel="import" href="scripts/lodash.html">
 
 <script>
@@ -19,14 +18,6 @@
 
       _sortableContainer: {
         type: Object
-      },
-
-      /**
-       * The answer for the quiz element. (TODO: move to edit behavior)
-       * @type {string}
-       */
-      answer: {
-        type: Array
       },
 
       /**
@@ -80,7 +71,7 @@
       el._dragHandle = "drag-group";
 
       if (data && data.group && data.items) {
-        console.log('add option:', data);
+        //console.log('add option:', data);
         el.question = data.group;
         el.answer = data.items;
         el.hintText = data.hintText;
@@ -91,7 +82,7 @@
     },
 
     _removeOption: function(name){
-      console.warn("Remove function is not needed here.");
+      //console.warn("Remove function is not needed here.");
       return false;
     },
 
@@ -125,8 +116,6 @@
     /* edit functions */
 
     _reset: function() {
-      console.log(this.localName, "_reset");
-
       this._removeElements();
       // create option elements
       this._addElements();
@@ -138,7 +127,7 @@
       }
       // we are deleting a child element so we want to stop bubbling this event up the dom tree
       e.stopPropagation();
-      console.info(this.localName, "[-] Delete child element:", e.target.localName);
+      //console.info(this.localName, "[-] Delete child element:", e.target.localName);
       Polymer.dom(this._multiContainer).removeChild(e.target);
     },
 
@@ -151,7 +140,7 @@
       while(i--){
         var element = elements[i];
         var data = element.getData();
-        console.log(i, "group value", data, element.localName);
+        //console.log(i, "group value", data, element.localName);
         if (data) {
           var answer = {
             group: data.question,
@@ -166,7 +155,7 @@
       this.set('answer', updatedAnswers);
       this.set('groups', updatedGroups);
       this.set('items', _.shuffle(updatedItems)); // user list
-      console.log("edit answers order > ", updatedAnswers, updatedGroups, updatedItems, elements.length);
+      //console.log("edit answers order > ", updatedAnswers, updatedGroups, updatedItems, elements.length);
     },
 
     listeners: {

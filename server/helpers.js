@@ -33,8 +33,11 @@ module.exports.calculateResults = function (badge, answers) {
         case "quiz-long-input":
             result = isLongAnswerCorrect(userAnswer, element.wordLimit);
             break;
+        case "quiz-list-groups":
+            result = isGroupedAnswerCorrect(userAnswer, element.answer);
+            break;
         default:
-            console.error("Unknown type");
+            console.error("Unknown answer type", element.elementType);
             break;
       }
       results[id] = result;
@@ -69,6 +72,21 @@ function isLongAnswerCorrect(userAnswer, minNumberOfAnswers) {
     return true;
   }
   return false;
+}
+
+function isGroupedAnswerCorrect(userAnswers, answers){
+  //console.log('\nuserAnswers:\n', userAnswers, '\nanswers:\n', answers);
+  var result = true;
+  answers.forEach(function(answer){
+    var group = answer.group;
+    var userAnswer = _.find(userAnswers, function(o) { return o.group === group; });
+    var isCorrect = _.isEqual(_.sortBy(answer.items), _.sortBy(userAnswer.items));
+    if ( !isCorrect ) {
+      console.log('- check "', group, '" answers:', userAnswer, isCorrect);
+      result = false;
+    }
+  });
+  return result;
 }
 
 function countWords(s){
