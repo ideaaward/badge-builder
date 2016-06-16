@@ -197,6 +197,7 @@
       }
       // console.log("> update options:", options);
       this.set('options', options);
+      this.fire('edited');
     },
 
     listeners: {

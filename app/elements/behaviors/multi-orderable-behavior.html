@@ -158,10 +158,16 @@
       //console.log("edit answers order > ", updatedAnswers, updatedGroups, updatedItems, elements.length);
     },
 
-    listeners: {
-      'deleteElement': "_onDeleteElement"
+    _elementChanged: function(e) {
+      console.info("Update edited data for drag and drop", e);
+      this._updateEditedAnswers();
     },
 
+    listeners: {
+      'deleteElement': "_onDeleteElement",
+      'input': '_elementChanged',
+      'edited': '_elementChanged'
+    }
   };
 
   QuizBehaviors.MultiOrderableBehavior = [
