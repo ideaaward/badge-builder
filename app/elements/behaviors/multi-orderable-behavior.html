@@ -82,6 +82,7 @@
         console.log('add option:', data);
         el.question = data.group;
         el.answer = data.items;
+        el.hintText = data.hintText;
       }
 
       this._addElement(el);
@@ -153,7 +154,8 @@
         if (data) {
           var answer = {
             group: data.question,
-            items: data.answer
+            items: data.answer,
+            hintText: data.hintText
           };
           updatedAnswers.unshift(answer);
           updatedGroups.unshift(answer.group);
