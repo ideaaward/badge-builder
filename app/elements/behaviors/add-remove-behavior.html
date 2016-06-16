@@ -73,8 +73,6 @@
         this._elementRemove.classList.add("widget", "widget-remove");
         Polymer.dom(this._elementContainer).appendChild(this._elementRemove);
       }
-
-
     },
 
     attached: function() {
@@ -83,7 +81,7 @@
       if (!this._isAddOnly) {
         this.listen(this._elementRemove, 'tap', '_tappedRemove');
         // disable delete button if no options
-        this._optionsLengthChanged(this.options.length);
+        //this._optionsLengthChanged(this.options.length);
       }
     },
 

@@ -96,6 +96,10 @@ Example:
 
   <template>
     <paper-material class="content" elevation="1">
+      <div>
+        <h3 hidden=[[!edit]]>Grouped List Quiz Element</h3>
+        <paper-tooltip hidden=[[!edit]]>The Grouped List element is for questions where users are required to drag and drop items into the correct group. Tap + to add a new group.</paper-tooltip>
+      </div>
       <h3 class="question" hidden=[[edit]]>[[question]]</h3>
       <div>
         <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>

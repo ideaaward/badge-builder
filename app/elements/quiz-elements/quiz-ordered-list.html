@@ -71,8 +71,10 @@ Example:
 
   <template>
     <paper-material class="content">
-      <h3 hidden=[[!edit]]>Ordered List Quiz Element</h3>
-      <paper-tooltip hidden=[[!edit]]>This is an ordered list question. You can use the + and - buttons to add and delete list items that the user can reorder. After you have listed all of the items, click and drag the list items so that they are in the correct order/position on the list. This will be shuffled in the user's view and they will have to reorder the list to get this question right.</paper-tooltip>
+      <div>
+        <h3 hidden=[[!edit]]>[[_title]]</h3>
+        <paper-tooltip hidden=[[!edit]]>This is an ordered list. You can use the + and - buttons to add and delete list items that the user can reorder. After you have listed all of the items, click and drag the list items so that they are in the correct order/position on the list. This will be shuffled in the user's view and they will have to reorder the list to get this question right.</paper-tooltip>
+      </div>
       <h3 class="question" hidden=[[edit]]>[[question]]</h3>
       <div><paper-input class="question" placeholder="[[_placeholder]]" value="{{question}}" hidden=[[!edit]]></paper-input></div>
       <!-- <ol id="list"></ol> -->
@@ -103,6 +105,11 @@ Example:
         _placeholder: {
           type: String,
           value: "Question"
+        },
+
+        _title: {
+          type: String,
+          value: "Ordered List Quiz Element"
         }
       },
 
