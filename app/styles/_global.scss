@@ -81,10 +81,6 @@ paper-fab.blue {
   --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
 }
 
-.clearfix {
-  clear: both;
-}
-
 // Editor styles
 .swatch {
 	width: $gap;
@@ -99,13 +95,13 @@ paper-fab.blue {
 }
 
 .sortable-chosen > paper-material {
-  border: 2px dashed grey;
+  border: 2px dashed $grey;
 }
 
 .drag-handle {
   cursor: move;
   cursor: -webkit-grabbing;
-  color: grey;
+  color: $grey;
 }
 
 /* Viewer styles only */
@@ -241,7 +237,9 @@ body#viewer {
     text-align: center;
   }
 
-  ol.options {
+  // lists
+
+  .options {
     cursor: move;
     cursor: -webkit-grabbing;
 
@@ -249,25 +247,32 @@ body#viewer {
     margin: $gap;
   }
 
-  ol.options li {
+  .options li {
     // display: block;
     margin: 2px $gap;
-    padding: $gap;
+    padding: 0;
     box-sizing: border-box;
-    border: 2px solid grey;
-    color: grey;
+    border: 2px solid $grey;
+    color: $grey;
   }
 
-  ol.options .sortable-chosen {
+  .options li p, .groups li p {
+    color: $black;
+    margin: 0;
+    padding: $gap $gap*4;
+  }
+
+  .options .sortable-chosen {
     opacity: 0.5;
   }
 
-  ol.options .sortable-chosen {
-    border: 2px dashed grey;
+  .options .sortable-chosen, .groups .sortable-chosen {
+    border: 2px dashed $grey;
   }
 
-  ol.options .drag-item {
-    color: grey;
+  .options .drag-item {
+    color: $grey;
+    height: 100%;
   }
 
   // Polymer element styles with custom theme color

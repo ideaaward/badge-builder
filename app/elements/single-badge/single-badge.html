@@ -22,6 +22,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../quiz-elements/quiz-multiple.html">
 <link rel="import" href="../quiz-elements/quiz-short-input.html">
 <link rel="import" href="../quiz-elements/quiz-long-input.html">
+<link rel="import" href="../quiz-elements/quiz-ordered-list.html">
+<link rel="import" href="../quiz-elements/quiz-groups.html">
 <link rel="import" href="../content-elements/content-video.html">
 <link rel="import" href="../content-elements/content-html.html">
 <link rel="import" href="../content-elements/content-button.html">
@@ -201,13 +203,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addElement(el);
         },
 
+        addQuizListGroups: function(id, question, groups, items, hintText) {
+          var el = new QuizGroups();
+          el._id = id;
+          el.question = question;
+          el.groups = groups;
+          el.items = items;
+          el.hintText = hintText;
+          this.addElement(el);
+        },
+
         addQuizElementType: function(elementType, id, question, options, hintText) {
           var el = document.createElement(elementType);
           el._id = id;
           el.question = question;
           el.options = options;
           el.hintText = hintText;
-          el.shuffle = true;
           this.addElement(el);
         },
 
@@ -273,19 +284,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   break;
                 case "content-section":
                   this.addContentSection(element.title);
-                  break;                 
+                  break;
                 case "quiz-short-input":
                   this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.hintText);
                   break;
                 case "quiz-long-input":
                   this.addQuizLongInput(element._id, element.question, element.hintText);
                   break;
+                case "quiz-list-groups":
+                  this.addQuizListGroups(element._id, element.question, element.groups, element.items, element.hintText);
+                  break;
                 default:
                   this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.hintText); // generic quiz elements
                   break;
               }
             }
-
           }
         },
 
@@ -413,6 +426,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return (this.selectedPage() < this.totalPages()-1);
         },
         next: function() {
+          this._updateProgress(); // Update progress on next page
           if (this.isInProgress()){
             this.$.components.selectNext();
             return;
@@ -451,7 +465,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         submitBadgeTapped: function (event) {
-          this._updateProgress();
           if (this.isInProgress()) {
             // checks answers on current page, and if correct goes to next page
             this.submitPageAnswers();

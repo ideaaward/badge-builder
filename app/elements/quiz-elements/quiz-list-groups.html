@@ -6,19 +6,19 @@
 <link rel="import" href="../behaviors/editable-behavior.html">
 <link rel="import" href="../behaviors/add-remove-behavior.html">
 <link rel="import" href="../behaviors/orderable-edit-behavior.html">
+<link rel="import" href="../behaviors/multi-orderable-behavior.html">
 <link rel="import" href="../behaviors/datamodel-behavior.html">
-<link rel="import" href="../behaviors/hint-behavior.html">
 
 <!--
 Quiz component for question with mutiple choice response (checkbox style)
 
 Example:
 
-    <quiz-ordered-list question="Order the polygons by number of sides (largest to smallest):" options='["Decagon","Heptagon","Pentagon","Nonagon"]' shuffle></quiz-multiple>
+    <quiz-list-groups question="Help Santa organise things in the right place:" answer='[{"group":"Reindeer","items":["Dancer","Dasher","Prancer"]},{"group":"Presents","items":["Toys","Chocolate","Candy"]}]'></quiz-list-groups>
 
 @demo
 -->
-<dom-module id="quiz-ordered-list">
+<dom-module id="quiz-list-groups">
 
   <style>
     :host {
@@ -67,32 +67,50 @@ Example:
       cursor: move;
       cursor: -webkit-grabbing;
     }
+
+    /*
+    ::content quiz-ordered-list {
+      width: auto;
+      float: left;
+    }
+
+    ::content .container:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+    */
+
+    ::content .container{
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    ::content quiz-ordered-list{
+      flex: 1 1 320px;
+      margin: 5px;
+    }
+
   </style>
 
   <template>
-    <paper-material class="content">
+    <paper-material class="content" elevation="1">
       <div>
-        <h3 hidden=[[!edit]]>[[_title]]</h3>
-        <paper-tooltip hidden=[[!edit]]>This is an ordered list. You can use the + and - buttons to add and delete list items that the user can reorder. After you have listed all of the items, click and drag the list items so that they are in the correct order/position on the list. This will be shuffled in the user's view and they will have to reorder the list to get this question right.</paper-tooltip>
+        <h3 hidden=[[!edit]]>Grouped List Quiz Element</h3>
+        <paper-tooltip hidden=[[!edit]]>The Grouped List element is for questions where users are required to drag and drop items into the correct group. Tap + to add a new group.</paper-tooltip>
       </div>
       <h3 class="question" hidden=[[edit]]>[[question]]</h3>
-      <div><paper-input class="question" placeholder="[[_placeholder]]" value="{{question}}" hidden=[[!edit]]></paper-input></div>
-      <!-- <ol id="list"></ol> -->
-      <div hidden=[[!edit]]>
-        <paper-input class="question" placeholder="Hint Text" value="{{hintText}}"></paper-input>
-        <paper-tooltip>Enter the hint you want to display to user's if they get this question wrong</paper-tooltip>
+      <div>
+        <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>
       </div>
       <content></content>
-
-      <div class="hint_error" hidden=[[!showHint]]>
-        <p>[[hintText]]</p>
-      </div>
     </paper-material>
   </template>
 
   <script>
     Polymer({
-      is: 'quiz-ordered-list',
+      is: 'quiz-list-groups',
       properties: {
         /**
          * The `question` for the quiz element.
@@ -102,14 +120,20 @@ Example:
           type: String
         },
 
-        _placeholder: {
+        /** iron-icon icons */
+        _iconAdd: {
           type: String,
-          value: "Question"
+          value: "add-box"
+        },
+        _iconRemove: {
+          type: String,
+          value: "indeterminate-check-box"
         },
 
-        _title: {
-          type: String,
-          value: "Ordered List Quiz Element"
+        /** add only mode */
+        _isAddOnly: {
+          type: Boolean,
+          value: true
         }
       },
 
@@ -122,19 +146,17 @@ Example:
           _id : this._id,
           elementType : this.localName,
           question : this.question,
-          options : this.options,
-          answer : this.answer,
-          hintText : this.hintText,
-          showHint: this.showHint
+          groups : this.groups,
+          items : this.items,
+          answer : this.answer
         };
       },
 
       behaviors: [
         QuizBehaviors.AddRemoveBehavior,
-        QuizBehaviors.OrderableEditBehavior,
+        QuizBehaviors.MultiOrderableBehavior,
         QuizBehaviors.EditableBehavior,
-        QuizBehaviors.DataModelBehavior,
-        QuizBehaviors.HintBehavior
+        QuizBehaviors.DataModelBehavior
       ]
     });
   </script>

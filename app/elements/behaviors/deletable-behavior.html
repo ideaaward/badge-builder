@@ -26,6 +26,7 @@
       // add delete button to the DOM
       this._elementDelete = document.createElement("paper-fab");
       this._elementDelete.icon = "delete";
+      this._elementDelete.mini = true;
       this._elementDelete.classList.add("edit", "delete");
       Polymer.dom(this).appendChild(this._elementDelete); // document.body.appendChild(deleteButton);
       //console.info(this.localName, "Added Delete Button");

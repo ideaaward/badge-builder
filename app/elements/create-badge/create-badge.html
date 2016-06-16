@@ -24,14 +24,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../quiz-elements/quiz-single.html">
 <link rel="import" href="../quiz-elements/quiz-multiple.html">
-<link rel="import" href="../quiz-elements/quiz-ordered-list.html">
 <link rel="import" href="../quiz-elements/quiz-short-input.html">
 <link rel="import" href="../quiz-elements/quiz-long-input.html">
+<link rel="import" href="../quiz-elements/quiz-ordered-list.html">
+<link rel="import" href="../quiz-elements/quiz-list-groups.html">
 <link rel="import" href="../content-elements/content-video.html">
 <link rel="import" href="../content-elements/content-html.html">
 <link rel="import" href="../content-elements/content-button.html">
 <link rel="import" href="../content-elements/content-section.html">
-
 
 <link rel="import" href="../../bower_components/Sortable/Sortable.html">
 
@@ -148,8 +148,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- Quiz -->
         <paper-fab icon="radio-button-checked" on-tap="createYesNo"></paper-fab>
         <paper-fab icon="check-box" on-tap="createMultipleChoice"></paper-fab>
-        <paper-fab icon="editor:format-list-numbered" on-tap="createQuizOrderedList"></paper-fab>
-        <!-- <paper-fab icon="editor:format-line-spacing" on-tap="createQuizDraggable"></paper-fab> -->
+        <paper-fab icon="editor:format-line-spacing" on-tap="createQuizOrderedList"></paper-fab>
+        <paper-fab icon="av:shuffle" on-tap="createQuizDraggable"></paper-fab>
         <paper-fab icon="editor:short-text" on-tap="createQuizShortInput"></paper-fab>
         <paper-fab icon="editor:format-align-left" on-tap="createQuizLongInput"></paper-fab>
         <!-- Content -->
@@ -159,7 +159,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!--iframe 2.0-->
         <!-- <paper-fab icon="av:play-circle-outline" on-tap="" class="blue"></paper-fab> -->
         <!--section divider-->
-        <paper-fab icon="remove" on-tap="createContentSection" class="blue"></paper-fab>
+        <paper-fab icon="av:web-asset" on-tap="createContentSection" class="blue"></paper-fab>
     </div>
 
     <!-- dynamic elements go inside here -->
@@ -187,7 +187,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
           isEditMode : {
             type: Boolean,
-            value: false,
+            value: true,
             observer: '_changeEditMode'
           },
           title: {
@@ -219,17 +219,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         opened: function (event) {
           this._resetPage();
-          // if edit mode
+          // edit mode
           if (event.detail && event.detail.params){
             var id = event.detail.params._id;
             console.log(this.localName, "opened", id);
-            this.set('isEditMode', true);
             this.set('id', id);
             this.$.getBadge.url = '/api/author/badges/' + id;
             this.$.getBadge.generateRequest();
             return;
           }
-          this.set('isEditMode', false);
         },
 
         _changeEditMode: function(isEditMode) {
@@ -400,6 +398,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addQuizLongInput();
         },
 
+        addQuizListGroups: function(id, question, answer) {
+          var el = document.createElement('quiz-list-groups');
+          el._id = id;
+          el.question = question;
+          el.answer = answer;
+          //
+          this.addElement(el);
+        },
+
         // _elementsChanged: function(changeRecord){
         //   //console.info(this.localName, '*', changeRecord, this._node.elements);
         // },
@@ -444,7 +451,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         createQuizDraggable: function(){
-          console.log("TODO"); //TODO
+          var el = document.createElement('quiz-list-groups');
+          this.addElement(el);
         },
 
         addQuizElementType: function(elementType, id, question, options, answer, hintText, showHint) {
@@ -475,11 +483,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.set('badgeSecret', this.response.consumerSecret);
           this.set('badgeTheme', this.response.content.theme);
 
-
           for (var i=0; i<elements.length; i++) {
-
             var element = elements[i];
-
             switch(element.elementType) {
                 case "content-video":
                     this.addVideo(element.embededURI);
@@ -499,17 +504,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 case "quiz-long-input":
                     this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit, element.hintText, element.showHint);
                     break;
+                case "quiz-list-groups":
+                    this.addQuizListGroups(element._id, element.question, element.answer);
+                    break;
                 default:
                   this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.answer, element.hintText, element.showHint); // generic quiz elements
                   break;
             }
-
           }
-          this._applyDragAndDrop();
         },
 
         _applyDragAndDrop: function() {
           var container = this.$.components;
+          console.log("container", container);
           this._sortable = Sortable.create(container, {
             draggable: ".draggable",
             handle: ".drag-handle",
@@ -517,6 +524,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             scroll: true,
             animation: 200
           });
+        },
+
+        attached: function() {
+          this._applyDragAndDrop();
         },
 
         detached: function() {
