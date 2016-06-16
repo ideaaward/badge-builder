@@ -21,24 +21,26 @@ module.exports.calculateResults = function (badge, answers) {
     if (typeof element.answer !== 'undefined') {
       var result = false;
       var userAnswer = answers[id];
-      switch(element.elementType){
-        case "quiz-single":
-        case "quiz-multiple":
-        case "quiz-ordered-list":
+      if (userAnswer) {
+        switch(element.elementType){
+          case "quiz-single":
+          case "quiz-multiple":
+          case "quiz-ordered-list":
             result = isAnswerCorrect(userAnswer, element.answer);
             break;
-        case "quiz-short-input":
+          case "quiz-short-input":
             result = isShortAnswerCorrect(userAnswer, element.answerKeywords);
             break;
-        case "quiz-long-input":
+          case "quiz-long-input":
             result = isLongAnswerCorrect(userAnswer, element.wordLimit);
             break;
-        case "quiz-list-groups":
+          case "quiz-list-groups":
             result = isGroupedAnswerCorrect(userAnswer, element.answer);
             break;
-        default:
+          default:
             console.error("Unknown answer type", element.elementType);
             break;
+        }
       }
       results[id] = result;
     }
@@ -82,7 +84,6 @@ function isGroupedAnswerCorrect(userAnswers, answers){
     var userAnswer = _.find(userAnswers, function(o) { return o.group === group; });
     var isCorrect = _.isEqual(_.sortBy(answer.items), _.sortBy(userAnswer.items));
     if ( !isCorrect ) {
-      console.log('- check "', group, '" answers:', userAnswer, isCorrect);
       result = false;
     }
   });
