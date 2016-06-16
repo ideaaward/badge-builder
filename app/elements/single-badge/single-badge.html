@@ -426,6 +426,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return (this.selectedPage() < this.totalPages()-1);
         },
         next: function() {
+          this._updateProgress(); // Update progress on next page
           if (this.isInProgress()){
             this.$.components.selectNext();
             return;
@@ -464,7 +465,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         submitBadgeTapped: function (event) {
-          this._updateProgress();
           if (this.isInProgress()) {
             // checks answers on current page, and if correct goes to next page
             this.submitPageAnswers();
