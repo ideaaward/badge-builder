@@ -33,7 +33,7 @@
        */
       shuffle: {
         type: Boolean,
-        value: true
+        value: false
       },
 
       /**
@@ -162,12 +162,11 @@
       return answers;
     },
 
-    // TODO: we should reshuffle if by chance the shuffled order equals the answer order
-    _shuffle: function(){
+    _reshuffle: function(){
       // shuffle options
       if (this.shuffle && this.options.length>0) {
         this.set('options', _.shuffle(this.options) );
-        //console.log(this.localName, "shuffled options:", this.options);
+        //console.log(this.localName, "reshuffled options:", this.options);
       }
     },
 
@@ -176,7 +175,7 @@
       this._removeOptions();
 
       // shuffle options
-      this._shuffle();
+      this._reshuffle();
 
       // create option elements
       this._addOptions();
