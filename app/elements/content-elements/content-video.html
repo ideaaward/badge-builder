@@ -2,7 +2,7 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 
-<link rel="import" href="../../bower_components/juicy-html/juicy-html.html">
+<!-- <link rel="import" href="../../bower_components/juicy-html/juicy-html.html"> -->
 
 <link rel="import" href="../behaviors/editable-behavior.html">
 <link rel="import" href="../behaviors/datamodel-behavior.html">
@@ -23,54 +23,54 @@ Content component for embeded video display
       display: inline-block;
       width: 100%;
     }
-   
+
    paper-material {
       text-align: left;
-      padding: 10px 20px; 
+      padding: 10px 20px;
       margin-top: 20px;
-    }  
+    }
   </style>
 
   <template>
-    <paper-material hidden="[[!edit]]"> 
+    <paper-material hidden="[[!edit]]">
       <h3>Embeded Video Element</h3>
-      <paper-tooltip>This element allows you to embed videos directly into the badge. Do not input the raw URL for the video, you must enter the embed code which you can find around the video of your selected video provider, generally you can get this code by finding the "Share" button or tab. For example, on YouTube you can find the embed code by clicking on "Share" -> "Embed", copy that directly into the input box below. You have entered the embed code correctly if you can see the video on this page.</paper-tooltip> 
-      <paper-input placeholder="Embeded video code" value="{{embededURI}}" ></paper-input> 
+      <paper-tooltip>This element allows you to embed videos directly into the badge. Do not input the raw URL for the video, you must enter the embed code which you can find around the video of your selected video provider, generally you can get this code by finding the "Share" button or tab. For example, on YouTube you can find the embed code by clicking on "Share" -> "Embed", copy that directly into the input box below. You have entered the embed code correctly if you can see the video on this page.</paper-tooltip>
+      <paper-input placeholder="Embeded video code" value="{{embededURI}}" ></paper-input>
+      <content></content>
     </paper-material>
-    <br/>
-    <template is="juicy-html" content$="{{embededURI}}"> </template>
+    <!-- <template id="juicy" is="juicy-html" content$="[[embededURI]]"></template> -->
+    <div inner-h-t-m-l="[[embededURI]]"></div>
   </template>
 
+  <script>
+
+    ContentVideo = Polymer({
+      is: 'content-video',
+      properties: {
+
+        /**
+         * The embded uri for the video.
+         * @type {string}
+         */
+        embededURI: {
+          type: String,
+        }
+
+      },
+
+      getData: function(){
+        return {
+          elementType : this.localName,
+          embededURI : this.embededURI
+        };
+      },
+
+      behaviors: [
+        QuizBehaviors.EditableBehavior,
+        QuizBehaviors.DataModelBehavior
+      ]
+
+    });
+
+  </script>
 </dom-module>
-
-<script>
-
-  ContentVideo = Polymer({
-    is: 'content-video',
-    properties: {
-
-      /**
-       * The embded uri for the video.
-       * @type {string}
-       */
-      embededURI: {
-        type: String,
-      }
-
-    },
-
-    getData: function(){
-      return {
-        elementType : this.localName,
-        embededURI : this.embededURI
-      };
-    },
-
-    behaviors: [
-      QuizBehaviors.EditableBehavior,
-      QuizBehaviors.DataModelBehavior
-    ]       
-
-  });
-
-</script>
