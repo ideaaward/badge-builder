@@ -93,11 +93,25 @@
 
       // shuffle options for viewer
       if (!this.edit){
-        this._shuffle();
+        this._reshuffle();
       }
 
       // create option elements
       this._addOptions();
+    },
+
+    // NB: shuffle options until they don't match answer order.
+    _shuffleOptions: function(){
+      console.log(this.localName, "_shuffleOptions...");
+      // shuffle options
+      if (this.options.length>1) {
+        var shuffledOptions = [];
+        do {
+          shuffledOptions = _.shuffle(this.options);
+          console.info(this.localName, "* shuffled options:", this.options, shuffledOptions);
+        } while (shuffledOptions + '' === this.answer + '');
+        this.set('options', shuffledOptions);
+      }
     },
 
     /**
@@ -116,7 +130,7 @@
       }
       //console.log("edit answers order > ", updatedAnswers, elements.length);
       this.set('answer', updatedAnswers);
-      this.set('options', _.shuffle(updatedAnswers));
+      this._shuffleOptions(); //this.set('options', _.shuffle(updatedAnswers));
     }
 
   };
