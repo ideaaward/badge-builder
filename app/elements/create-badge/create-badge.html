@@ -185,10 +185,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Array,
             value: []
           },
-          isEditMode : {
+          // Create/save new Badge by default
+          isUpdateMode : {
             type: Boolean,
-            value: true,
-            observer: '_changeEditMode'
+            value: false,
+            observer: '_changeUpdateMode'
           },
           title: {
             type: String,
@@ -219,31 +220,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         opened: function (event) {
           this._resetPage();
-          // edit mode
+          // update existing badge
           if (event.detail && event.detail.params){
             var id = event.detail.params._id;
             console.log(this.localName, "opened", id);
             this.set('id', id);
+            this.set('isUpdateMode', true); // Update
             this.$.getBadge.url = '/api/author/badges/' + id;
             this.$.getBadge.generateRequest();
             return;
           }
+          // create new badge
+          this.set('isUpdateMode', false);
         },
 
-        _changeEditMode: function(isEditMode) {
-          console.log("mode", isEditMode);
-          if (isEditMode){
+        _changeUpdateMode: function(isUpdateMode) {
+          console.log("update mode:", isUpdateMode);
+          // update existing badge
+          if (isUpdateMode){
             this.set('title', "Edit Badge");
             this.set('saveTitle', "Update");
             return;
           }
+          // create new badge
           this.set('saveTitle', "Save");
           this.set('title', "Create Badge");
-          // enable drag & drop when switching into edit mode
-          if (this._sortable) {
-            console.log('->', this._sortable.options.disabled);
-            this._sortable.options.disabled = (this.isEdit) ? false : true;
-          }
         },
 
         selectTheme: function(event) {
@@ -264,7 +265,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             consumerSecret: this.$.secretInput.value
           };
           console.info(this.localName, 'save', body);
-          if (this.isEditMode) {
+          if (this.isUpdateMode) {
             this.$.updateBadge.url = '/api/author/badges/' + this.id;
             this.$.updateBadge.body = body;
             this.$.updateBadge.generateRequest();
@@ -520,7 +521,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this._sortable = Sortable.create(container, {
             draggable: ".draggable",
             handle: ".drag-handle",
-            disabled: !this.isEditMode,
             scroll: true,
             animation: 200
           });
