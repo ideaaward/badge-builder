@@ -4,6 +4,7 @@
 <link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
 
 <link rel="import" href="../../bower_components/Sortable/Sortable.html">
+<link rel="import" href="../behaviors/datamodel-behavior.html">
 
 <!--
 Quiz component for question with mutiple choice response (checkbox style)
@@ -127,10 +128,11 @@ Example:
       },
 
       _createSortable: function(el){
-        console.log(this.localName, "create sortable", el);
+        var group = this._id || "group";
+        //console.log(this.localName, "create sortable group", group, el);
         return Sortable.create(el, {
           animation: 200,
-          group: "group",
+          group: group,
           // sort: false,
           // handle: ".drag-handle"
         });
@@ -182,10 +184,13 @@ Example:
           };
           answers.push(answer);
         }
-        console.log("user group answers >", answers, elements.length);
+        //console.log("user group answers >", answers, elements.length);
         return answers;
       },
 
+      behaviors: [
+        QuizBehaviors.DataModelBehavior
+      ]
 
     });
   </script>
