@@ -17,6 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
 
 <link rel="import" href="../behaviors/document-behavior.html">
 
@@ -34,47 +35,51 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <iron-signals on-iron-signal-admin="opened"></iron-signals>
 
-    <p class="subhead m1">Admins:</p>
+    <paper-material elevation="1">
 
-    <iron-ajax id="getAdmins"
-      url="/api/admin/admins" handle-as="json" last-response="{{adminsResponse}}" on-response="notifyResize" >
-    </iron-ajax>
-    <iron-list id="adminsList" items="[[adminsResponse]]" as="item" >
-      <template>
-        <div class="list-item">
-          <paper-material elevation="1" class="bg_white">
-            <h3>[[item.name]] ([[item.id]])</h3>
-          </paper-material>
-        </div>
-      </template>
-    </iron-list>
+      <p class="subhead m1">Admins:</p>
 
-    <iron-ajax id="addAdminRequest" handle-as="json" content-type="application/json"
-      method="PUT" url="/api/admin/admins"
-      on-response="handleAddAdminResponse" on-error="handleAddAdminError">
-    </iron-ajax>
-    <paper-input id="adminInput" placeholder="User identifier"
-      label="Add admin" value="{{userIdentifier}}" required>
-      <paper-button suffix on-tap="addAdmin" raised>
-        <iron-icon icon="save"></iron-icon>
-        Add
-      </paper-button>
-    </paper-input>
+      <iron-ajax id="getAdmins"
+        url="/api/admin/admins" handle-as="json" last-response="{{adminsResponse}}" on-response="notifyResize" >
+      </iron-ajax>
+      <iron-list id="adminsList" items="[[adminsResponse]]" as="item" >
+        <template>
+          <div class="list-item">
+            <paper-material elevation="1" class="bg_white">
+              <h3>[[item.name]] ([[item.id]])</h3>
+            </paper-material>
+          </div>
+        </template>
+      </iron-list>
 
-    <p class="subhead m1">Users:</p>
+      <iron-ajax id="addAdminRequest" handle-as="json" content-type="application/json"
+        method="PUT" url="/api/admin/admins"
+        on-response="handleAddAdminResponse" on-error="handleAddAdminError">
+      </iron-ajax>
+      <paper-input id="adminInput" placeholder="User identifier"
+        label="Add admin" value="{{userIdentifier}}" required>
+        <paper-button suffix on-tap="addAdmin" raised>
+          <iron-icon icon="save"></iron-icon>
+          Add
+        </paper-button>
+      </paper-input>
 
-    <iron-ajax id="getUsers"
-      url="/api/admin/users" handle-as="json" last-response="{{usersResponse}}" on-response="notifyResize" >
-    </iron-ajax>
-    <iron-list id="usersList" items="[[usersResponse]]" as="item" >
-      <template>
-        <div class="list-item">
-          <paper-material elevation="1" class="bg_white">
-            <h3>[[item.name]] ([[item.id]])</h3>
-          </paper-material>
-        </div>
-      </template>
-    </iron-list>
+      <p class="subhead m1">Users:</p>
+
+      <iron-ajax id="getUsers"
+        url="/api/admin/users" handle-as="json" last-response="{{usersResponse}}" on-response="notifyResize" >
+      </iron-ajax>
+      <iron-list id="usersList" items="[[usersResponse]]" as="item" >
+        <template>
+          <div class="list-item">
+            <paper-material elevation="1" class="bg_white">
+              <h3>[[item.name]] ([[item.id]])</h3>
+            </paper-material>
+          </div>
+        </template>
+      </iron-list>
+
+    </paper-material>
 
   </template>
 
