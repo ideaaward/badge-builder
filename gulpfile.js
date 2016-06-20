@@ -106,7 +106,7 @@ gulp.task('sass', function(){
 
 // Compile and automatically prefix stylesheets
 gulp.task('styles', function() {
-  return styleTask('styles', ['**/*.css']);
+  return styleTask('styles', ['*.css']);
 });
 
 gulp.task('elements', function() {
