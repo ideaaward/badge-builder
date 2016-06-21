@@ -101,3 +101,37 @@
 		@content;
 	}
 }
+
+// Custom Font mixins
+
+// eot, woff, ttf, svg font src
+@mixin font-src($font_path, $file_name, $font_version, $delimiter: '-') {
+  src: url("#{$font_path}#{$delimiter}#{$file_name}.eot?v=#{$font_version}");
+  src: url("#{$font_path}#{$delimiter}#{$file_name}.eot?#iefix&v=#{$font_version}") format("embedded-opentype"),
+       url("#{$font_path}#{$delimiter}#{$file_name}.woff?v=#{$font_version}") format("woff"),
+       url("#{$font_path}#{$delimiter}#{$file_name}.ttf?v=#{$font_version}") format("truetype"),
+       url("#{$font_path}#{$delimiter}#{$file_name}.svg?v=#{$font_version}##{$file_name}") format("svg");
+}
+
+// woff, woff2 web font src
+@mixin woff-font-src($font_path, $file_name, $font_version, $delimiter: '-') {
+	src: url("#{$font_path}#{$delimiter}#{$file_name}.woff2?v=#{$font_version}") format('woff2'),
+			 url("#{$font_path}#{$delimiter}#{$file_name}.woff?v=#{$font_version}") format('woff');
+}
+
+// custom font face
+@mixin font-face($font, $font_path, $file_name, $font_weight, $font_style: 'normal', $font_version: '1.0', $delimiter: '-') {
+	@font-face {
+		font-family: $font;
+		@include woff-font-src($font_path, $file_name, $font_version, $delimiter);
+		font-weight: $font_weight;
+		font-style: $font_style;
+	}
+}
+
+// custom font faces using weight and font file name key values
+@mixin font-faces($font_map, $font, $font_path, $font_style: 'normal', $font_version: '1.0', $delimiter: '-') {
+	@each $font_weight, $file_name in $font_map {
+		@include font-face($font, $font_path, $file_name, $font_weight, $font_style, $font_version, $delimiter);
+	}
+}

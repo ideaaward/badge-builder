@@ -19,10 +19,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- Place favicon.ico in the `app/` directory -->
   <link rel="shortcut icon" href="/static/favicon.ico" />
 
-  <!-- build:css /static/styles/main.css -->
-  <link rel="stylesheet" href="/static/styles/main.css">
-  <!-- endbuild-->
-
   <!-- build:js /static/bower_components/webcomponentsjs/webcomponents-lite.min.js -->
   <script src="/static/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
   <!-- endbuild -->
@@ -33,6 +29,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <!-- For shared styles, shared-styles.html import in elements.html -->
   <style is="custom-style" include="shared-styles"></style>
+
+  <!-- build:css /static/styles/main.css -->
+  <link rel="stylesheet" href="/static/styles/main.css">
+  <!-- endbuild-->
 </head>
 
 <body unresolved id="viewer">
@@ -60,10 +60,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </paper-toast>
 
   </template>
-
-  <!-- build:js /static/bower_components/lodash/lodash.min.js -->
-  <script src="/static/bower_components/lodash/lodash.min.js"></script>
-  <!-- endbuild-->
+  
   <!-- build:js /static/scripts/app.js -->
   <script src="/static/scripts/app.js"></script>
   <!-- endbuild-->

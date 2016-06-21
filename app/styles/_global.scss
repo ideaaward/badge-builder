@@ -1,7 +1,7 @@
 /* Shared styles */
 
 body {
-  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: $font, 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
   background: $coolgrey_1;
 }
@@ -36,6 +36,11 @@ body {
 
 .fg_blue {
 	color: $blue;
+}
+
+// Polymer paper-menu-button input override
+.paper-input .input-content.paper-input-container input {
+	font-family: $font;
 }
 
 // Header
@@ -168,7 +173,7 @@ body#editor {
   }
 
   .grid-item a > iron-icon {
-    padding-right: $gap;
+    margin-right: $gap;
   }
 
   .grid-item .title {
