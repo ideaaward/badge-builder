@@ -20,6 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../behaviors/document-behavior.html">
 
 <link rel="import" href="../quiz-elements/quiz-single.html">
@@ -121,49 +122,67 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       method="PUT" on-response="handleUpdateResponse">
     </iron-ajax>
 
-    <paper-material class="content">
-      <h2 class="page-title">[[title]]</h2>
+    <nav>
+      <div class="col-l"><a href="/" class="button"><iron-icon icon="arrow-back"></iron-icon>Badges</a></div>
+      <div class="col-m idea-logo"></div>
+      <div class="col-r"><a on-tap="saveBadge" class="button">[[saveTitle]]</a></div>
+    </nav>
 
-      <paper-input id="titleInput" placeholder="Title" label="Badge Title" value="{{badgeTitle}}" autofocus required></paper-input>
+    <main>
+      <div class="gutter"></div>
 
-      <paper-input id="keyInput" placeholder="Key" label="Consumer Key" value="{{badgeKey}}"></paper-input>
-      <paper-input id="secretInput" placeholder="Secret" label="Consumer Secret" value="{{badgeSecret}}"></paper-input>
+      <paper-material class="editor">
+        <div class="titlebar header">
+          <h1><iron-icon icon="idea-icons:badge"></iron-icon>[[title]]</h1>
+        </div>
 
-      <paper-dropdown-menu label="Badge Theme">
-        <paper-listbox id="theme" class="dropdown-content" attr-for-selected="value" selected="{{badgeTheme}}" on-iron-select="selectTheme">
-          <paper-item value="blue"><span class="swatch bg_blue"></span>Blue</paper-item>
-          <paper-item value="green"><span class="swatch bg_green"></span>Green</paper-item>
-          <paper-item value="pink"><span class="swatch bg_pink"></span>Pink</paper-item>
-          <paper-item value="orange"><span class="swatch bg_orange"></span>Orange</paper-item>
-        </paper-listbox>
-      </paper-dropdown-menu>
+        <div class="container">
+          <div class="expanded row">
+            <div class="large-6 columns">
+              <paper-input id="titleInput" placeholder="Title" label="Badge Title" value="{{badgeTitle}}" autofocus required></paper-input>
+              <paper-dropdown-menu label="Badge Theme">
+                <paper-listbox id="theme" class="dropdown-content" attr-for-selected="value" selected="{{badgeTheme}}" on-iron-select="selectTheme">
+                  <paper-item value="blue"><span class="swatch bg_blue"></span>Blue</paper-item>
+                  <paper-item value="green"><span class="swatch bg_green"></span>Green</paper-item>
+                  <paper-item value="pink"><span class="swatch bg_pink"></span>Pink</paper-item>
+                  <paper-item value="orange"><span class="swatch bg_orange"></span>Orange</paper-item>
+                </paper-listbox>
+              </paper-dropdown-menu>
+            </div>
+            <div class="large-6 columns">
+              <paper-input id="keyInput" placeholder="Key" label="Consumer Key" value="{{badgeKey}}"></paper-input>
+              <paper-input id="secretInput" placeholder="Secret" label="Consumer Secret" value="{{badgeSecret}}"></paper-input>
+              <!-- <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>[[saveTitle]]</paper-button> -->
+            </div>
+          </div>
+        </div>
+      </paper-material>
 
-      <paper-button on-tap="saveBadge" raised><iron-icon icon="save"></iron-icon>{{saveTitle}}</paper-button>
+      <!-- dynamic elements go inside here -->
+      <div id="components" class="editor"></div>
 
-      <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>Test</paper-button>
-    </paper-material>
+    </main>
 
+    <div class="side-drawer">
+      <h3 class="title">Quiz</h3>
+      <ul>
+        <li><a on-tap="createYesNo"><iron-icon icon="radio-button-checked"></iron-icon><span>Single&nbsp;Choice</span></a></li>
+        <li><a on-tap="createMultipleChoice"><iron-icon icon="check-box"></iron-icon><span>Multiple&nbsp;Choice</span></a></li>
+        <li><a on-tap="createQuizOrderedList"><iron-icon icon="editor:format-line-spacing"></iron-icon><span>List</span></a></li>
+        <li><a on-tap="createQuizListGroups"><iron-icon icon="av:shuffle"></iron-icon><span>Groups</span></a></li>
+        <li><a on-tap="createQuizShortInput"><iron-icon icon="editor:short-text"></iron-icon><span>Keywords</span></a></li>
+        <li><a on-tap="createQuizLongInput"><iron-icon icon="editor:format-align-left"></iron-icon><span>Comments</span></a></li>
+      </ul>
 
-    <div id="fab">
-        <!-- Quiz -->
-        <paper-fab icon="radio-button-checked" on-tap="createYesNo"></paper-fab>
-        <paper-fab icon="check-box" on-tap="createMultipleChoice"></paper-fab>
-        <paper-fab icon="editor:format-line-spacing" on-tap="createQuizOrderedList"></paper-fab>
-        <paper-fab icon="av:shuffle" on-tap="createQuizDraggable"></paper-fab>
-        <paper-fab icon="editor:short-text" on-tap="createQuizShortInput"></paper-fab>
-        <paper-fab icon="editor:format-align-left" on-tap="createQuizLongInput"></paper-fab>
-        <!-- Content -->
-        <paper-fab icon="editor:format-color-text" on-tap="createHTML" class="blue"></paper-fab>
-        <paper-fab icon="av:videocam" on-tap="createVideo" class="blue"></paper-fab>
-        <paper-fab icon="link" on-tap="createButton" class="blue"></paper-fab>
-        <!--iframe 2.0-->
-        <!-- <paper-fab icon="av:play-circle-outline" on-tap="" class="blue"></paper-fab> -->
-        <!--section divider-->
-        <paper-fab icon="av:web-asset" on-tap="createContentSection" class="blue"></paper-fab>
+      <h3 class="title">Content</h3>
+      <ul>
+        <li><a on-tap="createHTML"><iron-icon icon="editor:format-color-text"></iron-icon><span>Text</span></a></li>
+        <li><a on-tap="createVideo"><iron-icon icon="av:videocam"></iron-icon><span>Media</span></a></li>
+        <li><a on-tap="createButton"><iron-icon icon="link"></iron-icon><span>Link</span></a></li>
+        <li><a on-tap="createContentSection"><iron-icon icon="av:web-asset"></iron-icon><span>Section</span></a></li>
+      </ul>
     </div>
 
-    <!-- dynamic elements go inside here -->
-    <div id="components"></div>
   </template>
 
 
@@ -435,6 +454,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.info(this.localName, 'DATA', this.elements); // this._node.elements
         },
 
+        _autoScroll: function(){
+          // allow element to be drawn to screen before scrolling to bottom
+          setTimeout(function(){
+            var bottom = document.body.scrollHeight;
+            console.log("Scroll to bottom", bottom);
+            window.scrollTo(0, bottom);
+          }, 0);
+        },
+
         createYesNo: function(){
           var el = document.createElement('quiz-single');
           el.options = ["Yes","No"];
@@ -451,7 +479,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addElement(el);
         },
 
-        createQuizDraggable: function(){
+        createQuizListGroups: function(){
           var el = document.createElement('quiz-list-groups');
           this.addElement(el);
         },
@@ -473,6 +501,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           element.classList.add("draggable");
           Polymer.dom(this.$.components).appendChild(element);
           this.push('_node.elements', {element: element});
+          this._autoScroll();
         },
 
         // EDIT

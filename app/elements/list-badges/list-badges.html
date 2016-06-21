@@ -34,27 +34,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <iron-signals on-iron-signal-home="opened"></iron-signals>
 
-    <p class="subhead m1">Badges:</p>
-
     <iron-ajax id="deleteBadge" handle-as="json" method="DELETE"
       on-response="handleDeleteResponse">
     </iron-ajax>
+
     <iron-ajax id="getBadges"
       url="/api/author/badges" handle-as="json" last-response="{{badgesResponse}}" on-response="badgeResponse" >
     </iron-ajax>
-    <iron-list id="badgesList" items="[[badgesResponse]]" as="item" >
-      <template>
-        <div class="list-item">
-          <paper-material elevation="1" class="bg_white">
-            <h3>
-              <a href="{{baseUrl}}badges/{{item._id}}" target="_blank">[[item.title]]</a>
-              <a data-route="badges" href="{{baseUrl}}edit/{{item._id}}" title="Edit"><iron-icon icon="create"></iron-icon></a>
-            </h3>
-            <paper-fab on-tap="badgeDeleted" icon="delete" class="fab"></paper-fab>
-          </paper-material>
-        </div>
-      </template>
-    </iron-list>
+
+    <paper-dialog modal id="deleteAlert">
+      <h2>Delete</h2>
+      <p>Are you sure you wish to delete this badge?</p>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button class="fg_pink" dialog-confirm autofocus>Delete</paper-button>
+      </div>
+    </paper-dialog>
+
+    <nav>
+      <div class="col-l"></div>
+      <div class="col-m idea-logo"></div>
+      <div class="col-r"><a href="/create" class="button">New Badge</a></div>
+    </nav>
+
+    <main>
+      <div class="gutter-gap"></div>
+      <iron-list id="badgesList" items="[[badgesResponse]]" as="item" grid>
+        <template>
+          <div class="list-item">
+            <paper-material elevation="1" class="bg_white">
+              <h3 class="title">
+                <a data-route="badges" href="[[baseUrl]]edit/[[item._id]]" title="Edit"><iron-icon icon="idea-icons:badge"></iron-icon>[[item.title]]</a>
+              </h3>
+              <a href="[[baseUrl]]badges/[[item._id]]" target="_blank" class="btn"><paper-button><iron-icon icon="open-in-new"></iron-icon><span>Preview</span></paper-button></a>
+              <paper-fab data-id$="[[item._id]]" on-tap="_confirmDeleteBadge" icon="delete" mini class="fab"></paper-fab>
+            </paper-material>
+          </div>
+        </template>
+      </iron-list>
+
+      <div class="center">
+        <h3>Create a <a href="/create">new badge</a></h3>
+      </div>
+    </main>
+
   </template>
 
   <script>
@@ -63,20 +86,59 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       Polymer({
         is: 'list-badges',
-        opened: function (event) {
-          //this._setAppTheme('none');
+
+        properties: {
+          _deleteId : {
+            type: String
+          }
+        },
+
+        opened: function(e) {
+          this._setAppTheme('none');
           this.$.getBadges.generateRequest();
         },
-        badgeDeleted: function (event) {
-          this.$.deleteBadge.url = '/api/author/badges/' + event.model.item._id;
-          this.$.deleteBadge.generateRequest();
-        },
-        badgeResponse: function(event) {
+
+        badgeResponse: function(e) {
+          //console.info(this.badgesResponse);
           // hack to force iron-list to redraw bound elements
           this.$.badgesList.notifyResize();
         },
+
+        deleteBadge: function() {
+          console.log("Delete badge:", this._deleteId);
+          if ( this._deleteId ) {
+            this.$.deleteBadge.url = '/api/author/badges/' + this._deleteId; //event.model.item._id;
+            this.$.deleteBadge.generateRequest();
+            this.set('_deleteId', '');
+          }
+        },
+
         handleDeleteResponse: function (event, response) {
           this.$.getBadges.generateRequest();
+        },
+
+        _confirmDeleteBadge: function(e){
+          var button = e.target;
+          while (!button.hasAttribute('data-id') && button !== document.body) {
+            button = button.parentElement;
+          }
+          if (!button.hasAttribute('data-id')) {
+            this.set('_deleteId', '');
+            return;
+          }
+
+          this.set('_deleteId', button.getAttribute('data-id') );
+          this.$.deleteAlert.open();
+        },
+
+        _handleDialogClosed: function(event){
+          if (event.detail.confirmed) {
+            this.deleteBadge();
+          }
+        },
+
+        listeners: {
+          'iron-overlay-closed': "_handleDialogClosed"
         },
         behaviors: [
           Page.DocumentBehavior

@@ -2,6 +2,7 @@
 
 // Layout vars
 $gap: 10px;
+$nav_height: 50px;
 
 $header_width: 100%;
 $header_height: 128px;
@@ -9,15 +10,34 @@ $header_height: 128px;
 $footer_width: 100%;
 $footer_height: 150px;
 
+$list_item_width: 180px;
+$list_item_height: 180px;
+
+$sidebar_width: 180px;
+$sidebar_collapsed_width: 65px;
+
 // Theme colour palette
-$pink: #E84079;
+$pink: #C84378;
+$navy: #2B325D;
+$green: #8ABF54;
+$blue: #4DB1E0;
+$orange: #F1A21E;
+
+$pink_muted: #953259;
+$navy_muted: #17283F;
+$green_muted: #688A58;
+$blue_muted: #6487A7;
+$orange_muted: #AB7A42;
+
+$coolgrey_1: #E9EAED;
+$coolgrey_2: #B4C0D0;
+
+$coolgrey_3: #8187A9;
+$coolgrey_4: #5A5E76;
+
 $white: #FFFFFF;
 $black: #212121;
-$grey: #CCCCCC;
-$navy: #203269;
-$orange: #FFA409;
-$green: #6BC048;
-$blue: #00B3E3;
+$grey: $coolgrey_3;
 
 $error: #D4332E;
 
@@ -62,3 +82,8 @@ $png_garter: "#{$path}idea/garter/garter-stamp-png";
 $svg_garter: "#{$path}idea/garter/garter-stamp-svg";
 $garter_width: 128px;
 $garter_height: 128px;
+
+// iDEA logo
+$svg_logo: "#{$path}idea/mono/iDEA";
+$logo_width: 100px;
+$logo_height: 50px;

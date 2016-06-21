@@ -5,6 +5,20 @@
 	}
 }
 
+// truncate text
+@mixin truncate($font-size, $lines, $line-height:1.5) {
+	display: block;
+	width: 100%;
+	height: $font-size * $lines * $line-height;
+	line-height: $line-height;
+  overflow: hidden;
+  text-overflow: ellipsis;
+	// webkit
+	display: -webkit-box;
+	-webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+}
+
 //PNG
 // background-image url for standard defination, Retina (@2x), and Retina HD (@3x) background images
 @mixin backgroundX($imageFile, $resolution:1, $bgColor:"", $imageFormat:"png", $repeat:"no-repeat", $posX:"0px", $posY:"0px") {
@@ -38,35 +52,10 @@
 }
 
 //SVG
-// background-image url for standard defination, Retina (@2x), and Retina HD (@3x) background images
-@mixin backgroundXSVG($imageFile, $resolution:1, $bgColor:"", $imageFormat:"svg", $repeat:"no-repeat", $posX:"0px", $posY:"0px") {
-	@if $resolution != 1 {
-		background: #{$bgColor} url("#{$imageFile}@#{$resolution}x.#{$imageFormat}") #{$repeat} #{$posX} #{$posY};
-	} @else {
-		background: #{$bgColor} url("#{$imageFile}.#{$imageFormat}") #{$repeat} #{$posX} #{$posY};
-	}
-}
-
-// generates media queries for up to @3x image resolutions
-@mixin backgroundSizesSVG($imageWidth, $imageHeight, $imageFile, $maxResolutions:1, $bgColor:"", $imageFormat:"svg", $repeat:"no-repeat", $posX:"0px", $posY:"0px") {
-	width: $imageWidth;
-	height: $imageHeight;
-	@include backgroundXSVG($imageFile);
+// background-image url for SVG
+@mixin backgroundSizesSVG($imageWidth, $imageHeight, $imageFile, $bgColor:"", $posX:"50%", $posY:"50%", $repeat:"no-repeat") {
+	background: #{$bgColor} url("#{$imageFile}.svg") #{$repeat} #{$posX} #{$posY};
 	background-size: $imageWidth $imageHeight;
-	// @2x
-	@if $maxResolutions > 1 {
-		@include media-2x() {
-			@include backgroundXSVG($imageFile, 2, $bgColor, $imageFormat, $repeat, $posX, $posY);
-			background-size: $imageWidth $imageHeight;
-		}
-	}
-	// @3x
-	@if $maxResolutions > 2 {
-		@include media-3x() {
-			@include backgroundXSVG($imageFile, 3, $bgColor, $imageFormat, $repeat, $posX, $posY);
-			background-size: $imageWidth $imageHeight;
-		}
-	}
 }
 
 // Screen resolution media queries
@@ -85,7 +74,7 @@
 	}
 }
 
-// Responsive
+// Responsive (mixins for Bootstrap 3)
 
 @mixin media-xxs() {
 	@media (max-width: 479px) {

@@ -3,7 +3,7 @@
 body {
   font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
-  background: #FAFAFA;
+  background: $coolgrey_1;
 }
 
 // Background colour swatches
@@ -28,27 +28,46 @@ body {
 	background: $white;
 }
 
+// Colours
+
+.fg_pink {
+  color: $pink;
+}
+
 // Header
 body {
   .header {
-    background-color: lighten($navy, 20%);
+    background-color: $white;
+    color: $black;
   }
 
   &.green .header {
   	background-color: $green;
+    color: $white;
   }
 
   &.blue .header {
   	background-color: $blue;
+    color: $navy;
   }
 
   &.pink .header {
   	background-color: $pink;
+    color: $white;
   }
 
   &.orange .header {
   	background-color: $orange;
+    color: $white;
   }
+}
+
+a {
+  color: $navy;
+}
+
+a:hover {
+  color: $blue;
 }
 
 // Spacers
@@ -58,50 +77,226 @@ body {
 .v2 { padding: ($gap*2) 0; }
 
 // Alignment
-.rhs { float: right; }
+.fr { float: right; }
 
-// Layout
-.list-item {
-  width: 200px;
-}
-.list-item>*{
-  margin: $gap;
-  padding: $gap;
+.center { text-align: center; }
+
+.idea-logo {
+  @include backgroundSizesSVG($logo_width, $logo_height, $svg_logo);
 }
 
-.fab {
-  position: absolute;
-  top: 50%;
-  transform: translate(0, -50%);
-  right: $gap;
-}
+/* Editor styles only */
+body#editor {
+  nav {
+    position: fixed;
+    width: 100%;
+    height: $nav_height;
+    background-color: $navy_muted;
+    color: $white;
+    top: 0;
+    z-index: 1;
+  }
 
-paper-fab.blue {
-  --paper-fab-background: var(--paper-light-blue-500);
-  --paper-fab-keyboard-focus-background: var(--paper-light-blue-900);
-}
+  .gutter {
+    height: $nav_height;
+  }
 
-// Editor styles
-.swatch {
-	width: $gap;
-	height: $gap;
-	display: inline-block;
-	margin-right: $gap/2;
-}
+  .gutter-gap {
+    height: $nav_height + $gap;
+  }
 
-// Sortable styles
-.sortable-chosen {
-  opacity: 0.5;
-}
+  .col-l, .col-r, .col-m {
+    float: left;
+    height: $nav_height;
+  }
 
-.sortable-chosen > paper-material {
-  border: 2px dashed $grey;
-}
+  .col-l, .col-r {
+    width: 30%;
+  }
 
-.drag-handle {
-  cursor: move;
-  cursor: -webkit-grabbing;
-  color: $grey;
+  .col-m {
+    width: 40%;
+    text-align: center;
+  }
+
+  .col-r {
+    text-align: right;
+  }
+
+  nav a, nav span {
+    display: inline-block;
+    line-height: $nav_height;
+    vertical-align: middle;
+    padding: 0 $gap;
+    text-decoration: none;
+    color: $blue;
+  }
+
+  // List
+
+  .list-item > * {
+    width: $list_item_width;
+    height: $list_item_height;
+    margin: $gap;
+    padding: $gap;
+    position: relative;
+  }
+
+  .list-item .btn {
+    position: absolute;
+    left: 0;
+    bottom: $gap/2;
+  }
+
+  .list-item .fab {
+    position: absolute;
+    right: $gap;
+    bottom: $gap;
+    text-align: right;
+  }
+
+  .list-item a > iron-icon {
+    padding-right: $gap;
+  }
+
+  .list-item .title {
+    margin: $gap/2;
+    @include truncate(18px, 3);
+  }
+
+  // Editor
+
+  .button {
+    cursor: pointer;
+  }
+
+  .side-drawer {
+    position: fixed;
+    top: $nav_height;
+    left: 0;
+    width: $sidebar_width;
+    height: calc(100% - #{$nav_height});
+    background: $coolgrey_4;
+    overflow: auto;
+  }
+
+  .side-drawer .title {
+    text-align: center;
+    color: $coolgrey_3;
+    font-weight: normal;
+  }
+
+  .side-drawer ul {
+    list-style: none;
+    margin: 0 $gap;
+    padding: 0;
+  }
+
+  .side-drawer ul li span {
+    margin-left: $gap/2;
+  }
+
+  .side-drawer ul li a {
+    display: block;
+    border: 1px solid $coolgrey_3;
+    padding: $gap;
+    margin-bottom: 4px;
+    color: $white;
+    font-weight: normal;
+  }
+
+  .side-drawer ul li a:hover {
+    background-color: $coolgrey_3;
+  }
+
+  .editor {
+    padding: 0;
+    margin: 0;
+    margin-left: $sidebar_width + $gap*2;
+    margin-right: $gap*2;
+  }
+
+  // Foundation 5 Grid SASS
+  @media #{$small-only} {
+    .side-drawer {
+      width: $sidebar_collapsed_width;
+    }
+    .side-drawer li span {
+      display: none;
+    }
+    .editor {
+      margin-left: $sidebar_collapsed_width + $gap*2;
+    }
+    .side-drawer .title {
+      font-size: 14px;
+    }
+  }
+
+  .editor > .titlebar {
+    margin: 0;
+    padding: 0;
+  }
+
+  .editor > .titlebar h1 {
+    font-weight: normal;
+    font-size: 24px;
+    padding: $gap;
+  }
+
+  .editor > .titlebar iron-icon {
+    margin-right: $gap;
+  }
+
+  .editor > .container {
+    padding-bottom: $gap*2;
+  }
+
+  // Foundation 5 Grid SASS
+  @media #{$large-up} {
+    .editor > .titlebar,
+    .editor > .container {
+      padding-left: $gap*2;
+      padding-right: $gap*2;
+    }
+  }
+
+  // Editor styles
+  .swatch {
+  	width: $gap;
+  	height: $gap;
+  	display: inline-block;
+  	margin-right: $gap/2;
+  }
+
+  // Sortable styles
+  .sortable-chosen {
+    opacity: 0.5;
+  }
+
+  .sortable-chosen > paper-material {
+    border: 2px dashed $grey;
+  }
+
+  .drag-handle {
+    cursor: move;
+    cursor: -webkit-grabbing;
+    color: $grey;
+  }
+
+  // Foundation 5 'expanded row' fluid row width
+  .expanded {
+    max-width: 100%;
+  }
+
+  // Admin page styles
+  .admin {
+    margin: $gap*2;
+    padding: $gap*2;
+  }
+
+  .drop > * {
+    margin-top: $gap/2;
+  }
 }
 
 /* Viewer styles only */
@@ -147,23 +342,23 @@ body#viewer {
 
   // iDEA Badge Logo
   & #idea-badge {
-    @include backgroundSizesSVG($badge_width, $badge_height, $svg_badge, 2);
+    @include backgroundSizesSVG($badge_width, $badge_height, $svg_badge);
   }
 
   &.green #idea-badge {
-    @include backgroundSizesSVG($badge_width, $badge_height, $svg_badge_green, 2);
+    @include backgroundSizesSVG($badge_width, $badge_height, $svg_badge_green);
   }
 
   &.blue #idea-badge {
-  	@include backgroundSizesSVG($badge_width, $badge_height, $svg_badge_blue, 2);
+  	@include backgroundSizesSVG($badge_width, $badge_height, $svg_badge_blue);
   }
 
   &.pink #idea-badge {
-  	@include backgroundSizesSVG($badge_width, $badge_height, $svg_badge_pink, 2);
+  	@include backgroundSizesSVG($badge_width, $badge_height, $svg_badge_pink);
   }
 
   &.orange #idea-badge {
-  	@include backgroundSizesSVG($badge_width, $badge_height, $svg_badge_orange, 2);
+  	@include backgroundSizesSVG($badge_width, $badge_height, $svg_badge_orange);
   }
 
   // viewer body children
@@ -190,18 +385,7 @@ body#viewer {
   }
 
   #garter {
-    @include backgroundSizesSVG($garter_width, $garter_height, $svg_garter, 3);
-    // @include backgroundX($png_garter);
-    // background-size: $png_garter_width $png_garter_height;
-    //
-    // @include media-2x() {
-    //   @include backgroundX($png_garter, 2);
-    //   background-size: $png_garter_width $png_garter_height;
-    // }
-    // @include media-3x() {
-    //   @include backgroundX($png_garter, 3);
-    //   background-size: $png_garter_width $png_garter_height;
-    // }
+    @include backgroundSizesSVG($garter_width, $garter_height, $svg_garter);
   }
 
   // viewer layout

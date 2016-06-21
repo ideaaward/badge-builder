@@ -23,7 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="page-admin">
   <template>
-    <style>
+    <style include="iron-flex">
       :host {
         display: block;
       }
@@ -35,13 +35,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <iron-signals on-iron-signal-admin="opened"></iron-signals>
 
-    <paper-material elevation="1">
+    <iron-ajax id="getAdmins"
+      url="/api/admin/admins" handle-as="json" last-response="{{adminsResponse}}" on-response="notifyResize" >
+    </iron-ajax>
 
-      <p class="subhead m1">Admins:</p>
+    <iron-ajax id="addAdminRequest" handle-as="json" content-type="application/json"
+      method="PUT" url="/api/admin/admins"
+      on-response="handleAddAdminResponse" on-error="handleAddAdminError">
+    </iron-ajax>
 
-      <iron-ajax id="getAdmins"
-        url="/api/admin/admins" handle-as="json" last-response="{{adminsResponse}}" on-response="notifyResize" >
-      </iron-ajax>
+    <iron-ajax id="getUsers"
+      url="/api/admin/users" handle-as="json" last-response="{{usersResponse}}" on-response="notifyResize" >
+    </iron-ajax>
+
+    <nav>
+      <div class="col-l"><a href="/" class="button"><iron-icon icon="arrow-back"></iron-icon>Badges</a></div>
+      <div class="col-m idea-logo"></div>
+      <div class="col-r"><a on-tap="saveBadge" class="button">[[saveTitle]]</a></div>
+    </nav>
+
+    <main>
+      <div class="gutter"></div>
+
+      <h2 class="center">Admins</h2>
+
       <iron-list id="adminsList" items="[[adminsResponse]]" as="item" >
         <template>
           <div class="list-item">
@@ -52,23 +69,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </template>
       </iron-list>
 
-      <iron-ajax id="addAdminRequest" handle-as="json" content-type="application/json"
-        method="PUT" url="/api/admin/admins"
-        on-response="handleAddAdminResponse" on-error="handleAddAdminError">
-      </iron-ajax>
-      <paper-input id="adminInput" placeholder="User identifier"
-        label="Add admin" value="{{userIdentifier}}" required>
-        <paper-button suffix on-tap="addAdmin" raised>
-          <iron-icon icon="save"></iron-icon>
-          Add
-        </paper-button>
-      </paper-input>
+      <paper-material elevation="1" class="admin bg_white">
+        <div class="layout horizontal">
+          <paper-input id="adminInput" placeholder="User identifier"
+            label="Add admin" value="{{userIdentifier}}" class="flex" required>
+          </paper-input>
+          <div class="drop">
+            <paper-button suffix on-tap="addAdmin" raised><iron-icon icon="add"></iron-icon>Add</paper-button>
+          </div>
+        </div>
+      </paper-material>
 
-      <p class="subhead m1">Users:</p>
+      <h2 class="center">Users</h2>
 
-      <iron-ajax id="getUsers"
-        url="/api/admin/users" handle-as="json" last-response="{{usersResponse}}" on-response="notifyResize" >
-      </iron-ajax>
       <iron-list id="usersList" items="[[usersResponse]]" as="item" >
         <template>
           <div class="list-item">
@@ -79,8 +92,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </template>
       </iron-list>
 
-    </paper-material>
-
+    </main>
   </template>
 
   <script>
