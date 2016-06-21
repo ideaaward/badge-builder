@@ -21,17 +21,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="shortcut icon" href="/static/favicon.ico" />
 
   <!-- Chrome for Android theme color -->
-  <meta name="theme-color" content="#2E3AA1">
+  <meta name="theme-color" content="#2B325D">
 
   <!-- Web Application Manifest -->
   <link rel="manifest" href="/static/manifest.json">
 
   <!-- Tile color for Win8 -->
-  <meta name="msapplication-TileColor" content="#3372DF">
+  <meta name="msapplication-TileColor" content="#2B325D">
 
   <!-- Add to homescreen for Chrome on Android -->
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="application-name" content="PSK">
+  <meta name="application-name" content="iDEA">
   <link rel="icon" sizes="192x192" href="/static/images/touch/chrome-touch-icon-192x192.png">
 
   <!-- Add to homescreen for Safari on iOS -->
@@ -59,114 +59,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <style is="custom-style" include="shared-styles"></style>
 </head>
 
-<body unresolved>
+<body unresolved id="editor">
   <!-- build:remove -->
   <span id="browser-sync-binding"></span>
   <!-- endbuild -->
 
   <template is="dom-bind" id="app">
 
-    <paper-drawer-panel id="paperDrawerPanel">
-      <!-- Drawer Scroll Header Panel -->
-      <paper-scroll-header-panel drawer fixed>
+    <!-- Main Content -->
+    <iron-pages attr-for-selected="data-route" selected="{{route}}">
 
-        <!-- Drawer Toolbar -->
-        <paper-toolbar id="drawerToolbar">
-          <span class="menu-name">Menu</span>
-        </paper-toolbar>
+      <list-badges data-route="home"></list-badges>
 
-        <!-- Drawer Content -->
-        <paper-menu attr-for-selected="data-route" selected="[[route]]">
-          <a data-route="home" href="{{baseUrl}}">
-            <iron-icon icon="icons:apps"></iron-icon>
-            <span>Badges</span>
-          </a>
+      <create-badge data-route="create"></create-badge>
 
-          <a data-route="create" href="{{baseUrl}}create">
-            <iron-icon icon="icons:add-circle-outline"></iron-icon>
-            <span>Create Badge</span>
-          </a>
-        </paper-menu>
-      </paper-scroll-header-panel>
+      <page-admin data-route="admin"></page-admin>
 
-      <!-- Main Area -->
-      <paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>
-        <!-- Main Toolbar -->
-        <paper-toolbar id="mainToolbar" class="tall header">
-          <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
+      <section data-route="error">
+        <div id="error-message">[[params.message]]</div>
+      </section>
 
-          <span class="space"></span>
-
-          <!-- Toolbar icons -->
-
-
-          <!-- Application name -->
-          <div class="middle middle-container">
-            <div class="app-name">Badge Builder</div>
-          </div>
-
-          <!-- Application sub title -->
-          <div class="bottom bottom-container">
-            <div class="bottom-title">Inspiring Digital Enterprise Award (iDEA) Badges</div>
-          </div>
-        </paper-toolbar>
-
-        <!-- Main Content -->
-        <div class="content">
-          <iron-pages attr-for-selected="data-route" selected="{{route}}">
-
-            <section data-route="home">
-              <list-badges></list-badges>
-            </section>
-
-            <section data-route="create">
-              <!--<paper-material elevation="1">-->
-                <create-badge></create-badge>
-              <!--</paper-material>-->
-            </section>
-
-            <section data-route="admin">
-              <paper-material elevation="1">
-                <page-admin></page-admin>
-              </paper-material>
-            </section>
-
-            <section data-route="error">
-              <div id="error-message">[[params.message]]</div>
-            </section>
-
-          </iron-pages>
-        </div>
-      </paper-scroll-header-panel>
-    </paper-drawer-panel>
+    </iron-pages>
 
     <paper-toast id="toast">
       <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">Ok</span>
     </paper-toast>
 
-    <!-- Uncomment next block to enable Service Worker support (1/2) -->
-    <!--
-    <paper-toast id="caching-complete"
-                 duration="6000"
-                 text="Caching complete! This app will work offline.">
-    </paper-toast>
-
-    <platinum-sw-register auto-register
-                          clients-claim
-                          skip-waiting
-                          base-uri="bower_components/platinum-sw/bootstrap"
-                          on-service-worker-installed="displayInstalledToast">
-      <platinum-sw-cache default-cache-strategy="fastest"
-                         cache-config-file="cache-config.json">
-      </platinum-sw-cache>
-    </platinum-sw-register>
-    -->
-
   </template>
 
-  <!-- build:js /static/bower_components/lodash/lodash.min.js -->
-  <script src="/static/bower_components/lodash/lodash.min.js"></script>
-  <!-- endbuild-->
   <!-- build:js /static/scripts/app.js -->
   <script src="/static/scripts/app.js"></script>
   <!-- endbuild-->
