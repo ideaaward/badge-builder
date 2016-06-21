@@ -106,7 +106,7 @@ gulp.task('sass', function(){
 
 // Compile and automatically prefix stylesheets
 gulp.task('styles', function() {
-  return styleTask('styles', ['*.css']);
+  return styleTask('styles', ['**/*.css']);
 });
 
 gulp.task('elements', function() {
@@ -283,7 +283,8 @@ gulp.task('default', ['clean'], function(cb) {
   // Uncomment 'cache-config' if you are going to use service workers.
   runSequence(
     'bower',
-    ['copy', 'sass', 'styles'],
+    'sass',
+    ['copy', 'styles'],
     'elements',
     ['images', 'fonts', 'html'],
     'vulcanize', // 'cache-config',
