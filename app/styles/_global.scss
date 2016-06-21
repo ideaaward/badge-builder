@@ -34,6 +34,10 @@ body {
   color: $pink;
 }
 
+.fg_blue {
+	color: $blue;
+}
+
 // Header
 body {
   .header {
@@ -135,6 +139,14 @@ body#editor {
   // List
 
   .list-item > * {
+    margin: $gap $gap*2;
+    padding: $gap;
+    position: relative;
+  }
+
+  // Grid
+
+  .grid-item > * {
     width: $list_item_width;
     height: $list_item_height;
     margin: $gap;
@@ -142,24 +154,24 @@ body#editor {
     position: relative;
   }
 
-  .list-item .btn {
+  .grid-item .btn {
     position: absolute;
     left: 0;
     bottom: $gap/2;
   }
 
-  .list-item .fab {
+  .grid-item .fab {
     position: absolute;
     right: $gap;
     bottom: $gap;
     text-align: right;
   }
 
-  .list-item a > iron-icon {
+  .grid-item a > iron-icon {
     padding-right: $gap;
   }
 
-  .list-item .title {
+  .grid-item .title {
     margin: $gap/2;
     @include truncate(18px, 3);
   }
@@ -296,6 +308,14 @@ body#editor {
 
   .drop > * {
     margin-top: $gap/2;
+  }
+
+  .select-text {
+    @include prefix('user-select', 'text');
+  }
+
+  h3 > iron-icon {
+    margin-right: $gap;
   }
 }
 

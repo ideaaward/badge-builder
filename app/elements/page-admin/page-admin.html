@@ -13,11 +13,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 
 <link rel="import" href="../behaviors/document-behavior.html">
 
@@ -57,40 +59,48 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <main>
       <div class="gutter"></div>
 
-      <h2 class="center">Admins</h2>
+      <paper-tabs selected="{{selected}}">
+        <paper-tab>Admins</paper-tab>
+        <paper-tab>Users</paper-tab>
+      </paper-tabs>
 
-      <iron-list id="adminsList" items="[[adminsResponse]]" as="item" >
-        <template>
-          <div class="list-item">
-            <paper-material elevation="1" class="bg_white">
-              <h3>[[item.name]] ([[item.id]])</h3>
-            </paper-material>
-          </div>
-        </template>
-      </iron-list>
+      <iron-pages selected="{{selected}}">
 
-      <paper-material elevation="1" class="admin bg_white">
-        <div class="layout horizontal">
-          <paper-input id="adminInput" placeholder="User identifier"
-            label="Add admin" value="{{userIdentifier}}" class="flex" required>
-          </paper-input>
-          <div class="drop">
-            <paper-button suffix on-tap="addAdmin" raised><iron-icon icon="add"></iron-icon>Add</paper-button>
-          </div>
-        </div>
-      </paper-material>
+        <!-- Admins -->
+        <section>
+          <paper-material elevation="1" class="admin bg_white">
+            <div class="layout horizontal">
+              <paper-input id="adminInput" placeholder="User identifier"
+                label="Add admin" value="{{userIdentifier}}" class="flex" required>
+              </paper-input>
+              <div class="drop">
+                <paper-button suffix on-tap="addAdmin" raised><iron-icon icon="add"></iron-icon>Add</paper-button>
+              </div>
+            </div>
+          </paper-material>
+          <iron-list id="adminsList" items="[[adminsResponse]]" as="item" >
+            <template>
+              <div class="list-item">
+                <paper-material elevation="1" class="bg_white">
+                  <h3 class="select-text"><iron-icon icon="social:person" class="fg_pink"></iron-icon>[[item.name]] ([[item.id]])</h3>
+                </paper-material>
+              </div>
+            </template>
+          </iron-list>
+        </section>
 
-      <h2 class="center">Users</h2>
+        <!-- Users -->
+        <iron-list id="usersList" items="[[usersResponse]]" as="item" >
+          <template>
+            <div class="list-item">
+              <paper-material elevation="1" class="bg_white">
+                <h3 class="select-text"><iron-icon icon="social:person" class="fg_blue"></iron-icon>[[item.name]] ([[item.id]])</h3>
+              </paper-material>
+            </div>
+          </template>
+        </iron-list>
 
-      <iron-list id="usersList" items="[[usersResponse]]" as="item" >
-        <template>
-          <div class="list-item">
-            <paper-material elevation="1" class="bg_white">
-              <h3>[[item.name]] ([[item.id]])</h3>
-            </paper-material>
-          </div>
-        </template>
-      </iron-list>
+      </iron-pages>
 
     </main>
   </template>
@@ -101,6 +111,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       Polymer({
         is: 'page-admin',
+        properties: {
+          selected: {
+            type: Number,
+            value: 0
+          }
+        },
         opened: function (event) {
           this.$.getAdmins.generateRequest();
           this.$.getUsers.generateRequest();

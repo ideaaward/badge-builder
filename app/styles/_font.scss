@@ -1,0 +1,20 @@
+// Font Weights
+$thin:   100;
+$xlight: 200;
+$light:  300;
+$normal: 400;
+$medium: 500;
+$demi:   600;
+$bold:   700;
+$xbold:  800;
+$heavy:  900;
+
+/* Open Sans */
+$font: 'Gotham';
+// font weight and font file name key values
+$font_map: (
+  $light: 'Light',
+  $normal: 'Book',
+  $medium: 'Medium',
+  $bold: 'Bold',
+);
