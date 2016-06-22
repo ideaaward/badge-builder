@@ -47,9 +47,7 @@ app.use(session({
     mongooseConnection: mongoose.connection
   }),
   cookie: {
-    // TODO: update when served over a secure connection
-    // secure: process.env.NODE_ENV === 'production'
-    secure: false
+    secure: process.env.NODE_ENV === 'production'
   },
   saveUninitialized: false,
   resave: false
