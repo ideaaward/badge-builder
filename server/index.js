@@ -35,6 +35,16 @@ if (process.env.NODE_ENV === 'production') {
   appFolder = '.';
 }
 console.log('Serving from ' + appFolder + ' folder...');
+
+// A workaround to to be able to use secure cookies in Azure:
+// http://scottksmith.com/blog/2014/08/22/using-secure-cookies-in-node-on-azure/
+app.use(function (req, res, next) {
+  if (req.headers['x-arr-ssl'] && !req.headers['x-forwarded-proto']) {
+    req.headers['x-forwarded-proto'] = 'https';
+  }
+  return next();
+});
+
 var rootPath = path.join(__dirname, '..', appFolder);
 var staticFolder = '/static';
 
