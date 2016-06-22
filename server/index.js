@@ -16,8 +16,8 @@ var app = express();
 
 var startServer = function () {
   var port = process.env.port || 8000;
-  app.listen(port, function () {
-    console.log('Server listening on port %d...', port);
+  var listener = app.listen(port, function () {
+    console.log('Server listening on port %d...', listener.address().port);
   });
 };
 
@@ -31,6 +31,7 @@ mongoose.connection.on('connected', function () {
 
 var appFolder = process.argv[2] === 'dist' ? '.' : 'app';
 if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
   appFolder = '.';
 }
 console.log('Serving from ' + appFolder + ' folder...');
