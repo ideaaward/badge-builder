@@ -1,7 +1,7 @@
 /* Shared styles */
 
 body {
-  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: $font, 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
   background: $coolgrey_1;
 }
@@ -32,6 +32,15 @@ body {
 
 .fg_pink {
   color: $pink;
+}
+
+.fg_blue {
+	color: $blue;
+}
+
+// Polymer paper-menu-button input override
+.paper-input .input-content.paper-input-container input {
+	font-family: $font;
 }
 
 // Header
@@ -135,6 +144,14 @@ body#editor {
   // List
 
   .list-item > * {
+    margin: $gap $gap*2;
+    padding: $gap;
+    position: relative;
+  }
+
+  // Grid
+
+  .grid-item > * {
     width: $list_item_width;
     height: $list_item_height;
     margin: $gap;
@@ -142,24 +159,24 @@ body#editor {
     position: relative;
   }
 
-  .list-item .btn {
+  .grid-item .btn {
     position: absolute;
     left: 0;
     bottom: $gap/2;
   }
 
-  .list-item .fab {
+  .grid-item .fab {
     position: absolute;
     right: $gap;
     bottom: $gap;
     text-align: right;
   }
 
-  .list-item a > iron-icon {
-    padding-right: $gap;
+  .grid-item a > iron-icon {
+    margin-right: $gap;
   }
 
-  .list-item .title {
+  .grid-item .title {
     margin: $gap/2;
     @include truncate(18px, 3);
   }
@@ -296,6 +313,14 @@ body#editor {
 
   .drop > * {
     margin-top: $gap/2;
+  }
+
+  .select-text {
+    @include prefix('user-select', 'text');
+  }
+
+  h3 > iron-icon {
+    margin-right: $gap;
   }
 }
 

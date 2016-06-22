@@ -158,7 +158,7 @@ gulp.task('copy', function() {
 
 // Copy web fonts to dist
 gulp.task('fonts', function() {
-  return gulp.src(['app/fonts/**'])
+  return gulp.src(['app/fonts/**/*'])
     .pipe(gulp.dest(dist('fonts')))
     .pipe($.size({
       title: 'fonts'
@@ -178,7 +178,8 @@ gulp.task('vulcanize', function() {
     .pipe($.vulcanize({
       stripComments: true,
       inlineCss: true,
-      inlineScripts: true
+      inlineScripts: true,
+      excludes: ['//fonts.googleapis.com/*']
     }))
     .pipe(gulp.dest(dist('elements')))
     .pipe($.size({title: 'vulcanize'}));
@@ -259,7 +260,7 @@ gulp.task('serve', ['styles', 'elements', 'nodemon'], function() {
   browserSync({
     port: 5000,
     notify: false,
-    logPrefix: 'PSK',
+    logPrefix: 'IDEA',
     snippetOptions: {
       rule: {
         match: '<span id="browser-sync-binding"></span>',
@@ -276,6 +277,7 @@ gulp.task('serve', ['styles', 'elements', 'nodemon'], function() {
   gulp.watch(['app/styles/**/*.css'], ['styles', reload]);
   gulp.watch(['app/elements/**/*.css'], ['elements', reload]);
   gulp.watch(['app/images/**/*'], reload);
+  gulp.watch(['app/fonts/**/*'], reload);
 });
 
 // Build production files, the default task

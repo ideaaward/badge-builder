@@ -13,10 +13,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../../bower_components/paper-card/paper-card.html">
 
 <link rel="import" href="../behaviors/document-behavior.html">
 
@@ -28,7 +26,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       span {
-        @apply(--paper-font-body1);
+        /*@apply(--paper-font-body1);*/
       }
     </style>
 
@@ -61,7 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div class="gutter-gap"></div>
       <iron-list id="badgesList" items="[[badgesResponse]]" as="item" grid>
         <template>
-          <div class="list-item">
+          <div class="grid-item">
             <paper-material elevation="1" class="bg_white">
               <h3 class="title">
                 <a data-route="badges" href="[[baseUrl]]edit/[[item._id]]" title="Edit"><iron-icon icon="idea-icons:badge"></iron-icon>[[item.title]]</a>

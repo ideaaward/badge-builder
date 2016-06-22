@@ -9,7 +9,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
@@ -69,13 +68,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       ::content paper-fab.widget {
-        display: inline-block;
+        float: left;
+      }
+
+      ::content li > paper-input {
+        display: inline-block !important;
       }
 
       paper-fab.delete {
         position: absolute;
-        /*transform: translateY(-50%);
-        top: 50%;*/
         right: 10px;
         bottom: 10px;
       }
@@ -88,7 +89,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       span,
       input {
-        @apply(--paper-font-body2);
+        /*@apply(--paper-font-body2);*/
       }
 
       #fab {
@@ -254,7 +255,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         _changeUpdateMode: function(isUpdateMode) {
-          console.log("update mode:", isUpdateMode);
+          //console.log("update mode:", isUpdateMode);
           // update existing badge
           if (isUpdateMode){
             this.set('title', "Edit Badge");
@@ -268,7 +269,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         selectTheme: function(event) {
           //var theme = event.detail.item.id;
-          console.log("select theme:", this.badgeTheme);
+          //console.log("select theme:", this.badgeTheme);
           this._setAppTheme(this.badgeTheme);
         },
 
@@ -458,7 +459,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // allow element to be drawn to screen before scrolling to bottom
           setTimeout(function(){
             var bottom = document.body.scrollHeight;
-            console.log("Scroll to bottom", bottom);
+            //console.log("Scroll to bottom", bottom);
             window.scrollTo(0, bottom);
           }, 0);
         },
@@ -546,7 +547,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         _applyDragAndDrop: function() {
           var container = this.$.components;
-          console.log("container", container);
           this._sortable = Sortable.create(container, {
             draggable: ".draggable",
             handle: ".drag-handle",

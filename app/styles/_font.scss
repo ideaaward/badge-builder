@@ -1,0 +1,34 @@
+// Font Weights
+$thin:   100;
+$xlight: 200;
+$light:  300;
+$normal: 400;
+$medium: 500;
+$demi:   600;
+$bold:   700;
+$xbold:  800;
+$heavy:  900;
+
+/* Body font */
+$font: 'Gotham';
+// font weight and font file name key values
+$font_map: (
+  $light: 'light',
+  $normal: 'book',
+  $medium: 'medium',
+  $bold: 'bold',
+);
+
+// font-faces([weight:filename], font name, font path)
+@include font-faces($font_map, $font, '../fonts/gothamhtf');
+
+
+/* Display font */
+$font_display: 'Amatic';
+// font weight and font file name key values
+$font_display_map: (
+  $bold: 'bold-webfont',
+);
+
+// font-faces([weight:filename], font name, font path)
+@include font-faces($font_display_map, $font_display, '../fonts/amatic');

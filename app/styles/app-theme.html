@@ -9,7 +9,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-styles/typography.html">
 
 <style is="custom-style">
 
@@ -25,28 +24,67 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   /* Application theme */
 
   :root {
-    --primary-text-color: #212121;
-    --primary-background-color: #ffffff;
-    --secondary-text-color: #737373;
-    --disabled-text-color: #9b9b9b;
-    --divider-color: #dbdbdb;
-    --primary-color: #3f51b5;
-    --light-primary-color: #c5cae9;
-    --dark-primary-color: #303f9f;
-    --accent-color: #C84378;
-    --light-accent-color: #ff80ab;
-    --dark-accent-color: #f50057;
+    /* SASS theme colours */
+    --grey-1: #E9EAED;
+    --grey-2: #B4C0D0;
+    --grey-3: #8187A9;
+    --grey-4: #5A5E76;
+
+    --blue: #4DB1E0;
+    --navy: #2B325D;
+    --navy-muted: #17283F;
+
+    --pink: #C84378;
+
+    /* Polymer theme colours */
+    --primary-text-color: var(--navy-muted);
+    --primary-background-color: var(--grey-1);
+    --secondary-text-color: var(--grey-4);
+    --disabled-text-color: var(--grey-2);
+    --divider-color: var(--grey-2);
+    --primary-color: var(--blue);
+    --light-primary-color: var(--navy);
+    --dark-primary-color: var(--navy-muted);
+    --accent-color: var(--pink);
+
+    /* Typography */
+
+    --font-family: "Gotham", 'Roboto', 'Noto', sans-serif;
+
+    --paper-font-common-base: {
+		  font-family: var(--font-family);
+	  }
+
+    --paper-item: {
+      font-family: var(--font-family);
+    }
+
+    --paper-menu-button: {
+      font-family: var(--font-family);
+    }
+
+    --paper-input-container-label: {
+		  font-family: var(--font-family);
+    }
+
+	  --paper-input-container-input: {
+		  font-family: var(--font-family);
+	  }
+
+    --paper-tab: {
+      font-family: var(--font-family);
+    }
 
     /* Components */
 
-    /* paper-drawer-panel */
-    --drawer-menu-color: #ffffff;
-    --drawer-border-color: 1px solid #ccc;
-    --drawer-toolbar-border-color: 1px solid rgba(0, 0, 0, 0.22);
+    /* paper-tabs */
+    --paper-tabs: {
+      background: var(--navy-muted);
+      color: var(--blue);
+    }
 
-    /* paper-menu */
-    --paper-menu-background-color: #fff;
-    --menu-link-color: #111111;
+    --paper-tabs-selection-bar-color: var(--blue);
+    --paper-tab-ink: white;
   }
 
   /* General styles */
