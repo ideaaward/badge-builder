@@ -59,7 +59,9 @@ module.exports.init = function (app) {
         done(null, {
           id: auth0User.id,
           accessToken: accessToken,
-          role: user.role
+          role: user.role,
+          imageUrl: user.imageUrl,
+          name: user.name
         });
       }
     });

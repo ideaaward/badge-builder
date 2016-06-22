@@ -53,7 +53,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
 
     <iron-ajax id="getBadge"
-      handle-as="json" on-response="badgeResponse" last-response="{{response}}" >
+      handle-as="json" on-response="badgeResponse" last-response="{{response}}">
+    </iron-ajax>
+
+    <iron-ajax id="getUser" url="/api/user"
+      handle-as="json" on-response="userResponse">
     </iron-ajax>
 
     <iron-ajax id="putAnswers" method="PUT" content-type="application/json"
@@ -104,6 +108,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           id: {
             type: String
           },
+          user: {
+            type: Object
+          },
           elements : {
             type: Array,
             value: []
@@ -138,9 +145,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         ready: function (event) {
           this._resetPage();
-          this.id = location.pathname.split('/').pop();
-          this.$.getBadge.url = '/api/badges/' + this.id;
-          this.$.getBadge.generateRequest();
+          this.set('id', location.pathname.split('/').pop());
+          this.$.getUser.generateRequest();
         },
 
         _resetPage: function(){
@@ -238,7 +244,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var sectionElements = []; // array of section elements
           var l = elements.length;
           if (l>0 && elements[0] != 'content-section') {
-            contents.sectionTitles.push("Intro"); // if no section at start then default to 'Intro'
+            // if no section at start then default to greeting the user
+            contents.sectionTitles.push('Welcome ' + this.user.name.split(' ')[0] + '!');
           }
           for (var i=0; i<l; i++) {
             var element = elements[i];
@@ -299,6 +306,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               }
             }
           }
+        },
+
+        userResponse: function (event) {
+          this.set('user', this.$.getUser.lastResponse);
+          this.$.getBadge.url = '/api/badges/' + this.id;
+          this.$.getBadge.generateRequest();
         },
 
         badgeResponse: function (event) {

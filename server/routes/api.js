@@ -48,6 +48,14 @@ var filterBadge = function (badge) {
   };
 };
 
+router.get('/user', function (req, res) {
+  res.json({
+    name: req.user.name,
+    imageUrl: req.user.imageUrl,
+    role: req.user.role
+  });
+});
+
 router.get('/badges/:id', function (req, res) {
   try {
     var _id = mongoose.Types.ObjectId(req.params.id);
