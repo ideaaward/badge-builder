@@ -36,8 +36,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       on-response="handleDeleteResponse">
     </iron-ajax>
 
-    <iron-ajax id="getBadges"
-      url="/api/author/badges" handle-as="json" last-response="{{badgesResponse}}" on-response="badgeResponse" >
+    <iron-ajax id="getUser" url="/api/user"
+      handle-as="json" on-response="userResponse" >
+    </iron-ajax>
+
+    <iron-ajax id="getBadges" url="/api/author/badges"
+      handle-as="json" last-response="{{badgesResponse}}" on-response="badgeResponse" >
     </iron-ajax>
 
     <paper-dialog modal id="deleteAlert">
@@ -50,7 +54,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </paper-dialog>
 
     <nav>
-      <div class="col-l"></div>
+      <div class="col-l">
+        <a href="/admin" class="button" hidden="[[!admin]]">Admin</a>
+      </div>
       <div class="col-m idea-logo"></div>
       <div class="col-r"><a href="/create" class="button">New Badge</a></div>
     </nav>
@@ -88,11 +94,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         properties: {
           _deleteId : {
             type: String
+          },
+          user: {
+            type: Object
+          },
+          admin: {
+            type: Boolean,
+            notify: true
           }
         },
 
         opened: function(e) {
           this._setAppTheme('none');
+          this.$.getUser.generateRequest();
+        },
+
+        userResponse: function(e) {
+          this.set('user', this.$.getUser.lastResponse);
+          this.set('admin', this.user.role === 'admin');
           this.$.getBadges.generateRequest();
         },
 

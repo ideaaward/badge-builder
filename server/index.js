@@ -47,9 +47,7 @@ app.use(session({
     mongooseConnection: mongoose.connection
   }),
   cookie: {
-    // TODO: update when served over a secure connection
-    // secure: process.env.NODE_ENV === 'production'
-    secure: false
+    secure: process.env.NODE_ENV === 'production'
   },
   saveUninitialized: false,
   resave: false
@@ -88,7 +86,7 @@ if (authentication.isEnabled()) {
 }
 
 app.get('/badges/:id', function (req, res) {
-  if (!req.isAuthenticated()) {
+  if (!authentication.isAuthenticated(req)) {
     return res.redirect('/badges/' + req.params.id + '/login');
   }
   res.sendFile('/badge.html', {
@@ -105,7 +103,7 @@ app.get('/error', function (req, res) {
 });
 
 app.get('/*/', function (req, res) {
-  if (!req.isAuthenticated()) {
+  if (!authentication.isAuthenticated(req)) {
     return res.redirect('/login');
   }
   if (!req.user.role) {

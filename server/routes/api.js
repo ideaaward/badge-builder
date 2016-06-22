@@ -48,6 +48,14 @@ var filterBadge = function (badge) {
   };
 };
 
+router.get('/user', function (req, res) {
+  res.json({
+    name: req.user.name,
+    imageUrl: req.user.imageUrl,
+    role: req.user.role
+  });
+});
+
 router.get('/badges/:id', function (req, res) {
   try {
     var _id = mongoose.Types.ObjectId(req.params.id);
@@ -235,16 +243,20 @@ router.get('/admin/admins', requireAdmin, function (req, res) {
   getUsers('admin', req, res);
 });
 
+router.get('/admin/authors', requireAdmin, function (req, res) {
+  getUsers('author', req, res);
+});
+
 router.get('/admin/users', requireAdmin, function (req, res) {
   getUsers('user', req, res);
 });
 
-router.put('/admin/admins', requireAdmin, function (req, res) {
+var changeRole = function (req, res, role) {
   models.User.findOne({ id: req.body.id }, function (err, user) {
     if (err || user === null) {
       return sendBadRequest(res);
     }
-    user.role = 'admin';
+    user.role = role;
     user.save(function (err) {
       if (err) {
         return sendError(res, err);
@@ -254,6 +266,14 @@ router.put('/admin/admins', requireAdmin, function (req, res) {
       });
     });
   });
+};
+
+router.put('/admin/admins', requireAdmin, function (req, res) {
+  changeRole(req, res, 'admin');
+});
+
+router.put('/admin/authors', requireAdmin, function (req, res) {
+  changeRole(req, res, 'author');
 });
 
 module.exports = router;

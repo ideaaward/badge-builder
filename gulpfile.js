@@ -298,7 +298,7 @@ gulp.task('default', ['clean'], function(cb) {
 require('web-component-tester').gulp.init(gulp);
 
 gulp.task('test', ['test:local'], function (cb) {
-  exec('node server/tests/testHelpers.js', function (err, stdout, stderr) {
+  exec('./node_modules/.bin/tape server/tests/*', function (err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
     cb(err);

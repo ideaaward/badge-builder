@@ -39,9 +39,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       url="/api/admin/admins" handle-as="json" last-response="{{adminsResponse}}" on-response="notifyResize" >
     </iron-ajax>
 
+    <iron-ajax id="getAuthors"
+      url="/api/admin/authors" handle-as="json" last-response="{{authorsResponse}}" on-response="notifyResize" >
+    </iron-ajax>
+
     <iron-ajax id="addAdminRequest" handle-as="json" content-type="application/json"
       method="PUT" url="/api/admin/admins"
-      on-response="handleAddAdminResponse" on-error="handleAddAdminError">
+      on-response="handleAddResponse" on-error="handleAddError">
+    </iron-ajax>
+
+    <iron-ajax id="addAuthorRequest" handle-as="json" content-type="application/json"
+      method="PUT" url="/api/admin/authors"
+      on-response="handleAddResponse" on-error="handleAddError">
     </iron-ajax>
 
     <iron-ajax id="getUsers"
@@ -51,7 +60,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <nav>
       <div class="col-l"><a href="/" class="button"><iron-icon icon="arrow-back"></iron-icon>Badges</a></div>
       <div class="col-m idea-logo"></div>
-      <div class="col-r"><a on-tap="saveBadge" class="button">[[saveTitle]]</a></div>
+      <div class="col-r"></div>
     </nav>
 
     <main>
@@ -59,6 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <paper-tabs selected="{{selected}}">
         <paper-tab>Admins</paper-tab>
+        <paper-tab>Authors</paper-tab>
         <paper-tab>Users</paper-tab>
       </paper-tabs>
 
@@ -81,6 +91,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <div class="list-item">
                 <paper-material elevation="1" class="bg_white">
                   <h3 class="select-text"><iron-icon icon="social:person" class="fg_pink"></iron-icon>[[item.name]] ([[item.id]])</h3>
+                </paper-material>
+              </div>
+            </template>
+          </iron-list>
+        </section>
+
+        <!-- Authors -->
+        <section>
+          <paper-material elevation="1" class="admin bg_white">
+            <div class="layout horizontal">
+              <paper-input id="authorInput" placeholder="User identifier"
+                label="Add author" value="{{userIdentifier}}" class="flex" required>
+              </paper-input>
+              <div class="drop">
+                <paper-button suffix on-tap="addAuthor" raised><iron-icon icon="add"></iron-icon>Add</paper-button>
+              </div>
+            </div>
+          </paper-material>
+          <iron-list id="authorsList" items="[[authorsResponse]]" as="item" >
+            <template>
+              <div class="list-item">
+                <paper-material elevation="1" class="bg_white">
+                  <h3 class="select-text"><iron-icon icon="social:person" class="fg_green"></iron-icon>[[item.name]] ([[item.id]])</h3>
                 </paper-material>
               </div>
             </template>
@@ -115,9 +148,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             value: 0
           }
         },
-        opened: function (event) {
+        updateLists: function () {
           this.$.getAdmins.generateRequest();
+          this.$.getAuthors.generateRequest();
           this.$.getUsers.generateRequest();
+        },
+        opened: function (event) {
+          this.updateLists();
         },
         addAdmin: function () {
           this.$.addAdminRequest.body = {
@@ -125,19 +162,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           };
           this.$.addAdminRequest.generateRequest();
         },
-        handleAddAdminResponse: function () {
-          this.$.adminInput.value = '';
-          app.$.toast.text = 'Admin added';
-          app.$.toast.show();
-          this.$.getAdmins.generateRequest();
+        addAuthor: function () {
+          this.$.addAuthorRequest.body = {
+            id: this.$.authorInput.value
+          };
+          this.$.addAuthorRequest.generateRequest();
         },
-        handleAddAdminError: function () {
-          app.$.toast.text = 'Error while adding admin';
+        handleAddResponse: function () {
+          this.$.adminInput.value = '';
+          app.$.toast.text = 'Added successfully';
+          app.$.toast.show();
+          this.updateLists();
+        },
+        handleAddError: function () {
+          app.$.toast.text = 'Error while adding';
           app.$.toast.show();
         },
         notifyResize: function (event) {
           // hack to force iron-list to redraw bound elements
           this.$.adminsList.notifyResize();
+          this.$.authorsList.notifyResize();
           this.$.usersList.notifyResize();
         },
         behaviors: [

@@ -10,10 +10,13 @@ var errors = require('./errors.js');
 var idea = require('./idea.js');
 var helpers = require('./helpers');
 
-var enabled = !!process.env.AUTH0_DOMAIN;
+// Export for testing purposes.
+module.exports._enabled = !!process.env.AUTH0_DOMAIN;
 
-// TODO: Do not edit the global strategy since that may fail
-// to a race condition when many concurrent requests come in.
+// The per route client key and secret are implemented by modifying
+// the strategy object runtime. A cleaner option would have been to
+// pass the right values to the authenticate function, but the passport-oauth2
+// project doesn't currently support that.
 var strategy = null;
 
 module.exports.init = function (app) {
@@ -23,7 +26,8 @@ module.exports.init = function (app) {
     clientID: process.env.AUTH0_CLIENT_ID,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
     callbackURL: process.env.AUTH0_CALLBACK_URL,
-    skipUserProfile: true
+    skipUserProfile: true,
+    state: true
   }, function (accessToken, refreshToken, profile, done) {
     // Extract info from JWT
     var payload = jwt.decode(accessToken);
@@ -51,15 +55,18 @@ module.exports.init = function (app) {
           // authentication flow.
           return done(null, false);
         }
-        var payload = jwt.decode(accessToken);
-        if (Date.now() > payload.exp * 1000) {
+        var jwtPayload = jwt.decode(accessToken);
+        if (Date.now() > jwtPayload.exp * 1000) {
           // Access token is expired so authenticate again.
           return done(null, false);
         }
         done(null, {
           id: auth0User.id,
           accessToken: accessToken,
-          role: user.role
+          jwtPayload: jwtPayload,
+          role: user.role,
+          imageUrl: user.imageUrl,
+          name: user.name
         });
       }
     });
@@ -143,8 +150,32 @@ module.exports.init = function (app) {
       });
     }
   );
+
+  app.get(['/logout', '/badges/:id/logout'], function (req, res) {
+    req.logout();
+    res.redirect(process.env.IDEA_SITE_URL || '/');
+  });
 };
 
 module.exports.isEnabled = function () {
-  return enabled;
+  return module.exports._enabled;
+};
+
+module.exports.isAuthenticated = function (req) {
+  if (!module.exports._enabled) {
+    return true;
+  }
+  if (req.isAuthenticated()) {
+    // This is the minimum amount of time we require the JWT to be valid
+    // and essentially means the time the user has to complete the badge.
+    // If token expires during the badge completion, the results can't be
+    // posted at the end since renewing the token requires a redirect that
+    // would lose the progress made within the badge.
+    var minimumValidityTime = 2 * 60 * 60; // 2 hours
+    if (Date.now() > (req.user.jwtPayload.exp - minimumValidityTime) * 1000) {
+      return false;
+    }
+    return true;
+  }
+  return false;
 };
