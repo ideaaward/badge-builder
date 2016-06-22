@@ -150,6 +150,11 @@ module.exports.init = function (app) {
       });
     }
   );
+
+  app.get(['/logout', '/badges/:id/logout'], function (req, res) {
+    req.logout();
+    res.redirect(process.env.IDEA_SITE_URL || '/');
+  });
 };
 
 module.exports.isEnabled = function () {
