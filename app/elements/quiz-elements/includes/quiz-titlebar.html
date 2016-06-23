@@ -1,0 +1,79 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="../../../bower_components/iron-icons/av-icons.html">
+
+
+<dom-module id="quiz-titlebar">
+  <style include="iron-flex">
+    :host {
+      display: block;
+      box-sizing: border-box;
+    }
+  </style>
+
+  <template>
+    <div class="titlebar">
+      <div class="layout horizontal">
+        <div class="titlebar-txt drag-handle">
+          <h3><iron-icon icon="[[icon]]"></iron-icon><span class="visible-for-medium-up">[[label]]</span></h3>
+          <paper-tooltip>[[tooltip]]</paper-tooltip>
+        </div>
+        <div class="titlebar-sq drag-handle"><iron-icon icon="editor:drag-handle" class="edit icon"></iron-icon></div>
+        <template is="dom-if" if="[[add]]">
+          <div class="titlebar-sq btn primary" on-tap="_tappedAdd"><iron-icon icon="[[iconAdd]]" class="edit icon"></iron-icon></div>
+        </template>
+        <template is="dom-if" if="[[remove]]">
+          <div class="titlebar-sq btn secondary" on-tap="_tappedRemove"><iron-icon icon="[[iconRemove]]" class="edit icon"></iron-icon></div>
+        </template>
+        <div class="titlebar-sq btn accent" on-tap="_tappedDelete"><iron-icon icon="clear" class="edit icon"></iron-icon></div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'quiz-titlebar',
+      properties: {
+        label: {
+          type: String,
+          value: ""
+        },
+        tooltip: {
+          type: String,
+          value: ""
+        },
+        icon: {
+          type: String,
+          value: "create"
+        },
+        iconAdd: {
+          type: String,
+          value: 'add'
+        },
+        iconRemove: {
+          type: String,
+          value: 'remove'
+        },
+        add: {
+          type: Boolean,
+          value: false
+        },
+        remove: {
+          type: Boolean,
+          value: false
+        }
+      },
+      _tappedAdd: function(){
+        this.fire('tappedAdd');
+      },
+      _tappedRemove: function(){
+        this.fire('tappedRemove');
+      },
+      _tappedDelete: function(){
+        this.fire('tappedDelete');
+      }
+    });
+  </script>
+</dom-module>

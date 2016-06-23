@@ -5,8 +5,15 @@
 	}
 }
 
-// truncate text
-@mixin truncate($font-size, $lines, $line-height:1.5) {
+// truncate single line text
+@mixin truncate() {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+  overflow: hidden;
+}
+
+// truncate multi-line text
+@mixin truncate-multi($font-size, $lines, $line-height:1.5) {
 	display: block;
 	width: 100%;
 	height: $font-size * $lines * $line-height;

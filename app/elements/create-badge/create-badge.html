@@ -21,17 +21,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../behaviors/document-behavior.html">
-
+<!-- quiz elements -->
 <link rel="import" href="../quiz-elements/quiz-single.html">
 <link rel="import" href="../quiz-elements/quiz-multiple.html">
 <link rel="import" href="../quiz-elements/quiz-short-input.html">
 <link rel="import" href="../quiz-elements/quiz-long-input.html">
 <link rel="import" href="../quiz-elements/quiz-ordered-list.html">
 <link rel="import" href="../quiz-elements/quiz-list-groups.html">
-<link rel="import" href="../content-elements/content-video.html">
-<link rel="import" href="../content-elements/content-html.html">
-<link rel="import" href="../content-elements/content-button.html">
-<link rel="import" href="../content-elements/content-section.html">
+<!-- content elements -->
+<link rel="import" href="../quiz-elements/content-video.html">
+<link rel="import" href="../quiz-elements/content-html.html">
+<link rel="import" href="../quiz-elements/content-button.html">
+<link rel="import" href="../quiz-elements/content-section.html">
 
 <link rel="import" href="../../bower_components/Sortable/Sortable.html">
 
@@ -167,8 +168,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div class="side-drawer">
       <h3 class="title">Quiz</h3>
       <ul>
-        <li><a on-tap="createYesNo"><iron-icon icon="radio-button-checked"></iron-icon><span>Single&nbsp;Choice</span></a></li>
-        <li><a on-tap="createMultipleChoice"><iron-icon icon="check-box"></iron-icon><span>Multiple&nbsp;Choice</span></a></li>
+        <li><a on-tap="createQuizSingleChoice"><iron-icon icon="radio-button-checked"></iron-icon><span>Single&nbsp;Choice</span></a></li>
+        <li><a on-tap="createQuizMultipleChoice"><iron-icon icon="check-box"></iron-icon><span>Multiple&nbsp;Choice</span></a></li>
         <li><a on-tap="createQuizOrderedList"><iron-icon icon="editor:format-line-spacing"></iron-icon><span>List</span></a></li>
         <li><a on-tap="createQuizListGroups"><iron-icon icon="av:shuffle"></iron-icon><span>Groups</span></a></li>
         <li><a on-tap="createQuizShortInput"><iron-icon icon="editor:short-text"></iron-icon><span>Keywords</span></a></li>
@@ -195,13 +196,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       Polymer({
         is: 'create-badge',
         properties: {
-          _node : {
-            type: Object,
-            value: {
-              elements: []
-            }
-          },
-          elements : {
+          elementsData : {
             type: Array,
             value: []
           },
@@ -243,7 +238,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // update existing badge
           if (event.detail && event.detail.params){
             var id = event.detail.params._id;
-            console.log(this.localName, "opened", id);
+            //console.log(this.localName, "opened", id);
             this.set('id', id);
             this.set('isUpdateMode', true); // Update
             this.$.getBadge.url = '/api/author/badges/' + id;
@@ -255,7 +250,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         _changeUpdateMode: function(isUpdateMode) {
-          //console.log("update mode:", isUpdateMode);
           // update existing badge
           if (isUpdateMode){
             this.set('title', "Edit Badge");
@@ -268,8 +262,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         selectTheme: function(event) {
-          //var theme = event.detail.item.id;
-          //console.log("select theme:", this.badgeTheme);
           this._setAppTheme(this.badgeTheme);
         },
 
@@ -279,7 +271,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             title: this.$.titleInput.value,
             content: {
               theme: this.badgeTheme,
-              elements: this.elements
+              elements: this.elementsData
             },
             consumerKey: this.$.keyInput.value,
             consumerSecret: this.$.secretInput.value
@@ -312,79 +304,82 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.titleInput.value = '';
           this.$.theme.selected = ''; // clear theme selection
           this._setAppTheme('none');
+          this.elementsData = [];
           // detatch custom elements
-          var i = this._node.elements.length;
-          while(i--){
-            var el = this._node.elements[i];
-            console.info(this.localName, '-', el);
-            Polymer.dom(this.$.components).removeChild(el.element); // TODO: check elements are being detached
+          var elements = this._getElements();
+          var i = elements.length;
+          //console.log(this.localName, 'reset', i, elements);
+          while (i--) {
+            var el = elements[i];
+            //console.log(this.localName, '-reset', el);
+            Polymer.dom(this.$.components).removeChild(el); // TODO: check elements are being detached
           }
-          this._node = {
-            elements: []
-          };
-          this.elements = [];
         },
 
         _onDeleteElement: function(event) {
           var target = event.target;
-          console.log("- delete", event.target);
-          var i = this._node.elements.length;
-          while(i--){
-            var el = this._node.elements[i].element;
+          //console.log("- delete", event.target);
+          var elements = this._getElements();
+          var i = elements.length;
+          while (i--) {
+            var el = elements[i];
             if (el === target) {
-              console.log("delete element:", el);
-              console.log("befor:", this._node.elements);
+              //console.info("delete element:", el);
               Polymer.dom(this.$.components).removeChild(el); // TODO: check elements are being detached
-              this.splice('_node.elements',i,1); // remove from array
-              console.log("after:", this._node.elements);
-              return;
+              return true;
             }
           }
+          return false;
         },
 
-        addContentSection: function(title) {
-          var el = new ContentSection(); //document.createElement("content-section");
-          el.title = title;
-
-          this.addElement(el);
-        },
-
-        createContentSection: function() {
-          this.addContentSection("Section Title");
-        },
-
-        addVideo: function(embededURI) {
-          var el = new ContentVideo(); // var el = document.createElement("content-video");
-          el.embededURI = embededURI;
-
-          this.addElement(el);
-        },
-
-        createVideo: function() {
-          this.addVideo();
-        },
-
-        addHTML: function(text) {
-          var el = new ContentHTML();
-          el.text = text;
-
-          this.addElement(el);
-        },
-
-        createHTML: function() {
-          this.addHTML();
+        createButton: function() {
+          var el = new ContentButton();
+          this.addElement(el, true);
         },
 
         addButton: function(buttonURL, buttonText) {
           var el = new ContentButton();
           el.buttonURL = buttonURL;
           el.buttonText = buttonText;
-
           this.addElement(el);
         },
 
-        createButton: function() {
-          this.addButton();
+        createContentSection: function() {
+          var el = new ContentSection();
+          this.addElement(el, true);
+        },
+
+        addContentSection: function(title) {
+          var el = new ContentSection();
+          el.title = title;
+          this.addElement(el);
+        },
+
+        createVideo: function() {
+          var el = new ContentVideo();
+          this.addElement(el, true);
+        },
+
+        addVideo: function(embededURI) {
+          var el = new ContentVideo();
+          el.embededURI = embededURI;
+          this.addElement(el);
+        },
+
+        createHTML: function() {
+          var el = new ContentHTML();
+          this.addElement(el, true);
+        },
+
+        addHTML: function(text) {
+          var el = new ContentHTML();
+          el.text = text;
+          this.addElement(el);
+        },
+
+        createQuizShortInput: function() {
+          var el = new QuizShortInput();
+          this.addElement(el, true);
         },
 
         addQuizShortInput: function(id, question, answerKeywords, answer, hintText, showHint) {
@@ -395,12 +390,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           el.answer = answer;
           el.hintText = hintText;
           el.showHint = showHint;
-
           this.addElement(el);
         },
 
-        createQuizShortInput: function() {
-          this.addQuizShortInput();
+        createQuizLongInput: function() {
+          var el = new QuizLongInput();
+          this.addElement(el, true);
         },
 
         addQuizLongInput: function(id, question, answer, wordLimit, hintText, showHint) {
@@ -411,80 +406,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           el.wordLimit = wordLimit;
           el.hintText = hintText;
           el.showHint = showHint;
-
-          this.addElement(el);
-        },
-
-        createQuizLongInput: function() {
-          this.addQuizLongInput();
-        },
-
-        addQuizListGroups: function(id, question, answer) {
-          var el = document.createElement('quiz-list-groups');
-          el._id = id;
-          el.question = question;
-          el.answer = answer;
-          //
-          this.addElement(el);
-        },
-
-        // _elementsChanged: function(changeRecord){
-        //   //console.info(this.localName, '*', changeRecord, this._node.elements);
-        // },
-
-        _updateElements: function(){
-          this.set('elements', this._getElementsData());
-        },
-
-        _getElementsData: function(){
-          var elementsData = [];
-          var elements = Polymer.dom(this.$.components).querySelectorAll('.draggable'); //this._node.elements
-          var i = elements.length;
-          while(i--){
-            var el = elements[i]; //elements[i].element;
-            var data = el.getData();
-            console.log('json', data);
-            elementsData.unshift(data); // reverse order
-          }
-          console.log("elementsData:", elementsData);
-          return elementsData;
-        },
-
-        _test: function(){
-          this._updateElements();
-          console.info(this.localName, 'DATA', this.elements); // this._node.elements
-        },
-
-        _autoScroll: function(){
-          // allow element to be drawn to screen before scrolling to bottom
-          setTimeout(function(){
-            var bottom = document.body.scrollHeight;
-            //console.log("Scroll to bottom", bottom);
-            window.scrollTo(0, bottom);
-          }, 0);
-        },
-
-        createYesNo: function(){
-          var el = document.createElement('quiz-single');
-          el.options = ["Yes","No"];
-          this.addElement(el);
-        },
-
-        createMultipleChoice: function(){
-          var el = document.createElement('quiz-multiple');
-          this.addElement(el);
-        },
-
-        createQuizOrderedList: function(){
-          var el = document.createElement('quiz-ordered-list');
           this.addElement(el);
         },
 
         createQuizListGroups: function(){
           var el = document.createElement('quiz-list-groups');
+          this.addElement(el, true);
+        },
+
+        addQuizListGroups: function(id, question, answer, hintText, showHint) {
+          var el = document.createElement('quiz-list-groups');
+          el._id = id;
+          el.question = question;
+          el.answer = answer;
+          el.hintText = hintText;
+          el.showHint = showHint;
+          //
           this.addElement(el);
         },
 
+        createQuizSingleChoice: function(){
+          var el = document.createElement('quiz-single');
+          el.options = ["Yes","No"];
+          this.addElement(el, true);
+        },
+
+        createQuizMultipleChoice: function(){
+          var el = document.createElement('quiz-multiple');
+          this.addElement(el, true);
+        },
+
+        createQuizOrderedList: function(){
+          var el = document.createElement('quiz-ordered-list');
+          this.addElement(el, true);
+        },
+
+        /* Handles quiz-single, quiz-multiple and quiz-ordered-list */
         addQuizElementType: function(elementType, id, question, options, answer, hintText, showHint) {
           var el = document.createElement(elementType);
           el._id = id;
@@ -497,18 +454,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addElement(el);
         },
 
-        addElement: function (element) {
+        addElement: function (element, isCreated) {
           element.edit = true;
           element.classList.add("draggable");
           Polymer.dom(this.$.components).appendChild(element);
-          this.push('_node.elements', {element: element});
-          this._autoScroll();
+          if (isCreated) {
+            this._autoScroll(); // scroll down to see user created element
+          }
         },
 
         // EDIT
         badgeResponse: function(event) {
           var elements = this.response.content.elements;
-          console.log(this.localName, 'edit', this.response.content);
+          //console.log(this.localName, 'edit', this.response.content);
           this.set('badgeTitle', this.response.title);
           this.set('badgeKey', this.response.consumerKey);
           this.set('badgeSecret', this.response.consumerSecret);
@@ -517,32 +475,68 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           for (var i=0; i<elements.length; i++) {
             var element = elements[i];
             switch(element.elementType) {
-                case "content-video":
-                    this.addVideo(element.embededURI);
-                    break;
-                case "content-html":
-                    this.addHTML(element.text);
-                    break;
-                case "content-button":
-                    this.addButton(element.buttonURL, element.buttonText);
-                    break;
-                case "content-section":
-                    this.addContentSection(element.title);
-                    break;
-                case "quiz-short-input":
-                    this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.answer, element.hintText, element.showHint);
-                    break;
-                case "quiz-long-input":
-                    this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit, element.hintText, element.showHint);
-                    break;
-                case "quiz-list-groups":
-                    this.addQuizListGroups(element._id, element.question, element.answer);
-                    break;
-                default:
-                  this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.answer, element.hintText, element.showHint); // generic quiz elements
-                  break;
+              case "content-video":
+                this.addVideo(element.embededURI);
+                break;
+              case "content-html":
+                this.addHTML(element.text);
+                break;
+              case "content-button":
+                this.addButton(element.buttonURL, element.buttonText);
+                break;
+              case "content-section":
+                this.addContentSection(element.title);
+                break;
+              case "quiz-short-input":
+                this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.answer, element.hintText, element.showHint);
+                break;
+              case "quiz-long-input":
+                this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit, element.hintText, element.showHint);
+                break;
+              case "quiz-list-groups":
+                this.addQuizListGroups(element._id, element.question, element.answer, element.hintText, element.showHint);
+                break;
+              default:
+                this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.answer, element.hintText, element.showHint); // generic quiz elements
+                break;
             }
           }
+        },
+
+        _getElements: function(){
+          return Polymer.dom(this.$.components).querySelectorAll('.draggable');
+        },
+
+        _getElementsData: function(){
+          var elementsData = [];
+          var elements = this._getElements();
+          var i = elements.length;
+          while(i--){
+            var el = elements[i];
+            var data = el.getData();
+            //console.log('json', data);
+            elementsData.unshift(data); // reverse order
+          }
+          //console.log("elementsData:", elementsData);
+          return elementsData;
+        },
+
+        _updateElements: function(){
+          this.set('elementsData', this._getElementsData());
+        },
+
+        _test: function(){
+          this._updateElements();
+          console.info(this.localName, 'DATA', this.elementsData);
+        },
+
+        _autoScroll: function(){
+          // allow element to be drawn to screen before scrolling to bottom
+          setTimeout(function(){
+            var bottom = document.body.scrollHeight;
+            //console.log("Scroll to bottom", bottom);
+            window.scrollTo(0, bottom);
+          }, 0);
         },
 
         _applyDragAndDrop: function() {
@@ -564,10 +558,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this._sortable.destroy();
           }
         },
-
-        // observers: [
-        //   '_elementsChanged(_node.elements.length)'
-        // ],
 
         listeners: {
           'deleteElement': "_onDeleteElement"

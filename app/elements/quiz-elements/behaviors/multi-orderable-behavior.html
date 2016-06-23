@@ -1,10 +1,8 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
-<link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/Sortable/Sortable.html">
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/Sortable/Sortable.html">
 
-<link rel="import" href="../quiz-elements/quiz-ordered-list.html">
-<link rel="import" href="scripts/lodash.html">
+<link rel="import" href="../quiz-ordered-list.html">
+<link rel="import" href="../../scripts/lodash.html">
 
 <script>
   window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
@@ -67,8 +65,9 @@
       el.classList.add('group');
       // set properties
       el._placeholder = "Group";
-      el._title = "Group List";
+      el._title = "List";
       el._dragHandle = "drag-group";
+      el._noHint = true;
 
       if (data && data.group && data.items) {
         //console.log('add option:', data);
@@ -159,7 +158,7 @@
     },
 
     _elementChanged: function(e) {
-      console.info("Update edited data for drag and drop", e);
+      //console.info("Update edited data for drag and drop", e);
       this._updateEditedAnswers();
     },
 

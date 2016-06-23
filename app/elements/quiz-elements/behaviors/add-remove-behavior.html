@@ -1,4 +1,4 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
 <link rel="import" href="helper-behavior.html">
 
 <script>
@@ -6,21 +6,6 @@
   /** @polymerBehavior QuizBehaviors.AddRemoveBehavior */
   QuizBehaviors.AddRemoveBehaviorImpl = {
     properties: {
-
-      /** Add button element reference */
-      _elementAdd: {
-        type: Object
-      },
-
-      /** Remove button element reference */
-      _elementRemove: {
-        type: Object
-      },
-
-      /** Container element reference */
-      _elementContainer: {
-        type: Object
-      },
 
       /**
        * `options` indicates that the number of options to select
@@ -33,84 +18,15 @@
         value: function(){
           return [];
         }
-      },
-
-      /** iron-icon icons */
-      _iconAdd: {
-        type: String,
-        value: "add"
-      },
-      _iconRemove: {
-        type: String,
-        value: "remove"
-      },
-
-      /** add only mode */
-      _isAddOnly: {
-        type: Boolean,
-        value: false
       }
 
     },
-
-    ready: function() {
-      // add container element to the DOM
-      this._elementContainer = document.createElement("div");
-      this._elementContainer.classList.add("edit", "widgets");
-      Polymer.dom(this).appendChild(this._elementContainer);
-
-      // add elements to the DOM
-      this._elementAdd = document.createElement("paper-fab");
-      this._elementAdd.icon = this._iconAdd;
-      this._elementAdd.mini = true;
-      this._elementAdd.classList.add("widget", "widget-add");
-      Polymer.dom(this._elementContainer).appendChild(this._elementAdd);
-
-      if (!this._isAddOnly) {
-        this._elementRemove = document.createElement("paper-fab");
-        this._elementRemove.icon = this._iconRemove;
-        this._elementRemove.mini = true;
-        this._elementRemove.classList.add("widget", "widget-remove");
-        Polymer.dom(this._elementContainer).appendChild(this._elementRemove);
-      }
-    },
-
-    attached: function() {
-      this.listen(this._elementAdd, 'tap', '_tappedAdd');
-
-      if (!this._isAddOnly) {
-        this.listen(this._elementRemove, 'tap', '_tappedRemove');
-        // disable delete button if no options
-        //this._optionsLengthChanged(this.options.length);
-      }
-    },
-
-    detached: function() {
-      // remove elements from the DOM
-      this.unlisten(this._elementAdd, 'tap', '_tappedAdd');
-      // Polymer.dom(this._elementContainer).removeChild(this._elementAdd);
-
-      if (!this._isAddOnly) {
-        this.unlisten(this._elementRemove, 'tap', '_tappedRemove');
-        // Polymer.dom(this._elementContainer).removeChild(this._elementRemove);
-      }
-
-      // remove container element from the DOM
-      // Polymer.dom(this).removeChild(this._elementContainer);
-    },
-
-    /**
-     * Override method to use editable copy of elements
-     */
-    // _paperElement: function(multi) {
-    //   // Use edit versions of elements
-    //   return (multi) ? "paper-checkbox-input" : "paper-radio-button-input";
-    // },
 
     /**
      * Add option handler
      */
     _tappedAdd: function(e) {
+      e.stopPropagation();
       //console.info(this.localName, "Tapped add!");
       this._addOption(); // selectable-behavior method
       // NB: we don't need to update options until input text has been entered
@@ -121,6 +37,7 @@
      * Remove option handler
      */
     _tappedRemove: function(e) {
+      e.stopPropagation();
       //console.info(this.localName, "Tapped remove!");
       this._removeOption(); // selectable-behavior method
       this.updateOptions();
@@ -131,10 +48,10 @@
      * Overridable methods
      */
     _addOption: function(name){
-      console.log("added option:", name);
+      console.info("Implement add option:", name);
     },
     _removeOption: function(name){
-      console.log("removed option:", name);
+      console.info("Implement remove option:", name);
     },
 
     /**
@@ -166,7 +83,7 @@
      * Text input handler
      */
     _handleInputChange: function(e){
-      //console.log(this.localName, "input", e.target.value);
+      // console.log(this.localName, "input", e.target.value);
       this._updateInputOption(e.target, e.target.value);  // manually update the element name
       this.updateOptions();
     },

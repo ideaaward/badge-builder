@@ -1,0 +1,120 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+
+<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-e.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-tool-behavior.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-tool-styles.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/bold.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/italic.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/underline.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/clear.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/link.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/image.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/ordered.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/unordered.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/justify.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/heading.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/undo.html">
+<link rel="import" href="../../bower_components/wysiwyg-e/tools/redo.html">
+
+<link rel="import" href="../../bower_components/juicy-html/juicy-html.html">
+
+<link rel="import" href="behaviors/editable-behavior.html">
+<link rel="import" href="behaviors/datamodel-behavior.html">
+<link rel="import" href="behaviors/titlebar-behavior.html">
+<link rel="import" href="includes/quiz-titlebar.html">
+
+<!--
+Content component for html content such as paragraphs, images, lists
+-->
+
+<dom-module id="content-html">
+  <template>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
+
+      /* if no font-family font var has been set then will default to Roboto */
+      ::content .wysiwyg-e {
+        font-family: var(--font-family, 'Roboto');
+      }
+
+      paper-input {
+        display: inline-block;
+        width: 100%;
+      }
+    </style>
+
+    <paper-material class="fullbleed">
+      <!-- Editor View -->
+      <template is="dom-if" if="[[edit]]">
+        <quiz-titlebar class="component" label="Text" icon="editor:format-color-text" tooltip="This element is a full text editor and allows you to input and style text and images in html format. You can see what the user view of this will look like by clicking on the cog icon in the blue banner, and selecting 'Read-only'"></quiz-titlebar>
+        <!-- WYSIWYG editor -->
+        <wysiwyg-e style="height:300px" value="{{text}}" hide-settings>
+          <wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
+          <wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
+          <wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
+          <!--<wysiwyg-tool-clear class="wysiwyg-tool"></wysiwyg-tool-clear>-->
+          <!--<wysiwyg-tool-link class="wysiwyg-tool"></wysiwyg-tool-link>-->
+          <wysiwyg-tool-image class="wysiwyg-tool"></wysiwyg-tool-image>
+          <wysiwyg-tool-ordered class="wysiwyg-tool"></wysiwyg-tool-ordered>
+          <wysiwyg-tool-unordered class="wysiwyg-tool"></wysiwyg-tool-unordered>
+          <wysiwyg-tool-justify class="wysiwyg-tool" right center full></wysiwyg-tool-justify>
+          <wysiwyg-tool-heading class="wysiwyg-tool" h1 h2 h3></wysiwyg-tool-heading>
+          <wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
+          <wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
+        </wysiwyg-e>
+      </template>
+
+      <!-- Badge View -->
+      <template is="dom-if" if="[[!edit]]">
+        <div class="container">
+          <div class="row">
+            <div class="small-12 columns">
+              <template is="juicy-html" content$="{{text}}"></template>
+            </div>
+          </div>
+        </div>
+      </template>
+
+    </paper-material>
+  </template>
+
+  <script>
+    ContentHTML = Polymer({
+      is: 'content-html',
+      properties: {
+
+       /**
+         * This is the text that will be displayed in the html editor. The users text.
+         * @type {string}
+         */
+        text: {
+          type: String,
+          value: function() {
+            return "";
+          }
+        }
+
+      },
+
+      // Element Behavior
+      getData: function(){
+        return {
+          elementType: this.localName,
+          text: this.text
+        };
+      },
+
+      behaviors: [
+        QuizBehaviors.EditableBehavior,
+        QuizBehaviors.TitlebarBehavior,
+        QuizBehaviors.DataModelBehavior
+      ]
+
+    });
+
+  </script>
+</dom-module>

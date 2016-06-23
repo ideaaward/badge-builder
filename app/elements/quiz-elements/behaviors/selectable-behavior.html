@@ -1,9 +1,9 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/paper-radio-button/paper-radio-button.html">
 
-<link rel="import" href="scripts/lodash.html">
+<link rel="import" href="../../scripts/lodash.html">
 
 <script>
   window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
@@ -22,20 +22,6 @@
           return [];
         },
         notify: true
-      },
-
-      /**
-       * References for dynamically created elements
-       * TODO: Remove this and use query selector to perform add/remove functions
-       *
-       * @type boolean
-       * @default false
-       */
-      _options: {
-        type: Array,
-        value: function() {
-          return [];
-        }
       },
 
       /**
@@ -91,12 +77,9 @@
       }
     },
 
-    observers: [
-      '_optionsAddedRemoved(_options.length)'
-    ],
-
     ready: function() {
       // create container element
+      //console.info(this.localName, "ready");
       this._optionsContainer = document.createElement("div");
       this._optionsContainer.classList.add("options");
       Polymer.dom(this).appendChild(this._optionsContainer);
@@ -104,19 +87,13 @@
       // this.refresh(); // NB: `options` not yet set when creating as dynamic element
     },
 
-    // factoryImpl: function(options) {
-    //   // NB: `options` will be empty unless passed via constructor
-    //   if(!options){
-    //     return;
-    //   }
-    //   console.info(this.localName, "* constructor:", options);
-    //   this.options = options;
-    //   //
-    //   this.refresh();
-    // },
-
     attached: function() {
       this.refresh(); // NB: `options` are now set for creating dynamic elements
+    },
+
+    detached: function() {
+      // this._removeOptions();
+      // Polymer.dom(this).removeChild(this._optionsContainer);
     },
 
     /**
@@ -141,14 +118,10 @@
      * Refresh view when switching between edit/view mode
      */
     refresh: function() {
-      this._resetOptions(); //TODO: The idea of switching modes could be better optimised by toggling visibility of elements rather than modifing the DOM again
-    },
-
-    detached: function() {
-      // // remove option elements
-      // this._removeOptions();
-      // // remove container element
-      // Polymer.dom(this).removeChild(this._optionsContainer);
+      var elements = this._getOptionElements();
+      if ( this.options.length != elements.length ) {
+        this._resetOptions();
+      }
     },
 
     _paperElement: function(multi) {
@@ -164,9 +137,11 @@
     },
 
     _removeOptions: function(){
-      var i = this._options.length;
+      var elements = this._getOptionElements();
+      var i = elements.length;
+      //console.info(this.localName, "remove options", i, elements);
       while (i--){
-        this._removeElement( this._options[i] );
+        this._removeElement( elements[i] );
       }
     },
 
@@ -182,34 +157,37 @@
       return el;
     },
 
+    _removeOption: function(name){
+      var elements = this._getOptionElements();
+      var lastIndex = elements.length-1;
+      if (lastIndex >= 0) {
+        this._removeElement( elements[lastIndex] );
+      }
+    },
+
     _appendElementLabel: function(el, label) {
       var textnode = document.createTextNode(label);
       var labelElement = this.multi ? el.$.checkboxLabel : el.$.radioLabel ; // NB: uses private element selector
       labelElement.appendChild(textnode);
     },
 
-    _removeOption: function(){
-      if (this._options.length > 0) {
-        var el = this._options[this._options.length-1];
-        this._removeElement(el);
-        return el;
-      }
+    _getOptionElements: function(){
+      return Polymer.dom(this._optionsContainer).querySelectorAll('.option');
     },
 
     _addElement: function(element){
       Polymer.dom(this._optionsContainer).appendChild(element);
-      this.push('_options', element);
     },
 
     _removeElement: function(element){
+      //console.info(this.localName, "remove", element);
       Polymer.dom(this._optionsContainer).removeChild(element);
-      this.pop('_options');
     },
 
     _optionsAddedRemoved: function(length){
       // NB: we don't want to fire events while options are being set/reset
       if (this._isReady) {
-        // console.log(this.localName, "> length", length);
+        //console.log(this.localName, "options +/- length", length);
         this.fire("optionsAddedRemoved", {length: length});
       }
     },
@@ -220,7 +198,7 @@
      * @type array
      */
     selectOptions: function(options) {
-      var elements = Polymer.dom(this).querySelectorAll(".option");
+      var elements = this._getOptionElements();
       var i = elements.length;
       // console.log(this.localName, 'elements:', i);
       while (i--) {
@@ -240,7 +218,7 @@
      */
     selectedOptions: function() {
       var selectedOptions = [];
-      var elements = Polymer.dom(this).querySelectorAll(".option");
+      var elements = this._getOptionElements();
       var i = elements.length;
       //console.log(this.localName, 'elements:', i);
       while (i--) {

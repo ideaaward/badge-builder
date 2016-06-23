@@ -75,6 +75,7 @@ body {
   }
 }
 
+// Links
 a {
   color: $navy;
 }
@@ -92,10 +93,33 @@ a:hover {
 // Alignment
 .fr { float: right; }
 
+// Formatting
 .center { text-align: center; }
 
+// Styling
+.button {
+  cursor: pointer;
+}
+
+// Branding
 .idea-logo {
   @include backgroundSizesSVG($logo_width, $logo_height, $svg_logo);
+}
+
+// Polymer styles
+paper-tooltip {
+  max-width: 280px;
+}
+
+.fullbleed {
+  margin: 0;
+  padding: 0;
+}
+
+// Foundation 5 'expanded row' fluid row width
+.row.expanded {
+  max-width: 100%;
+  width: 100%;
 }
 
 /* Editor styles only */
@@ -182,14 +206,10 @@ body#editor {
 
   .grid-item .title {
     margin: $gap/2;
-    @include truncate(18px, 3);
+    @include truncate-multi(18px, 3);
   }
 
   // Editor
-
-  .button {
-    cursor: pointer;
-  }
 
   .side-drawer {
     position: fixed;
@@ -253,29 +273,98 @@ body#editor {
     }
   }
 
-  .editor > .titlebar {
-    margin: 0;
-    padding: 0;
-  }
-
-  .editor > .titlebar h1 {
+  .editor > .titlebar h1,
+  .component > .titlebar h3 {
     font-weight: normal;
-    font-size: 24px;
-    padding: $gap;
+    font-size: 18px;
+    margin: 0;
+    padding: 0 $gap;
+    line-height: $titlebar_height;
+    vertical-align: middle;
   }
 
   .editor > .titlebar iron-icon {
     margin-right: $gap;
   }
 
-  .editor > .container {
+  .editor > .container,
+  .component > .container {
     padding-bottom: $gap*2;
+  }
+
+  .component {
+    background: $white;
+    margin: 0;
+    padding: 0;
+  }
+
+  .component > .titlebar {
+    display: block;
+    background: $coolgrey_4;
+    color: $coolgrey_1;
+  }
+
+  .component > .titlebar {
+    height: $titlebar_height;
+    overflow: hidden;
+  }
+
+  .titlebar-sq {
+    height: $titlebar_height;
+    width: $titlebar_height;
+    line-height: $titlebar_height;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .titlebar-sq > .icon {
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    width: $titlebar_height;
+  }
+
+  .btn {
+    cursor: pointer;
+  }
+
+  .accent {
+    background: $pink_muted;
+  }
+  .accent:hover {
+    background: $pink;
+  }
+
+  .primary {
+    background: $coolgrey_4;
+  }
+  .primary:hover {
+    background: $coolgrey_3;
+  }
+
+  .secondary {
+    background: $coolgrey_4;
+  }
+  .secondary:hover {
+    background: $coolgrey_3;
+  }
+
+  .titlebar-txt {
+    width: 100%;
+  }
+
+  .options {
+    // margin: 0 $foundation_gap;
   }
 
   // Foundation 5 Grid SASS
   @media #{$large-up} {
     .editor > .titlebar,
-    .editor > .container {
+    .component > .titlebar {
+      padding-left: $gap*2;
+    }
+    .editor > .container,
+    .fullbleed > .container {
       padding-left: $gap*2;
       padding-right: $gap*2;
     }
@@ -304,11 +393,6 @@ body#editor {
     color: $grey;
   }
 
-  // Foundation 5 'expanded row' fluid row width
-  .expanded {
-    max-width: 100%;
-  }
-
   // Admin page styles
   .admin {
     margin: $gap*2;
@@ -331,6 +415,8 @@ body#editor {
 /* Viewer styles only */
 
 body#viewer {
+  background: $offwhite;
+
   // Header
   &.green .header {
   	@include backgroundSizes($header_width, $header_height, $png_header_green, 1, $green);
@@ -488,24 +574,38 @@ body#viewer {
     height: 100%;
   }
 
-  // Polymer element styles with custom theme color
-  @each $theme, $map in $themes {
-    &.#{$theme} {
-      paper-button {
-        color: white;
-        background-color: map-get($map, color);
-      }
-    }
-  }
-
   // other viewer styles
-	.wrong {
-		border: 1px $error solid;
-	}
+  .wrong {
+    border: 1px $error solid;
+  }
 
   .hint_error {
       color: #D8000C;
       background-color: #FFBABA;
+  }
+
+  // default button styles
+  .btn-link {
+    color: $white;
+    background-color: $navy;
+    text-decoration: none;
+    border-radius: $gap;
+    padding: $gap;
+  }
+
+  .btn-submit {
+    color: $white;
+    background-color: $navy;
+  }
+
+  // Polymer element styles with custom theme color
+  @each $theme, $map in $themes {
+    &.#{$theme} {
+      .btn-link, paper-button {
+        color: white;
+        background-color: map-get($map, color);
+      }
+    }
   }
 
 }

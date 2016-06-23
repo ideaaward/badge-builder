@@ -1,0 +1,101 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="behaviors/editable-behavior.html">
+<link rel="import" href="behaviors/datamodel-behavior.html">
+<link rel="import" href="behaviors/titlebar-behavior.html">
+<link rel="import" href="includes/quiz-titlebar.html">
+
+<!--
+Content component for a button element
+-->
+
+<dom-module id="content-button">
+  <template>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
+
+      paper-input {
+        display: inline-block;
+        width: 100%;
+      }
+    </style>
+
+    <!-- Editor View -->
+    <template is="dom-if" if="[[edit]]">
+      <paper-material class="fullbleed">
+        <quiz-titlebar class="component" label="Link" icon="link" tooltip="This will be displayed to the user as a simple button with the text that you provide below. Suitable for linking to external learning resources."></quiz-titlebar>
+
+        <div class="container">
+          <!-- text | url -->
+          <div class="expanded row">
+            <div class="large-6 columns">
+              <paper-input label="Button Text" placeholder="Info" value="{{buttonText}}"></paper-input>
+              <paper-tooltip>This text will be used as the the label of the button</paper-tooltip>
+            </div>
+            <div class="large-6 columns">
+              <paper-input label="Button URL" placeholder="http://" value="{{buttonURL}}"></paper-input>
+              <paper-tooltip>This is the URL that user's will be linked to when the press the button. It will open in a new tab. Please ensure this is a valid and working URL.</paper-tooltip>
+            </div>
+          </div>
+        </div>
+      </paper-material>
+    </template>
+
+    <!-- Badge View -->
+    <template is="dom-if" if="[[!edit]]">
+      <div class="container">
+        <div class="row">
+          <div class="small-12 small-centered columns">
+            <a href="{{buttonURL}}" target="_blank" class="btn-link">{{buttonText}}</a>
+          </div>
+        </div>
+      </div>
+    </template>
+
+  </template>
+
+  <script>
+    ContentButton= Polymer({
+      is: 'content-button',
+      properties: {
+
+        /**
+         * The URL the button will link to
+         * @type {string}
+         */
+        buttonURL: {
+          type: String,
+        },
+
+       /**
+         * The text that will be displayed on the button
+         * @type {string}
+         */
+        buttonText: {
+          type: String,
+        }
+
+      },
+
+      getData: function(){
+        return {
+          elementType: this.localName,
+          buttonURL: this.buttonURL,
+          buttonText: this.buttonText
+        };
+      },
+
+      behaviors: [
+        QuizBehaviors.EditableBehavior,
+        QuizBehaviors.TitlebarBehavior,
+        QuizBehaviors.DataModelBehavior
+      ]
+
+    });
+  </script>
+</dom-module>
