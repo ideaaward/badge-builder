@@ -1,12 +1,12 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../behaviors/editable-behavior.html">
-<link rel="import" href="../behaviors/add-remove-behavior.html">
-<link rel="import" href="../behaviors/selectable-edit-behavior.html">
-<link rel="import" href="../behaviors/datamodel-behavior.html">
-<link rel="import" href="../behaviors/hint-behavior.html">
-<link rel="import" href="../behaviors/titlebar-behavior.html">
+<link rel="import" href="behaviors/editable-behavior.html">
+<link rel="import" href="behaviors/add-remove-behavior.html">
+<link rel="import" href="behaviors/selectable-edit-behavior.html">
+<link rel="import" href="behaviors/datamodel-behavior.html">
+<link rel="import" href="behaviors/hint-behavior.html">
+<link rel="import" href="behaviors/titlebar-behavior.html">
 <link rel="import" href="includes/quiz-titlebar.html">
 
 <!--
@@ -35,10 +35,10 @@ Example:
     </style>
 
     <paper-material class="fullbleed">
-      <quiz-titlebar class="component" hidden=[[!edit]] label="Single Choice" icon="radio-button-checked" add remove tooltip="This is a single choice question where only one option can be selected and there is only one correct answer. You can use the + and - buttons to add and delete options that the user can select. After you have listed all of the options available to the user, select the radio button for the option which is the correct answer to this question."></quiz-titlebar>
-
       <!-- Editor View -->
       <template is="dom-if" if="[[edit]]">
+        <quiz-titlebar class="component" hidden=[[!edit]] label="Single Choice" icon="radio-button-checked" add remove tooltip="This is a single choice question where only one option can be selected and there is only one correct answer. You can use the + and - buttons to add and delete options that the user can select. After you have listed all of the options available to the user, select the radio button for the option which is the correct answer to this question."></quiz-titlebar>
+
         <div class="container">
           <!-- question | hint -->
           <div class="expanded row">

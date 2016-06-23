@@ -2,10 +2,10 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../behaviors/editable-behavior.html">
-<link rel="import" href="../behaviors/datamodel-behavior.html">
-<link rel="import" href="../behaviors/hint-behavior.html">
-<link rel="import" href="../behaviors/titlebar-behavior.html">
+<link rel="import" href="behaviors/editable-behavior.html">
+<link rel="import" href="behaviors/datamodel-behavior.html">
+<link rel="import" href="behaviors/hint-behavior.html">
+<link rel="import" href="behaviors/titlebar-behavior.html">
 <link rel="import" href="includes/quiz-titlebar.html">
 
 <!--
@@ -32,10 +32,10 @@
     </style>
 
     <paper-material class="fullbleed">
-      <quiz-titlebar class="component" hidden=[[!edit]] label="Comments" icon="editor:format-align-left" tooltip="You can ask users an open ended question and award them points for writing a long answer. You can set the limit for the minimum amount of words the user has to write to get the points for this type of question."></quiz-titlebar>
-
       <!-- Editor View -->
       <template is="dom-if" if="[[edit]]">
+        <quiz-titlebar class="component" hidden=[[!edit]] label="Comments" icon="editor:format-align-left" tooltip="You can ask users an open ended question and award them points for writing a long answer. You can set the limit for the minimum amount of words the user has to write to get the points for this type of question."></quiz-titlebar>
+
         <div class="container">
           <!-- question | hint -->
           <div class="expanded row">

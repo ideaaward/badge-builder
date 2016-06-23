@@ -2,12 +2,12 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../behaviors/editable-behavior.html">
-<link rel="import" href="../behaviors/add-remove-behavior.html">
-<link rel="import" href="../behaviors/orderable-edit-behavior.html">
-<link rel="import" href="../behaviors/datamodel-behavior.html">
-<link rel="import" href="../behaviors/hint-behavior.html">
-<link rel="import" href="../behaviors/titlebar-behavior.html">
+<link rel="import" href="behaviors/editable-behavior.html">
+<link rel="import" href="behaviors/add-remove-behavior.html">
+<link rel="import" href="behaviors/orderable-edit-behavior.html">
+<link rel="import" href="behaviors/datamodel-behavior.html">
+<link rel="import" href="behaviors/hint-behavior.html">
+<link rel="import" href="behaviors/titlebar-behavior.html">
 <link rel="import" href="includes/quiz-titlebar.html">
 
 <!--
@@ -64,10 +64,10 @@ Example:
     </style>
 
     <paper-material class="fullbleed">
-      <quiz-titlebar class="component" hidden=[[!edit]] label="[[_title]]" icon="editor:format-line-spacing" add remove tooltip="This is an ordered list. You can use the + and - buttons to add and delete list items that the user can reorder. After you have listed all of the items, click and drag the list items so that they are in the correct order/position on the list. This will be shuffled in the user's view and they will have to reorder the list to get this question right."></quiz-titlebar>
-
       <!-- Editor View -->
       <template is="dom-if" if="[[edit]]">
+        <quiz-titlebar class="component" hidden=[[!edit]] label="[[_title]]" icon="editor:format-line-spacing" add remove tooltip="This is an ordered list. You can use the + and - buttons to add and delete list items that the user can reorder. After you have listed all of the items, click and drag the list items so that they are in the correct order/position on the list. This will be shuffled in the user's view and they will have to reorder the list to get this question right."></quiz-titlebar>
+
         <div class="container">
           <!-- question | hint -->
           <div class="expanded row">

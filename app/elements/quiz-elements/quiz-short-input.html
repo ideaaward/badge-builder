@@ -2,10 +2,10 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../behaviors/editable-behavior.html">
-<link rel="import" href="../behaviors/datamodel-behavior.html">
-<link rel="import" href="../behaviors/hint-behavior.html">
-<link rel="import" href="../behaviors/titlebar-behavior.html">
+<link rel="import" href="behaviors/editable-behavior.html">
+<link rel="import" href="behaviors/datamodel-behavior.html">
+<link rel="import" href="behaviors/hint-behavior.html">
+<link rel="import" href="behaviors/titlebar-behavior.html">
 <link rel="import" href="includes/quiz-titlebar.html">
 
 <!--
@@ -27,10 +27,10 @@
     </style>
 
     <paper-material class="fullbleed">
-      <quiz-titlebar class="component" hidden=[[!edit]] label="Keywords" icon="editor:short-text" tooltip="This is a "short answer" question. Use this type of question when you want the user to write a specfic answer to the question. Using the "short answer" element, you can define the words you are looking for in the users answer; if the user's answer contains All of the words you are looking for, they will get the points for this question. For example, if you ask: "What is the definition of Economics?", you can look for the words "resources, allocating, scarce, demand, supply". If the user enters all of those words in their answer, they pass."></quiz-titlebar>
-
       <!-- Editor View -->
       <template is="dom-if" if="[[edit]]">
+        <quiz-titlebar class="component" hidden=[[!edit]] label="Keywords" icon="editor:short-text" tooltip="Use this type of question when you want the user to write a specfic answer to the question. You can define the words you are looking for in the users answer; if the user's answer contains All of the words you are looking for, they will get the points for this question. For example, if you ask: 'What is the definition of Economics?', you can look for the words 'resources, allocating, scarce, demand, supply'. If the user enters all of those words in their answer, they pass."></quiz-titlebar>
+
         <div class="container">
           <!-- question | hint -->
           <div class="expanded row">

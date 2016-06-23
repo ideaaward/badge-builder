@@ -1,12 +1,12 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
-<link rel="import" href="../behaviors/editable-behavior.html">
-<link rel="import" href="../behaviors/add-remove-behavior.html">
-<link rel="import" href="../behaviors/selectable-edit-behavior.html">
-<link rel="import" href="../behaviors/datamodel-behavior.html">
-<link rel="import" href="../behaviors/hint-behavior.html">
-<link rel="import" href="../behaviors/titlebar-behavior.html">
+<link rel="import" href="behaviors/editable-behavior.html">
+<link rel="import" href="behaviors/add-remove-behavior.html">
+<link rel="import" href="behaviors/selectable-edit-behavior.html">
+<link rel="import" href="behaviors/datamodel-behavior.html">
+<link rel="import" href="behaviors/hint-behavior.html">
+<link rel="import" href="behaviors/titlebar-behavior.html">
 <link rel="import" href="includes/quiz-titlebar.html">
 
 <!--
@@ -35,10 +35,10 @@ Example:
     </style>
 
     <paper-material class="fullbleed">
-      <quiz-titlebar class="component" hidden=[[!edit]] label="Multiple Choice" icon="check-box" add remove tooltip="This is a multiple choice question where many options can be selected and there can be more than one correct answer. You can use the + and - buttons to add and delete options that the user can select. After you have listed all of the options available to the user, tick the boxes to indicate the correct answers for this question. Remember, multiple choice indicates to the user to select more than one box."></quiz-titlebar>
-
       <!-- Editor View -->
       <template is="dom-if" if="[[edit]]">
+        <quiz-titlebar class="component" hidden=[[!edit]] label="Multiple Choice" icon="check-box" add remove tooltip="This is a multiple choice question where many options can be selected and there can be more than one correct answer. You can use the + and - buttons to add and delete options that the user can select. After you have listed all of the options available to the user, tick the boxes to indicate the correct answers for this question. Remember, multiple choice indicates to the user to select more than one box."></quiz-titlebar>
+
         <div class="container">
           <!-- question | hint -->
           <div class="expanded row">

@@ -411,6 +411,8 @@ body#editor {
 /* Viewer styles only */
 
 body#viewer {
+  background: $offwhite;
+
   // Header
   &.green .header {
   	@include backgroundSizes($header_width, $header_height, $png_header_green, 1, $green);
@@ -568,24 +570,38 @@ body#viewer {
     height: 100%;
   }
 
-  // Polymer element styles with custom theme color
-  @each $theme, $map in $themes {
-    &.#{$theme} {
-      paper-button {
-        color: white;
-        background-color: map-get($map, color);
-      }
-    }
-  }
-
   // other viewer styles
-	.wrong {
-		border: 1px $error solid;
-	}
+  .wrong {
+    border: 1px $error solid;
+  }
 
   .hint_error {
       color: #D8000C;
       background-color: #FFBABA;
+  }
+
+  // default button styles
+  .btn-link {
+    color: $white;
+    background-color: $navy;
+    text-decoration: none;
+    border-radius: $gap;
+    padding: $gap;
+  }
+
+  .btn-submit {
+    color: $white;
+    background-color: $navy;
+  }
+
+  // Polymer element styles with custom theme color
+  @each $theme, $map in $themes {
+    &.#{$theme} {
+      .btn-link, paper-button {
+        color: white;
+        background-color: map-get($map, color);
+      }
+    }
   }
 
 }
