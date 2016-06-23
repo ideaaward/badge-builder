@@ -49,6 +49,9 @@ var filterBadge = function (badge) {
 };
 
 router.get('/user', function (req, res) {
+  if (!req.user) {
+    return sendUnauthorized(res);
+  }
   res.json({
     name: req.user.name,
     imageUrl: req.user.imageUrl,
