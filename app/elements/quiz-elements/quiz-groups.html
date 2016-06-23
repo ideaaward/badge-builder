@@ -2,96 +2,119 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
-
 <link rel="import" href="../../bower_components/Sortable/Sortable.html">
 <link rel="import" href="../behaviors/datamodel-behavior.html">
+<link rel="import" href="../behaviors/hint-behavior.html">
 
 <!--
 Quiz component for question with mutiple choice response (checkbox style)
 
 Example:
 
-    <quiz-groups question="Help Santa organise things in the right place:" groups='["Presents","Reindeer"]' items='["Rudolph","Toys","Dasher","Dancer","Sweets","Candy Canes","Prancer"]' shuffle></quiz-groups>
+    <quiz-groups question="Help Santa organise things in the right place:" groups='["Presents","Reindeer"]' items='["Rudolph","Toys","Dasher","Dancer","Sweets","Candy Canes","Prancer"]'></quiz-groups>
 
 @demo
 -->
+
 <dom-module id="quiz-groups">
-
-  <style>
-    :host {
-      display: block;
-      box-sizing: border-box;
-      /*@apply(--paper-font-common-base);*/
-    }
-
-    ::content .container{
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      clear: both;
-    }
-
-    ::content paper-material{
-      flex: 1 1 320px;
-      margin: 5px;
-    }
-
-    ::content .options {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      list-style: none;
-    }
-
-    ::content .options li {
-      flex: 0 0 auto;
-      margin: 10px;
-    }
-
-    ::content .drag-handle {
-      position: absolute;
-      top: 0;
-      right: 0;
-      transform: translate(0, 50%);
-      margin-left: 10px;
-    }
-
-    ::content li {
-      position: relative;
-    }
-
-    ::content .groups {
-      width: 100%;
-      padding: 0;
-      margin: 0;
-      box-sizing: border-box;
-      padding: 20px;
-      border: 2px dashed #ccc;
-      list-style: none;
-    }
-
-    ::content .groups li {
-      margin: 0;
-    }
-  </style>
-
   <template>
-    <paper-material class="content" elevation="1">
-      <h3 class="question">[[question]]</h3>
-      <ul id="list" class="options">
-        <template is="dom-repeat" items="[[items]]">
-          <li class="option" title="[[item]]"><p>[[item]]</p><iron-icon icon="editor:drag-handle" class="drag-handle"></iron-icon></li>
-        </template>
-      </ul>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+        /*@apply(--paper-font-common-base);*/
+      }
+
+      /* dynamic element styles */
+      ::content .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        clear: both;
+      }
+
+      ::content paper-material{
+        flex: 1 1 320px;
+        margin: 5px;
+      }
+
+      ::content .options {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        list-style: none;
+      }
+
+      ::content .options li {
+        flex: 0 0 auto;
+        margin: 10px;
+      }
+
+      ::content .drag-handle {
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(0, 50%);
+        margin-left: 10px;
+      }
+
+      ::content li {
+        position: relative;
+      }
+
+      ::content .groups {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        padding: 20px;
+        border: 2px dashed #ccc;
+        list-style: none;
+      }
+
+      ::content .groups li {
+        margin: 0;
+      }
+    </style>
+
+    <paper-material class="fullbleed">
+      <!-- Badge View Only -->
       <div class="container">
-        <template id="groups" is="dom-repeat" items="[[groups]]" on-dom-change="_templateChanged">
-          <paper-material elevation="0">
-            <h3>[[item]]</h3>
-            <ul class="groups" title="[[item]]"></ul>
-          </paper-material>
-        </template>
-      </div>
-      <content></content>
+        <!-- question -->
+        <div class="row">
+          <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+            <h3 class="question">[[question]]</h3>
+          </div>
+        </div>
+        <!-- list -->
+        <div class="row">
+          <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+            <ul id="list" class="options">
+              <template is="dom-repeat" items="[[items]]">
+                <li class="option" title="[[item]]"><p>[[item]]</p><iron-icon icon="editor:drag-handle" class="drag-handle"></iron-icon></li>
+              </template>
+            </ul>
+          </div>
+        </div>
+        <!-- groups -->
+        <div class="expanded row">
+          <div class="large-12 columns">
+            <template is="dom-repeat" items="[[groups]]" on-dom-change="_templateChanged">
+              <paper-material elevation="0">
+                <h3>[[item]]</h3>
+                <ul class="groups" title="[[item]]"></ul>
+              </paper-material>
+            </template>
+          </div>
+        </div>
+        <!-- hint -->
+        <div class="row">
+          <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+            <div class="hint_error" hidden=[[!showHint]]>
+              <p>[[hintText]]</p>
+            </div>
+          </div>
+        </div>
     </paper-material>
   </template>
 
@@ -189,7 +212,8 @@ Example:
       },
 
       behaviors: [
-        QuizBehaviors.DataModelBehavior
+        QuizBehaviors.DataModelBehavior,
+        QuizBehaviors.HintBehavior
       ]
 
     });

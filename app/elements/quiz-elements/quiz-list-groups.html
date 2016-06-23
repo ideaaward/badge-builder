@@ -2,12 +2,14 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
-
 <link rel="import" href="../behaviors/editable-behavior.html">
 <link rel="import" href="../behaviors/add-remove-behavior.html">
 <link rel="import" href="../behaviors/orderable-edit-behavior.html">
 <link rel="import" href="../behaviors/multi-orderable-behavior.html">
 <link rel="import" href="../behaviors/datamodel-behavior.html">
+<link rel="import" href="../behaviors/hint-behavior.html">
+<link rel="import" href="../behaviors/titlebar-behavior.html">
+<link rel="import" href="includes/quiz-titlebar.html">
 
 <!--
 Quiz component for question with mutiple choice response (checkbox style)
@@ -18,93 +20,100 @@ Example:
 
 @demo
 -->
+
 <dom-module id="quiz-list-groups">
-
-  <style>
-    :host {
-      display: block;
-      box-sizing: border-box;
-      /*@apply(--paper-font-common-base);*/
-    }
-
-    paper-input {
-      display: inline-block;
-    }
-
-    .question {
-      width: 100%;
-    }
-
-    ::content ol {
-      list-style-position: outside;
-      /*padding: 0;*/
-      box-sizing: border-box;
-      /*width: 100%;*/
-      display: flex; /* required to display in single line */
-      flex-direction: column;
-    }
-
-    ::content ol > li {
-      position: relative;
-      width: 100%;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-
-    ::content ol > li:before {
-      float: left;
-    }
-
-    ::content ol > li paper-input {
-      display: inline-block;
-      width: calc(100% - 40px);
-    }
-
-    ::content .drag-item {
-      position: absolute;
-      right: 0;
-      color: grey;
-      cursor: move;
-      cursor: -webkit-grabbing;
-    }
-
-    /*
-    ::content quiz-ordered-list {
-      width: auto;
-      float: left;
-    }
-
-    ::content .container:after {
-      content: "";
-      display: table;
-      clear: both;
-    }
-    */
-
-    ::content .container{
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
-
-    ::content quiz-ordered-list{
-      flex: 1 1 320px;
-      margin: 5px;
-    }
-
-  </style>
-
   <template>
-    <paper-material class="content" elevation="1">
-      <div>
-        <h3 hidden=[[!edit]]>Grouped List Quiz Element</h3>
-        <paper-tooltip hidden=[[!edit]]>The Grouped List element is for questions where users are required to drag and drop items into the correct group. Tap + to add a new group.</paper-tooltip>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+        /*@apply(--paper-font-common-base);*/
+      }
+
+      paper-input {
+        display: inline-block;
+        width: 100%;
+      }
+
+      ::content #wrapper {
+        margin-left: -10px;
+        margin-right: -10px;
+        /*background: grey;*/
+      }
+
+      /* dynamic element styles */
+      ::content ol {
+        list-style-position: outside;
+        /*padding: 0;*/
+        box-sizing: border-box;
+        /*width: 100%;*/
+        display: flex; /* required to display in single line */
+        flex-direction: column;
+      }
+
+      ::content ol > li {
+        position: relative;
+        width: 100%;
+        padding: 0 20px;
+        box-sizing: border-box;
+      }
+
+      ::content ol > li:before {
+        float: left;
+      }
+
+      ::content ol > li paper-input {
+        display: inline-block;
+        width: calc(100% - 40px);
+      }
+
+      ::content .drag-item {
+        position: absolute;
+        right: 0;
+        color: grey;
+        cursor: move;
+        cursor: -webkit-grabbing;
+      }
+
+      ::content #wrapper .container {
+        /*background: gray;*/
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+      }
+
+      ::content quiz-ordered-list{
+        flex: 1 1 320px;
+        margin: 10px;
+      }
+    </style>
+
+    <paper-material class="fullbleed">
+      <quiz-titlebar class="component" hidden=[[!edit]] label="Groups" icon="av:shuffle" add icon-add="add-box" tooltip="The Grouped List element is for questions where users are required to drag and drop items into the correct group. Tap + to add a new group."></quiz-titlebar>
+
+      <!-- Editor View only -->
+      <div class="container">
+        <!-- question | hint -->
+        <div class="expanded row">
+          <div class="large-6 columns">
+            <paper-input label="Question" placeholder="Question" value="{{question}}"></paper-input>
+            <paper-tooltip>This is the question that will be displayed to the user.</paper-tooltip>
+          </div>
+          <div class="large-6 columns">
+            <paper-input label="Hint" placeholder="Hint description" value="{{hintText}}"></paper-input>
+            <paper-tooltip>Enter the hint you want to display to user's if they get this question wrong</paper-tooltip>
+          </div>
+        </div>
+        <!-- lists (dynamic content elements) -->
+        <div class="expanded row">
+          <div class="small-12 columns">
+            <div id="wrapper">
+              <content></content>
+            </div>
+          </div>
+        </div>
       </div>
-      <h3 class="question" hidden=[[edit]]>[[question]]</h3>
-      <div>
-        <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>
-      </div>
-      <content></content>
+
     </paper-material>
   </template>
 
@@ -118,22 +127,6 @@ Example:
          */
         question: {
           type: String
-        },
-
-        /** iron-icon icons */
-        _iconAdd: {
-          type: String,
-          value: "add-box"
-        },
-        _iconRemove: {
-          type: String,
-          value: "indeterminate-check-box"
-        },
-
-        /** add only mode */
-        _isAddOnly: {
-          type: Boolean,
-          value: true
         }
       },
 
@@ -148,7 +141,9 @@ Example:
           question : this.question,
           groups : this.groups,
           items : this.items,
-          answer : this.answer
+          answer : this.answer,
+          hintText : this.hintText,
+          showHint: this.showHint
         };
       },
 
@@ -156,7 +151,9 @@ Example:
         QuizBehaviors.AddRemoveBehavior,
         QuizBehaviors.MultiOrderableBehavior,
         QuizBehaviors.EditableBehavior,
-        QuizBehaviors.DataModelBehavior
+        QuizBehaviors.TitlebarBehavior,
+        QuizBehaviors.DataModelBehavior,
+        QuizBehaviors.HintBehavior
       ]
     });
   </script>

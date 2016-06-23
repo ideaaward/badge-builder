@@ -413,11 +413,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.addElement(el, true);
         },
 
-        addQuizListGroups: function(id, question, answer) {
+        addQuizListGroups: function(id, question, answer, hintText, showHint) {
           var el = document.createElement('quiz-list-groups');
           el._id = id;
           el.question = question;
           el.answer = answer;
+          el.hintText = hintText;
+          el.showHint = showHint;
           //
           this.addElement(el);
         },
@@ -491,7 +493,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit, element.hintText, element.showHint);
                 break;
               case "quiz-list-groups":
-                this.addQuizListGroups(element._id, element.question, element.answer);
+                this.addQuizListGroups(element._id, element.question, element.answer, element.hintText, element.showHint);
                 break;
               default:
                 this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.answer, element.hintText, element.showHint); // generic quiz elements

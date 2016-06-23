@@ -87,28 +87,21 @@
         this.set('_isSetup', true);
       }
       //console.log('refresh:', this.options, this.answer);
-
-      // (remove option elements)
-      this._removeOptions();
-
-      // shuffle options for viewer
-      if (!this.edit){
-        this._reshuffle();
+      var elements = this._getOptionElements();
+      if ( this.options.length != elements.length ) {
+        this._resetOptions();
       }
-
-      // create option elements
-      this._addOptions();
     },
 
     // NB: shuffle options until they don't match answer order.
     _shuffleOptions: function(){
-      console.log(this.localName, "_shuffleOptions...");
+      //console.log(this.localName, "_shuffleOptions...");
       // shuffle options
       if (this.options.length>1) {
         var shuffledOptions = [];
         do {
           shuffledOptions = _.shuffle(this.options);
-          console.info(this.localName, "* shuffled options:", this.options, shuffledOptions);
+          //console.log(this.localName, "* shuffled options:", this.options, shuffledOptions);
         } while (shuffledOptions + '' === this.answer + '');
         this.set('options', shuffledOptions);
       }
@@ -119,7 +112,7 @@
      */
     _updateEditedAnswers: function(e) {
       var updatedAnswers = [];
-      var elements = this._optionsContainer.querySelectorAll('.option');
+      var elements = this._getOptionElements();
       var i = elements.length;
       while(i--){
         var value = elements[i].querySelector('paper-input').value;

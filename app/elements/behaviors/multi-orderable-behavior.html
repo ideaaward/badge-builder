@@ -67,8 +67,9 @@
       el.classList.add('group');
       // set properties
       el._placeholder = "Group";
-      el._title = "Group List";
+      el._title = "List";
       el._dragHandle = "drag-group";
+      el._noHint = true;
 
       if (data && data.group && data.items) {
         //console.log('add option:', data);
@@ -159,7 +160,7 @@
     },
 
     _elementChanged: function(e) {
-      console.info("Update edited data for drag and drop", e);
+      //console.info("Update edited data for drag and drop", e);
       this._updateEditedAnswers();
     },
 

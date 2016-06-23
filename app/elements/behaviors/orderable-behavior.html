@@ -171,11 +171,19 @@
     },
 
     refresh: function(){
-      // (remove option elements)
+      var elements = this._getOptionElements();
+      if ( this.options.length != elements.length ) {
+        this._resetOptions();
+      }
+    },
+
+    _resetOptions: function() {
       this._removeOptions();
 
-      // shuffle options
-      this._reshuffle();
+      // shuffle options for viewer
+      if (!this.edit){
+        this._reshuffle();
+      }
 
       // create option elements
       this._addOptions();

@@ -48,7 +48,7 @@
       }
       // edit mode
       if (this.answer.length > 0) {
-        // console.info(this.localName, '> select answers:', this.answer, this._options.length);
+        // console.info(this.localName, '> select answers:', this.answer);
         this.selectOptions(this.answer);
       }
     },
@@ -58,7 +58,11 @@
      */
     refresh: function() {
       // console.info(this.localName, 'refresh edit mode:', this.edit);
-      this._resetOptions();
+      var elements = this._getOptionElements();
+      if ( this.options.length != elements.length ) {
+        this._resetOptions();
+      }
+      // select answers in edit mode
       this._selectAnswers();
     },
 

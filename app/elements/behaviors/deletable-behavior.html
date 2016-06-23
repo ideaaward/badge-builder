@@ -7,39 +7,14 @@
   /** @polymerBehavior QuizBehaviors.DeleteBehavior */
   QuizBehaviors.DeletableBehaviorImpl = {
 
-    properties: {
-      /** Delete button element reference */
-      _elementDelete: {
-        type: Object
-      }
-    },
-
     /**
      * Fires a request to be deleted.
      */
     _tappedDelete: function(e) {
-      //console.info(this.localName, "Tapped delete");
+      e.stopPropagation();
       this.fire('deleteElement');
-    },
-
-    ready: function() {
-      // add delete button to the DOM
-      this._elementDelete = document.createElement("paper-fab");
-      this._elementDelete.icon = "delete";
-      this._elementDelete.mini = true;
-      this._elementDelete.classList.add("edit", "delete");
-      Polymer.dom(this).appendChild(this._elementDelete); // document.body.appendChild(deleteButton);
-      //console.info(this.localName, "Added Delete Button");
-    },
-
-    attached: function() {
-      this.listen(this._elementDelete, 'tap', '_tappedDelete');
-    },
-
-    detached: function() {
-      this.unlisten(this._elementDelete, 'tap', '_tappedDelete');
-      //Polymer.dom(this).removeChild(this._elementDelete);
     }
+
   };
 
   QuizBehaviors.DeletableBehavior = [

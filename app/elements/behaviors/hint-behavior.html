@@ -23,9 +23,30 @@
       showHint: {
         type: Boolean,
         value: false
-      }
+      },
 
+      /**
+       * `_noHint` is for editor use to hide hint input.
+       *
+       * @type Boolean
+       * @default false
+       */
+      _noHint: {
+        type: Boolean,
+        value: false
+      },
+
+      _hintColumns: {
+        type: String,
+        computed: '_classHintColumns(_noHint)'
+      }
+    },
+
+    _classHintColumns: function(noHint){
+      return noHint ? "large-12 columns" : "large-6 columns";
     }
+
+
   };
 
   QuizBehaviors.HintBehavior = [

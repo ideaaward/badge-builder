@@ -1,0 +1,19 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<script>
+  window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviors.TitlebarBehavior */
+  QuizBehaviors.TitlebarBehaviorImpl = {
+
+    listeners: {
+      'tappedAdd' : '_tappedAdd',
+      'tappedRemove' : '_tappedRemove',
+      'tappedDelete' : '_tappedDelete'
+    }
+
+  };
+
+  QuizBehaviors.TitlebarBehavior = [
+    QuizBehaviors.TitlebarBehaviorImpl
+  ];
+</script>
