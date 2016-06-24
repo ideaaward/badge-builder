@@ -304,6 +304,12 @@ body#editor {
     color: $coolgrey_1;
   }
 
+  /* content-elements */
+  .content-element > .component > .titlebar {
+    background: $coolgrey_4;
+    color: $coolgrey_1;
+  }
+
   .component > .titlebar {
     height: $titlebar_height;
     overflow: hidden;
@@ -390,7 +396,6 @@ body#editor {
   .drag-handle {
     cursor: move;
     cursor: -webkit-grabbing;
-    color: $grey;
   }
 
   // Admin page styles
@@ -586,11 +591,20 @@ body#viewer {
 
   // default button styles
   .btn-link {
+    display: inline-block;
     color: $white;
     background-color: $navy;
     text-decoration: none;
     border-radius: $gap;
-    padding: $gap;
+    height: $btn_height;
+    line-height: $btn_height;
+    vertical-align: middle;
+    padding: 0 $gap*2;
+    margin: 0;
+  }
+
+  .btn-link span {
+    margin-right: $gap/2;
   }
 
   .btn-submit {
