@@ -47,9 +47,9 @@ Content component for html content such as paragraphs, images, lists
       }
     </style>
 
-    <paper-material class="fullbleed">
-      <!-- Editor View -->
-      <template is="dom-if" if="[[edit]]">
+    <!-- Editor View -->
+    <template is="dom-if" if="[[edit]]">
+      <paper-material class="fullbleed content-element">
         <quiz-titlebar class="component" label="Text" icon="editor:format-color-text" tooltip="This element is a full text editor and allows you to input and style text and images in html format. You can see what the user view of this will look like by clicking on the cog icon in the blue banner, and selecting 'Read-only'"></quiz-titlebar>
         <!-- WYSIWYG editor -->
         <wysiwyg-e style="height:300px" value="{{text}}" hide-settings>
@@ -66,20 +66,19 @@ Content component for html content such as paragraphs, images, lists
           <wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
           <wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
         </wysiwyg-e>
-      </template>
+      </paper-material>
+    </template>
 
-      <!-- Badge View -->
-      <template is="dom-if" if="[[!edit]]">
-        <div class="container">
-          <div class="row">
-            <div class="small-12 columns">
-              <template is="juicy-html" content$="{{text}}"></template>
-            </div>
+    <!-- Badge View -->
+    <template is="dom-if" if="[[!edit]]">
+      <div class="container">
+        <div class="row">
+          <div class="small-12 columns">
+            <template is="juicy-html" content$="{{text}}"></template>
           </div>
         </div>
-      </template>
-
-    </paper-material>
+      </div>
+    </template>
   </template>
 
   <script>
