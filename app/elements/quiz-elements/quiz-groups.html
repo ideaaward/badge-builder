@@ -26,7 +26,7 @@ Example:
       }
 
       /* dynamic element styles */
-      ::content .container {
+      ::content #groups-container {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
@@ -34,7 +34,7 @@ Example:
       }
 
       ::content paper-material{
-        flex: 1 1 320px;
+        flex: 1 1 240px;
         margin: 5px;
       }
 
@@ -87,8 +87,8 @@ Example:
           </div>
         </div>
         <!-- list -->
-        <div class="row">
-          <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+        <div class="expanded row">
+          <div class="small-12 columns">
             <ul id="list" class="options">
               <template is="dom-repeat" items="[[items]]">
                 <li class="option" title="[[item]]"><p>[[item]]</p><iron-icon icon="editor:drag-handle" class="drag-handle"></iron-icon></li>
@@ -98,13 +98,15 @@ Example:
         </div>
         <!-- groups -->
         <div class="expanded row">
-          <div class="large-12 columns">
+          <div class="small-12 columns">
+            <div id="groups-container">
             <template is="dom-repeat" items="[[groups]]" on-dom-change="_templateChanged">
               <paper-material elevation="0">
                 <h3>[[item]]</h3>
                 <ul class="groups" title="[[item]]"></ul>
               </paper-material>
             </template>
+            </div>
           </div>
         </div>
         <!-- hint -->

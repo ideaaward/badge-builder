@@ -535,6 +535,15 @@ body#viewer {
 		text-align: center;
 	}
 
+  #components > div > * {
+    margin: $gap*2 0;
+  }
+
+  .fullbleed {
+    background-color: $white;
+    padding-bottom: $gap;
+  }
+
   .buttonWrapper{
     padding-top: ($gap);
     padding-bottom: $footer_height + ($gap*5);
@@ -577,6 +586,10 @@ body#viewer {
   .options .drag-item {
     color: $grey;
     height: 100%;
+  }
+
+  .option > #radioLabel, .option > #checkboxLabel {
+    margin-right: $gap*3;
   }
 
   // other viewer styles
