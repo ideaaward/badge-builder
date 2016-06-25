@@ -298,13 +298,19 @@ body#editor {
     padding: 0;
   }
 
+  /* quiz-elements titlebar */
   .component > .titlebar {
     display: block;
     background: $coolgrey_4;
     color: $coolgrey_1;
   }
 
-  /* content-elements */
+  /* nested titlebar */
+  .nested .component > .titlebar {
+    background: $coolgrey_3;
+  }
+
+  /* content-elements titlebar */
   .content-element > .component > .titlebar {
     background: $coolgrey_4;
     color: $coolgrey_1;
@@ -353,6 +359,13 @@ body#editor {
   }
   .secondary:hover {
     background: $coolgrey_3;
+  }
+
+  .nested .primary, .nested .secondary {
+    background: $coolgrey_3;
+  }
+  .nested .primary:hover, .nested .secondary:hover {
+    background: $coolgrey_2;
   }
 
   .titlebar-txt {
