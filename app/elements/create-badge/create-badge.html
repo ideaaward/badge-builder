@@ -144,6 +144,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-input id="titleInput" placeholder="Title" label="Badge Title" value="{{badgeTitle}}" autofocus required></paper-input>
               <paper-dropdown-menu label="Badge Theme">
                 <paper-listbox id="theme" class="dropdown-content" attr-for-selected="value" selected="{{badgeTheme}}" on-iron-select="selectTheme">
+                  <paper-item value="navy"><span class="swatch bg_navy"></span>Navy</paper-item>
                   <paper-item value="blue"><span class="swatch bg_blue"></span>Blue</paper-item>
                   <paper-item value="green"><span class="swatch bg_green"></span>Green</paper-item>
                   <paper-item value="pink"><span class="swatch bg_pink"></span>Pink</paper-item>
@@ -219,6 +220,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           badgeTitle: {
             type: String,
             notifiy: true
+          },
+          badgeTheme: {
+            type: String,
+            value: "navy"
           },
           badgeKey: {
             type: String,
@@ -301,9 +306,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         // TODO: clean-up dynamic elements / resources
         _resetPage: function(){
+          var defaultTheme = 'navy';
           this.$.titleInput.value = '';
-          this.$.theme.selected = ''; // clear theme selection
-          this._setAppTheme('none');
+          this.$.theme.selected = defaultTheme; // reset theme selection
+          this._setAppTheme(defaultTheme); // set theme style for new badge
           this.elementsData = [];
           // detatch custom elements
           var elements = this._getElements();

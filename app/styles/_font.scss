@@ -15,8 +15,7 @@ $font: 'Gotham';
 $font_map: (
   $light: 'light',
   $normal: 'book',
-  $medium: 'medium',
-  $bold: 'bold',
+  $bold: 'bold'
 );
 
 // font-faces([weight:filename], font name, font path)
@@ -27,7 +26,7 @@ $font_map: (
 $font_display: 'Amatic';
 // font weight and font file name key values
 $font_display_map: (
-  $bold: 'bold-webfont',
+  $bold: 'bold'
 );
 
 // font-faces([weight:filename], font name, font path)

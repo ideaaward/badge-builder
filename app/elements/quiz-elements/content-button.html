@@ -50,8 +50,10 @@ Content component for a button element
     <template is="dom-if" if="[[!edit]]">
       <div class="container">
         <div class="row">
-          <div class="small-12 small-centered columns">
-            <a href="{{buttonURL}}" target="_blank" class="btn-link"><span>[[buttonText]]</span><iron-icon icon="open-in-new"></iron-icon></a>
+          <div class="small-12 centered columns">
+            <div class="center">
+              <a href="{{buttonURL}}" target="_blank" class="btn-link"><span>[[buttonText]]</span><iron-icon icon="open-in-new"></iron-icon></a>
+            </div>
           </div>
         </div>
       </div>
