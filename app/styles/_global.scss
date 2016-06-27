@@ -460,6 +460,9 @@ body#viewer {
   #header {
     flex: 0 0 auto;
     height: $header_height;
+    /* nested flex layout */
+    display: flex;
+    flex-direction: row;
   }
 
   #main {
@@ -472,7 +475,7 @@ body#viewer {
   }
 
   #content {
-    flex: 1 1 auto;
+    flex: 1 0 auto;
   }
 
   #footer {
@@ -481,34 +484,29 @@ body#viewer {
     // pointer-events: none;
   }
 
-  // Foundation Responsive Grid layout
-  @media #{$small-only} {
-  }
-
-
   // // Header theme
   #header{
     // @include backgroundSizes($header_bg_width, $header_bg_height, $png_header_navy, 1, $navy, 'jpg', 'repeat-x');
   }
 
   &.green #header {
-  	@include backgroundSizes($header_bg_width, $header_bg_height, $png_header_green, 1, $green, 'jpg', 'repeat-x');
+  	@include backgroundSizes($header_bg_width, $header_bg_height, $png_header_green, 1, $green, 'jpg', 'repeat');
   }
 
   &.blue #header {
-  	@include backgroundSizes($header_bg_width, $header_bg_height, $png_header_blue, 1, $blue, 'jpg', 'repeat-x');
+  	@include backgroundSizes($header_bg_width, $header_bg_height, $png_header_blue, 1, $blue, 'jpg', 'repeat');
   }
 
   &.pink #header {
-  	@include backgroundSizes($header_bg_width, $header_bg_height, $png_header_pink, 1, $pink, 'jpg', 'repeat-x');
+  	@include backgroundSizes($header_bg_width, $header_bg_height, $png_header_pink, 1, $pink, 'jpg', 'repeat');
   }
 
   &.orange #header {
-  	@include backgroundSizes($header_bg_width, $header_bg_height, $png_header_orange, 1, $orange, 'jpg', 'repeat-x');
+  	@include backgroundSizes($header_bg_width, $header_bg_height, $png_header_orange, 1, $orange, 'jpg', 'repeat');
   }
 
   &.navy #header {
-  	@include backgroundSizes($header_bg_width, $header_bg_height, $png_header_navy, 1, $navy, 'jpg', 'repeat-x');
+  	@include backgroundSizes($header_bg_width, $header_bg_height, $png_header_navy, 1, $navy, 'jpg', 'repeat');
   }
 
   // Footer theme
@@ -562,33 +560,79 @@ body#viewer {
   	@include backgroundSizesSVG($badge_width, $badge_height, $svg_badge_navy);
   }
 
-  // viewer body children
-  #idea-badge{
-    position: absolute;
-		right: $gap;
-		top: $gap;
-	}
-
-  #title {
-    position: absolute;
-    top: 0;
-    left: $garter_width;
-    height: $garter_height;
-    display: table;
-    padding: $gap;
-    box-sizing: border-box;
-  }
-
-  #title h1 {
-    color: $white;
-    vertical-align: middle;
-    display: table-cell;
-    font-family: $font_display;
-    font-weight: $bold;
+  // Badge Viewer header
+  #garter,
+  #title,
+  #idea-badge {
+    height: $header_height;
   }
 
   #garter {
-    @include backgroundSizesSVG($garter_width, $garter_height, $svg_garter);
+    flex: 0 0 auto;
+    @include backgroundSizesSVG($garter_width, $garter_height, $svg_garter, 'transparent', 0, 0);
+  }
+
+  #title {
+    flex: 1 1 auto;
+    @include truncate();
+  }
+
+  h1#title  {
+    font-family: $font_display;
+    font-weight: $bold;
+    color: $white;
+    vertical-align: middle;
+    line-height: $header_height;
+    padding: 0;
+    margin: 0;
+    margin-left: $gap;
+    margin-right: $badge_width + $gap*2;
+  }
+
+  #idea-badge {
+    // flex: 0 0 auto;
+    position: absolute;
+    top: $gap;
+    right: $gap;
+	}
+
+  // Foundation Responsive Grid layout
+  @media #{$medium-only} {
+    #header, #garter, #title, #idea-badge {
+      height: $header_height * 1.5;
+    }
+    #garter {
+      width: $header_height * 1.5;
+      background-size: ($header_height * 1.5) ($header_height * 1.5);
+    }
+    h1#title {
+      line-height: $header_height * 1.5;
+      margin-right: $badge_width * 1.5 + $gap*2;
+    }
+    #idea-badge.resizes {
+      width: $badge_width * 1.5;
+      height: $badge_height * 1.5;
+      background-size: ($badge_width * 1.5) ($badge_height * 1.5);
+    }
+  }
+
+  @media #{$large-up} {
+    #header, #garter, #title, #idea-badge {
+      height: $header_height * 2;
+    }
+    #garter {
+      width: $header_height * 2;
+      background-size: ($header_height * 2) ($header_height * 2);
+    }
+    h1#title {
+      line-height: $header_height * 2;
+      margin-right: $badge_width* 2 + $gap*2;
+    }
+    #idea-badge.resizes {
+      width: $badge_width * 2;
+      height: $badge_height * 2;
+      background-size: ($badge_width * 2) ($badge_height * 2);
+    }
   }
 
   // Badge Viewer styles

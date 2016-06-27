@@ -18,7 +18,7 @@ $btn_height: 50px;
 
 // Badge Viewer layout
 $header_width: 100%;
-$header_height: 85px;
+$header_height: 50px;
 
 $footer_width: 100%;
 $footer_height: 100px;
@@ -69,8 +69,8 @@ $png_header_blue: "#{$path}idea/background/blue";
 $png_header_pink: "#{$path}idea/background/pink";
 $png_header_orange: "#{$path}idea/background/orange";
 $png_header_navy: "#{$path}idea/background/navy";
-$header_bg_width: 223px;
-$header_bg_height: 85px; // NB: shouldn't need to be any larger than $header_height
+$header_bg_width: 262px;
+$header_bg_height: 100px; // $header_height * 2
 
 // Footer images
 $png_footer_green: "#{$path}idea/footer/green";
@@ -86,8 +86,8 @@ $svg_badge_green: "#{$path}idea/logos/green";
 $svg_badge_blue: "#{$path}idea/logos/blue";
 $svg_badge_pink: "#{$path}idea/logos/pink";
 $svg_badge_orange: "#{$path}idea/logos/orange";
-$badge_width: 100px;
-$badge_height: 100px;
+$badge_width: $header_height + $gap;
+$badge_height: $header_height + $gap;
 
 // Garter image
 $svg_garter: "#{$path}idea/garter/garter-stamp-svg";
