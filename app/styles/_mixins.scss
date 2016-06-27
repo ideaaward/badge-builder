@@ -37,10 +37,12 @@
 }
 
 // generates media queries for up to @3x image resolutions
-@mixin backgroundSizes($imageWidth, $imageHeight, $imageFile, $maxResolutions:1, $bgColor:"", $imageFormat:"png", $repeat:"no-repeat", $posX:"0px", $posY:"0px") {
-	width: $imageWidth;
-	height: $imageHeight;
-	@include backgroundX($imageFile);
+@mixin backgroundSizes($imageWidth, $imageHeight, $imageFile, $maxResolutions:1, $bgColor:"", $imageFormat:"png", $repeat:"no-repeat", $posX:"0px", $posY:"0px", $backgroundAttachment:scroll) {
+	@if $repeat == 'no-repeat' {
+		width: $imageWidth;
+		height: $imageHeight;
+	}
+	@include backgroundX($imageFile, 1, $bgColor, $imageFormat, $repeat, $posX, $posY);
 	background-size: $imageWidth $imageHeight;
 	// @2x
 	@if $maxResolutions > 1 {
@@ -56,15 +58,20 @@
 			background-size: $imageWidth $imageHeight;
 		}
 	}
+	@if $backgroundAttachment != 'scroll' {
+		background-attachment: $backgroundAttachment;
+	}
 }
 
 //SVG
 // background-image url for SVG
 @mixin backgroundSizesSVG($imageWidth, $imageHeight, $imageFile, $bgColor:"", $posX:"50%", $posY:"50%", $repeat:"no-repeat") {
+	@if $repeat == 'no-repeat' {
+		width: $imageWidth;
+		height: $imageHeight;
+	}
 	background: #{$bgColor} url("#{$imageFile}.svg") #{$repeat} #{$posX} #{$posY};
 	background-size: $imageWidth $imageHeight;
-	width: $imageWidth;
-	height: $imageHeight;
 }
 
 // Screen resolution media queries

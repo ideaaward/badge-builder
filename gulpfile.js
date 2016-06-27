@@ -135,7 +135,7 @@ gulp.task('copy', function() {
   // These are things which cannot be vulcanized
   var bower = gulp.src([
     'app/bower_components/{webcomponentsjs,platinum-sw,sw-toolbox,promise-polyfill,' +
-    'lodash,foundation}/**/*'
+    'lodash,foundation,font-roboto}/**/*'
   ]).pipe(gulp.dest(dist('bower_components')));
 
   var scripts = gulp.src([

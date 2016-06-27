@@ -35,19 +35,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
 
-      ::content #components > div > * {
-        margin-top: 20px;
-        margin-bottom: 20px;
-      }
-
-      ::content paper-material {
-        padding: 10px;
-        box-sizing: border-box;
-        background: white;
-      }
-
-      ::content .option {
-        margin-right: 30px;
+      ::content paper-checkbox,
+      ::content paper-radio-button {
+        font-family: var(--font-family, 'Roboto');
       }
     </style>
 
@@ -67,7 +57,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       handle-as="json" on-response="postBadgeResponse">
     </iron-ajax>
 
-    <paper-dialog id="message" modal>
+    <paper-dialog id="message" modal on-iron-overlay-opened="_fixOverlay">
       <h2>[[message]]</h2>
       <div class="buttons">
         <paper-button dialog-confirm>Ok</paper-button>
@@ -80,10 +70,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </div>
 
     <iron-pages id="components" on-iron-select="_quizPageSelected"></iron-pages>
-
-    <!--
-    <code hidden>{{badgeContent}}</code>
-    -->
 
     <div class="buttonWrapper">
       <paper-button class="btn-submit" on-tap="submitBadgeTapped" raised><iron-icon icon="forward"></iron-icon>[[buttonLabel]]</paper-button>
@@ -230,7 +216,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           element.edit = false;
           //Polymer.dom(this.$.components).appendChild(element);
           var container = this._node.containers[this._node.containers.length-1];
-          console.log('append to container', container.id);
+          //console.log('append to container', container.id);
           container.appendChild(element);
           this.push('_node.elements', {element: element});
         },
@@ -265,7 +251,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         _buildSections: function(contents) {
-          console.log("Build container sections:", contents.sections.length);
+          //console.log("Build container sections:", contents.sections.length);
           for (var n=0; n<contents.sections.length; n++) {
             var sectionElements = contents.sections[n];
             var containerElement = document.createElement("div");
@@ -322,7 +308,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var elements = this.response.content.elements;
 
           var contents = this._sectionizeElements(elements);
-          console.log("contents", contents);
+          //console.log("contents", contents);
           this._buildSections(contents);
 
           this.restartQuiz();
@@ -340,7 +326,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         answersResponse: function (event) {
           var response = this.$.putAnswers.lastResponse;
-          console.log("results:", response);
+          //console.log("results:", response);
           var allCorrect = true;
 
           // var element = this.$.components.selectedItem;
@@ -370,22 +356,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             app.$.toast.text = 'You made mistakes - please try again.';
             app.$.toast.show();
           }
+          this.scrollToTop(); // scroll to top when next page, or checking mistakes
         },
         submitAnswers: function () {
-          console.info("submit answers:", this.id);
+          //console.info("submit answers:", this.id);
           this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
           this.$.putAnswers.body = this._collectAnswers();
           this.$.putAnswers.generateRequest();
         },
         postBadge: function () {
-          console.info("post badge:", this.id);
+          //console.info("post badge:", this.id);
           this.$.postBadge.url = '/api/badges/' + this.id + '/answers';
           this.$.postBadge.body = this._collectAnswers();
           this.$.postBadge.generateRequest();
         },
         postBadgeResponse: function () {
           var response = this.$.postBadge.lastResponse;
-          console.info("iDEA results", response);
+          //console.info("iDEA results", response);
           if (response.error) {
             this.set('message', response.error);
             this.$.message.open();
@@ -405,7 +392,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var sectionChildren = this.$.components.selectedItem.children;
           for (var i=0; i<sectionChildren.length; i++) {
             var element = sectionChildren[i];
-            console.log('childNodes element:', element);
+            //console.log('childNodes element:', element);
             if (element.getUserAnswer) {
               answers[element._id] = element.getUserAnswer();
             }
@@ -416,11 +403,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         submitPageAnswers: function () {
           var userAnswers = this._collectPageAnswers();
           if (_.isEmpty(userAnswers)){
-            console.info("No user answers - skip");
+            //console.info("No user answers - skip");
             this.next();
             return;
           }
-          console.info("submit page answers:", this.id, userAnswers);
+          //console.info("submit page answers:", this.id, userAnswers);
           this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
           this.$.putAnswers.body = userAnswers;
           this.$.putAnswers.generateRequest();
@@ -447,7 +434,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         _getSectionTitle: function() {
           var id = 'section'+this.selectedPage();
           var section = Polymer.dom(this.$.components).querySelector("#"+id);
-          console.log('^ section', section.title, id);
+          //console.log('^ section', section.title, id);
           if (section) {
             return section.title;
           }
@@ -482,6 +469,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           } else {
             this.submitAnswers(); // checks all answers
           }
+        },
+
+        // hack to fix overlay appearing over paper-dialog modal
+        _fixOverlay: function(e){
+          if (e.currentTarget.withBackdrop) {
+            e.currentTarget.parentNode.insertBefore(e.currentTarget.backdropElement, e.currentTarget);
+          }
+        },
+
+        _getScrollTarget: function() {
+          return document.querySelector('#main') || document.documentElement;
+        },
+
+        scrollToTop: function() {
+          var scrollTarget = this._getScrollTarget();
+          //console.log(this.localName, "scroll target:", scrollTarget);
+          scrollTarget.scrollTop = 0;
         },
 
         behaviors: [

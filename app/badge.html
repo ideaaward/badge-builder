@@ -42,25 +42,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template is="dom-bind" id="app">
 
     <!-- Main Toolbar -->
-    <div class="header">
+    <div id="header">
       <div id="garter"></div>
-      <div id="title"><h1>[[title]]</h1></div>
-      <div id="idea-badge"></div>
+      <h1 id="title">[[title]]</h1>
+      <div id="idea-badge" class="resizes"></div>
     </div>
 
     <!-- Main Content -->
-    <div class="content">
-      <single-badge></single-badge>
+    <div id="main">
+      <div id="content">
+        <single-badge></single-badge>
+      </div>
+      <div id="footer"></div>
     </div>
-
-    <div class="footer"></div>
 
     <paper-toast id="toast">
       <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">Ok</span>
     </paper-toast>
 
   </template>
-  
+
   <!-- build:js /static/scripts/app.js -->
   <script src="/static/scripts/app.js"></script>
   <!-- endbuild-->
