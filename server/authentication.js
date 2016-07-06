@@ -91,10 +91,12 @@ module.exports.init = function (app) {
       if (badge.consumerKey && badge.consumerSecret) {
         strategy._oauth2._clientId = badge.consumerKey;
         strategy._oauth2._clientSecret = badge.consumerSecret;
+        // Construct the correct callback URL by taking the URL from the
+        // environment variable as baseline and appending /callback to the
+        // path this request was targeting.
         var parsedUrl = url.parse(process.env.AUTH0_CALLBACK_URL);
-        //parsedUrl.pathname = splitPath.slice(0, 3).concat('callback').join('/');
-        // TODO: Use above line once using real badges.
-        parsedUrl.pathname = '/badges/test/callback';
+        var splitPath = req.baseUrl.split('?')[0].split('/');
+        parsedUrl.pathname = splitPath.slice(0, 3).concat('callback').join('/');
         strategy._callbackURL = url.format(parsedUrl);
       } else {
         resetAuth0();
