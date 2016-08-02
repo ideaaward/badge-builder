@@ -2,62 +2,92 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
-
-<link rel="import" href="editable-behavior.html">
-<link rel="import" href="datamodel-behavior.html">
+<link rel="import" href="behaviors/editable-behavior.html">
+<link rel="import" href="behaviors/datamodel-behavior.html">
+<link rel="import" href="behaviors/hint-behavior.html">
+<link rel="import" href="behaviors/titlebar-behavior.html">
+<link rel="import" href="includes/quiz-titlebar.html">
 
 <!--
     Quiz element for long user input (this type of quiz element will not be marked / scored)
 -->
+
 <dom-module id="quiz-long-input">
-
-  <style>
-    :host {
-      display: block;
-      box-sizing: border-box;
-    }
-
-    paper-input {
-      display: inline-block;
-      width: 100%;
-    }
-
-    .answer {
-      display: inline-block;
-      width: 100%;
-    }
-  </style>
-
   <template>
-    <paper-material class="content">
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
 
+      paper-input {
+        display: inline-block;
+        width: 100%;
+      }
+
+      .answer {
+        display: inline-block;
+        width: 100%;
+      }
+    </style>
+
+    <paper-material class="fullbleed">
       <!-- Editor View -->
-      <div hidden=[[!edit]]>
-        <h3>Long Answer Quiz Element</h3>
-        <div><paper-input placeholder="Question" value="{{question}}"></paper-input></div>
-        <div><paper-input placeholder="Word Limit" value="{{wordLimit}}" type="number"></paper-input></div>
-      </div>
+      <template is="dom-if" if="[[edit]]">
+        <quiz-titlebar class="component" hidden=[[!edit]] label="Comments" icon="editor:format-align-left" tooltip="You can ask users an open ended question and award them points for writing a long answer. You can set the limit for the minimum amount of words the user has to write to get the points for this type of question."></quiz-titlebar>
 
-      <!-- Badge View -->
-      <template is="dom-if" if="[[!edit]]">
-        <div class="row">
-          <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
-            <p>[[question]]</p>
-            <div><paper-textarea class="answer" placeholder="Answer" value="{{answer}}" rows="5"></paper-textarea></div>
+        <div class="container">
+          <!-- question | hint -->
+          <div class="expanded row">
+            <div class="large-6 columns">
+              <paper-input label="Question" placeholder="Question" value="{{question}}"></paper-input>
+              <paper-tooltip>This is the question that will be displayed to the user.</paper-tooltip>
+            </div>
+            <div class="large-6 columns">
+              <paper-input label="Hint" placeholder="Hint description" value="{{hintText}}"></paper-input>
+              <paper-tooltip>Enter the hint you want to display to user's if they get this question wrong</paper-tooltip>
+            </div>
+            <!-- word limit -->
+            <div class="large-12 columns">
+              <paper-input label="Word Limit" placeholder="0" min="0" value="{{wordLimit}}" type="number"></paper-input>
+              <paper-tooltip>Enter a number value for the minimum amount of words the user has to write to get the points for this question.</paper-tooltip>
+            </div>
           </div>
         </div>
       </template>
 
-      <content></content>
+      <!-- Badge View -->
+      <template is="dom-if" if="[[!edit]]">
+        <div class="container">
+          <!-- question -->
+          <div class="row">
+            <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+              <h3 class="question">[[question]]</h3>
+            </div>
+          </div>
+          <!-- user textbox -->
+          <div class="row">
+            <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+              <paper-textarea class="answer" placeholder="Answer" value="{{answer}}" rows="5"></paper-textarea>
+            </div>
+          </div>
+          <!-- hint -->
+          <div class="row">
+            <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+              <div class="hint_error" hidden=[[!showHint]]>
+                <p>[[hintText]]</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+
     </paper-material>
   </template>
 
-
   <script>
     QuizLongInput = Polymer({
-
       is: 'quiz-long-input',
-
       properties: {
 
         /**
@@ -103,7 +133,9 @@
           elementType : this.localName,
           question : this.question,
           answer : this.wordLimit,
-          wordLimit : this.wordLimit
+          wordLimit : this.wordLimit,
+          hintText : this.hintText,
+          showHint: this.showHint
         };
       },
 
@@ -113,7 +145,9 @@
 
       behaviors: [
         QuizBehaviors.EditableBehavior,
-        QuizBehaviors.DataModelBehavior
+        QuizBehaviors.TitlebarBehavior,
+        QuizBehaviors.DataModelBehavior,
+        QuizBehaviors.HintBehavior
       ]
     });
 

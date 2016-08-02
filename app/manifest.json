@@ -1,6 +1,6 @@
 {
-  "name": "Polymer Starter Kit",
-  "short_name": "Polymer Starter Kit",
+  "name": "iDEA Badge Builder",
+  "short_name": "iDEA",
   "icons": [{
         "src": "images/touch/icon-72x72.png",
         "sizes": "72x72",
@@ -34,7 +34,9 @@
         "sizes": "512x512",
         "type": "image/png"
       }],
-  "background_color": "#3E4EB8",
+  "background_color": "#2B325D",
   "display": "standalone",
-  "theme_color": "#2E3AA1"
+  "theme_color": "#4DB1E0"
 }
+
+        

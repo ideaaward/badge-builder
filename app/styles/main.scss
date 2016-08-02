@@ -1,8 +1,15 @@
+@charset "UTF-8";
+
+// Import Foundation 5 Grid and Responsive Design layout files only
+@import "../bower_components/foundation/scss/foundation/components/grid";
+@import "../bower_components/foundation/scss/foundation/components/visibility";
+
 // image path
 $path: '../images/';
 
 // partials
 @import 'mixins';
+@import 'font';
 @import 'theme';
 @import 'reset';
 @import 'global';

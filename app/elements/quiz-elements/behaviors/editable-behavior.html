@@ -1,0 +1,59 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="deletable-behavior.html">
+
+<script>
+  window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviors.EditableBehavior */
+  QuizBehaviors.EditableBehaviorImpl = {
+    properties: {
+      /**
+       * `edit` indicates that the element should be in WYSIWYG editor mode.
+       *
+       * @type boolean
+       * @default false
+       */
+      edit: {
+        type: Boolean,
+        value: true,
+        observer: '_editChanged'
+      },
+    },
+
+    ready: function() {
+      this._updateHiddenEditElements();
+    },
+
+    /**
+     * Triggered when edit mode is changed
+     */
+    _editChanged: function(newValue, oldValue) {
+      if (oldValue == null) {
+        return; // should be no need to do anything on first set
+      }
+      // console.log(this.localName, 'edit:', oldValue, 'changed:', newValue);
+
+      // hide/show 'edit' classes
+      this._updateHiddenEditElements();
+
+      // notify elements that require refreshing
+      this.fire("editChanged", {edit: newValue});
+    },
+
+    /**
+     * Updates `hidden` attribute for any content marked with 'edit' class
+     */
+    _updateHiddenEditElements: function() {
+      var elements = Polymer.dom(this).querySelectorAll('.edit');
+      var i = elements.length;
+      //console.log("elements", elements);
+      while (i--) {
+        this.edit ? elements[i].removeAttribute('hidden') : elements[i].setAttribute('hidden', true);
+      }
+    }
+  };
+
+  QuizBehaviors.EditableBehavior = [
+    QuizBehaviors.DeletableBehavior,
+    QuizBehaviors.EditableBehaviorImpl
+  ];
+</script>

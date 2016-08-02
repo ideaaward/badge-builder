@@ -1,7 +1,8 @@
 {
-  "name": "polymer-starter-kit",
+  "name": "badge-builder",
   "private": true,
   "dependencies": {
+    "font-roboto": "PolymerElements/font-roboto-local#1.0.1",
     "iron-elements": "PolymerElements/iron-elements#^1.0.0",
     "neon-elements": "PolymerElements/neon-elements#^1.0.0",
     "page": "visionmedia/page.js#~1.6.4",
@@ -12,6 +13,9 @@
     "wysiwyg-e": "*",
     "foundation": "~5.4.7",
     "Sortable": "sortable.js#^1.4.2"
+  },
+  "resolutions": {
+    "font-roboto": "1.0.1"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

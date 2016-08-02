@@ -135,7 +135,7 @@ gulp.task('copy', function() {
   // These are things which cannot be vulcanized
   var bower = gulp.src([
     'app/bower_components/{webcomponentsjs,platinum-sw,sw-toolbox,promise-polyfill,' +
-    'lodash,foundation}/**/*'
+    'lodash,foundation,font-roboto}/**/*'
   ]).pipe(gulp.dest(dist('bower_components')));
 
   var scripts = gulp.src([
@@ -158,7 +158,7 @@ gulp.task('copy', function() {
 
 // Copy web fonts to dist
 gulp.task('fonts', function() {
-  return gulp.src(['app/fonts/**'])
+  return gulp.src(['app/fonts/**/*'])
     .pipe(gulp.dest(dist('fonts')))
     .pipe($.size({
       title: 'fonts'
@@ -178,7 +178,8 @@ gulp.task('vulcanize', function() {
     .pipe($.vulcanize({
       stripComments: true,
       inlineCss: true,
-      inlineScripts: true
+      inlineScripts: true,
+      excludes: ['//fonts.googleapis.com/*']
     }))
     .pipe(gulp.dest(dist('elements')))
     .pipe($.size({title: 'vulcanize'}));
@@ -259,7 +260,7 @@ gulp.task('serve', ['styles', 'elements', 'nodemon'], function() {
   browserSync({
     port: 5000,
     notify: false,
-    logPrefix: 'PSK',
+    logPrefix: 'IDEA',
     snippetOptions: {
       rule: {
         match: '<span id="browser-sync-binding"></span>',
@@ -276,6 +277,7 @@ gulp.task('serve', ['styles', 'elements', 'nodemon'], function() {
   gulp.watch(['app/styles/**/*.css'], ['styles', reload]);
   gulp.watch(['app/elements/**/*.css'], ['elements', reload]);
   gulp.watch(['app/images/**/*'], reload);
+  gulp.watch(['app/fonts/**/*'], reload);
 });
 
 // Build production files, the default task
@@ -283,7 +285,8 @@ gulp.task('default', ['clean'], function(cb) {
   // Uncomment 'cache-config' if you are going to use service workers.
   runSequence(
     'bower',
-    ['copy', 'sass', 'styles'],
+    'sass',
+    ['copy', 'styles'],
     'elements',
     ['images', 'fonts', 'html'],
     'vulcanize', // 'cache-config',
@@ -295,7 +298,7 @@ gulp.task('default', ['clean'], function(cb) {
 require('web-component-tester').gulp.init(gulp);
 
 gulp.task('test', ['test:local'], function (cb) {
-  exec('node server/tests/testHelpers.js', function (err, stdout, stderr) {
+  exec('./node_modules/.bin/tape server/tests/*', function (err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
     cb(err);

@@ -16,8 +16,8 @@ var app = express();
 
 var startServer = function () {
   var port = process.env.port || 8000;
-  app.listen(port, function () {
-    console.log('Server listening on port %d...', port);
+  var listener = app.listen(port, function () {
+    console.log('Server listening on port %d...', listener.address().port);
   });
 };
 
@@ -31,9 +31,20 @@ mongoose.connection.on('connected', function () {
 
 var appFolder = process.argv[2] === 'dist' ? '.' : 'app';
 if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
   appFolder = '.';
 }
 console.log('Serving from ' + appFolder + ' folder...');
+
+// A workaround to to be able to use secure cookies in Azure:
+// http://scottksmith.com/blog/2014/08/22/using-secure-cookies-in-node-on-azure/
+app.use(function (req, res, next) {
+  if (req.headers['x-arr-ssl'] && !req.headers['x-forwarded-proto']) {
+    req.headers['x-forwarded-proto'] = 'https';
+  }
+  return next();
+});
+
 var rootPath = path.join(__dirname, '..', appFolder);
 var staticFolder = '/static';
 
@@ -47,28 +58,11 @@ app.use(session({
     mongooseConnection: mongoose.connection
   }),
   cookie: {
-    // TODO: update when served over a secure connection
-    // secure: process.env.NODE_ENV === 'production'
-    secure: false
+    secure: process.env.NODE_ENV === 'production'
   },
   saveUninitialized: false,
   resave: false
 }));
-
-// Temporary middleware to route URL with test badge
-// to some badge that exists in the database.
-app.use(function (req, res, next) {
-  if (req.url.indexOf('test') > 0) {
-    models.Badge.findOne(function (err, badge) {
-      if (!err && badge) {
-        req.url = req.url.replace('test', badge._id);
-      }
-      next();
-    });
-  } else {
-    next();
-  }
-});
 
 if (authentication.isEnabled()) {
   authentication.init(app);
@@ -88,7 +82,7 @@ if (authentication.isEnabled()) {
 }
 
 app.get('/badges/:id', function (req, res) {
-  if (!req.isAuthenticated()) {
+  if (!authentication.isAuthenticated(req)) {
     return res.redirect('/badges/' + req.params.id + '/login');
   }
   res.sendFile('/badge.html', {
@@ -105,7 +99,7 @@ app.get('/error', function (req, res) {
 });
 
 app.get('/*/', function (req, res) {
-  if (!req.isAuthenticated()) {
+  if (!authentication.isAuthenticated(req)) {
     return res.redirect('/login');
   }
   if (!req.user.role) {

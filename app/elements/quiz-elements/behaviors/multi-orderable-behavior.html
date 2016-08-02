@@ -1,0 +1,175 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/Sortable/Sortable.html">
+
+<link rel="import" href="../quiz-ordered-list.html">
+<link rel="import" href="../../scripts/lodash.html">
+
+<script>
+  window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviors.MultiOrderableBehavior */
+  QuizBehaviors.MultiOrderableBehaviorImpl = {
+
+    properties: {
+      _multiContainer: {
+        type: Object
+      },
+
+      _sortableContainer: {
+        type: Object
+      },
+
+      /**
+       * The groups for the quiz element.
+       * @type {string}
+       */
+      groups: {
+        type: Array
+      },
+
+      /**
+       * The items for the quiz element.
+       * @type {string}
+       */
+      items: {
+        type: Array
+      }
+
+    },
+
+    ready: function() {
+      // create container element
+      this._multiContainer = document.createElement("div"); // ul
+      this._multiContainer.classList.add("container");
+      Polymer.dom(this).appendChild(this._multiContainer);
+    },
+
+    attached: function() {
+      if (this.answer) {
+        this._reset();
+      }
+
+      this._sortableContainer = Sortable.create(this._multiContainer, {
+        animation: 200,
+        handle: ".drag-handle"
+      });
+    },
+
+    detatched: function() {
+      if(this._sortableContainer){
+        this._sortableContainer.destroy();
+      }
+    },
+
+    _addOption: function(data){
+      var el = document.createElement("quiz-ordered-list");
+      el.classList.add('group','nested');
+      // set properties
+      el._placeholder = "Group";
+      el._title = "List";
+      el._dragHandle = "drag-group";
+      el._noHint = true;
+
+      if (data && data.group && data.items) {
+        //console.log('add option:', data);
+        el.question = data.group;
+        el.answer = data.items;
+        el.hintText = data.hintText;
+      }
+
+      this._addElement(el);
+      return el;
+    },
+
+    _removeOption: function(name){
+      //console.warn("Remove function is not needed here.");
+      return false;
+    },
+
+    _addElement: function(element){
+      Polymer.dom(this._multiContainer).appendChild(element);
+    },
+
+    _removeElement: function(element){
+      Polymer.dom(this._multiContainer).removeChild(element);
+    },
+
+    _addElements: function(){
+      var l = this.answer.length;
+      for (var i=0; i<l; i++) {
+        this._addOption(this.answer[i]);
+      }
+    },
+
+    _removeElements: function(){
+      var elements = this._getOptionElements();
+      var i = elements.length;
+      while (i--){
+        this._removeElement( elements[i] );
+      }
+    },
+
+    _getOptionElements: function(){
+      return this._multiContainer.querySelectorAll('.group');
+    },
+
+    /* edit functions */
+
+    _reset: function() {
+      this._removeElements();
+      // create option elements
+      this._addElements();
+    },
+
+    _onDeleteElement: function(e){
+      if (e.target.localName === this.localName) {
+        return;
+      }
+      // we are deleting a child element so we want to stop bubbling this event up the dom tree
+      e.stopPropagation();
+      //console.info(this.localName, "[-] Delete child element:", e.target.localName);
+      Polymer.dom(this._multiContainer).removeChild(e.target);
+    },
+
+    _updateEditedAnswers: function(){
+      var updatedAnswers = [];
+      var updatedGroups = [];
+      var updatedItems = [];
+      var elements = this._getOptionElements();
+      var i = elements.length;
+      while(i--){
+        var element = elements[i];
+        var data = element.getData();
+        //console.log(i, "group value", data, element.localName);
+        if (data) {
+          var answer = {
+            group: data.question,
+            items: data.answer,
+            hintText: data.hintText
+          };
+          updatedAnswers.unshift(answer);
+          updatedGroups.unshift(answer.group);
+          updatedItems = answer.items.concat(updatedItems);
+        }
+      }
+      this.set('answer', updatedAnswers);
+      this.set('groups', updatedGroups);
+      this.set('items', _.shuffle(updatedItems)); // user list
+      //console.log("edit answers order > ", updatedAnswers, updatedGroups, updatedItems, elements.length);
+    },
+
+    _elementChanged: function(e) {
+      //console.info("Update edited data for drag and drop", e);
+      this._updateEditedAnswers();
+    },
+
+    listeners: {
+      'deleteElement': "_onDeleteElement",
+      'input': '_elementChanged',
+      'edited': '_elementChanged'
+    }
+  };
+
+  QuizBehaviors.MultiOrderableBehavior = [
+    QuizBehaviors.MultiOrderableBehaviorImpl
+  ];
+</script>

@@ -1,0 +1,21 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<script>
+  window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviors.DeleteBehavior */
+  QuizBehaviors.DeletableBehaviorImpl = {
+
+    /**
+     * Fires a request to be deleted.
+     */
+    _tappedDelete: function(e) {
+      e.stopPropagation();
+      this.fire('deleteElement');
+    }
+
+  };
+
+  QuizBehaviors.DeletableBehavior = [
+    QuizBehaviors.DeletableBehaviorImpl
+  ];
+</script>

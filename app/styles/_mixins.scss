@@ -5,6 +5,28 @@
 	}
 }
 
+// truncate single line text
+@mixin truncate() {
+	text-overflow: ellipsis;
+	white-space: nowrap;
+  overflow: hidden;
+}
+
+// truncate multi-line text
+@mixin truncate-multi($font-size, $lines, $line-height:1.5) {
+	display: block;
+	width: 100%;
+	height: $font-size * $lines * $line-height;
+	line-height: $line-height;
+  overflow: hidden;
+  text-overflow: ellipsis;
+	// webkit
+	display: -webkit-box;
+	-webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+}
+
+//PNG
 // background-image url for standard defination, Retina (@2x), and Retina HD (@3x) background images
 @mixin backgroundX($imageFile, $resolution:1, $bgColor:"", $imageFormat:"png", $repeat:"no-repeat", $posX:"0px", $posY:"0px") {
 	@if $resolution != 1 {
@@ -15,10 +37,12 @@
 }
 
 // generates media queries for up to @3x image resolutions
-@mixin backgroundSizes($imageWidth, $imageHeight, $imageFile, $maxResolutions:1, $bgColor:"", $imageFormat:"png", $repeat:"no-repeat", $posX:"0px", $posY:"0px") {
-	width: $imageWidth;
-	height: $imageHeight;
-	@include backgroundX($imageFile);
+@mixin backgroundSizes($imageWidth, $imageHeight, $imageFile, $maxResolutions:1, $bgColor:"", $imageFormat:"png", $repeat:"no-repeat", $posX:"0px", $posY:"0px", $backgroundAttachment:scroll) {
+	@if $repeat == 'no-repeat' {
+		width: $imageWidth;
+		height: $imageHeight;
+	}
+	@include backgroundX($imageFile, 1, $bgColor, $imageFormat, $repeat, $posX, $posY);
 	background-size: $imageWidth $imageHeight;
 	// @2x
 	@if $maxResolutions > 1 {
@@ -34,6 +58,20 @@
 			background-size: $imageWidth $imageHeight;
 		}
 	}
+	@if $backgroundAttachment != 'scroll' {
+		background-attachment: $backgroundAttachment;
+	}
+}
+
+//SVG
+// background-image url for SVG
+@mixin backgroundSizesSVG($imageWidth, $imageHeight, $imageFile, $bgColor:"", $posX:"50%", $posY:"50%", $repeat:"no-repeat") {
+	@if $repeat == 'no-repeat' {
+		width: $imageWidth;
+		height: $imageHeight;
+	}
+	background: #{$bgColor} url("#{$imageFile}.svg") #{$repeat} #{$posX} #{$posY};
+	background-size: $imageWidth $imageHeight;
 }
 
 // Screen resolution media queries
@@ -52,7 +90,7 @@
 	}
 }
 
-// Responsive
+// Responsive (mixins for Bootstrap 3)
 
 @mixin media-xxs() {
 	@media (max-width: 479px) {
@@ -75,5 +113,39 @@
 @mixin media-lg() {
 	@media (max-width: 992px) {
 		@content;
+	}
+}
+
+// Custom Font mixins
+
+// eot, woff, ttf, svg font src
+@mixin font-src($font_path, $file_name, $font_version, $delimiter: '-') {
+  src: url("#{$font_path}#{$delimiter}#{$file_name}.eot?v=#{$font_version}");
+  src: url("#{$font_path}#{$delimiter}#{$file_name}.eot?#iefix&v=#{$font_version}") format("embedded-opentype"),
+       url("#{$font_path}#{$delimiter}#{$file_name}.woff?v=#{$font_version}") format("woff"),
+       url("#{$font_path}#{$delimiter}#{$file_name}.ttf?v=#{$font_version}") format("truetype"),
+       url("#{$font_path}#{$delimiter}#{$file_name}.svg?v=#{$font_version}##{$file_name}") format("svg");
+}
+
+// woff, woff2 web font src
+@mixin woff-font-src($font_path, $file_name, $font_version, $delimiter: '-') {
+	src: url("#{$font_path}#{$delimiter}#{$file_name}.woff2?v=#{$font_version}") format('woff2'),
+			 url("#{$font_path}#{$delimiter}#{$file_name}.woff?v=#{$font_version}") format('woff');
+}
+
+// custom font face
+@mixin font-face($font, $font_path, $file_name, $font_weight, $font_style: 'normal', $font_version: '1.0', $delimiter: '-') {
+	@font-face {
+		font-family: $font;
+		@include woff-font-src($font_path, $file_name, $font_version, $delimiter);
+		font-weight: $font_weight;
+		font-style: $font_style;
+	}
+}
+
+// custom font faces using weight and font file name key values
+@mixin font-faces($font_map, $font, $font_path, $font_style: 'normal', $font_version: '1.0', $delimiter: '-') {
+	@each $font_weight, $file_name in $font_map {
+		@include font-face($font, $font_path, $file_name, $font_weight, $font_style, $font_version, $delimiter);
 	}
 }

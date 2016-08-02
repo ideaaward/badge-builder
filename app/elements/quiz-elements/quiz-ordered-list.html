@@ -2,85 +2,123 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
-
-<link rel="import" href="editable-behavior.html">
-<link rel="import" href="add-remove-behavior.html">
-<link rel="import" href="orderable-edit-behavior.html">
-<link rel="import" href="datamodel-behavior.html">
+<link rel="import" href="behaviors/editable-behavior.html">
+<link rel="import" href="behaviors/add-remove-behavior.html">
+<link rel="import" href="behaviors/orderable-edit-behavior.html">
+<link rel="import" href="behaviors/datamodel-behavior.html">
+<link rel="import" href="behaviors/hint-behavior.html">
+<link rel="import" href="behaviors/titlebar-behavior.html">
+<link rel="import" href="includes/quiz-titlebar.html">
 
 <!--
 Quiz component for question with mutiple choice response (checkbox style)
 
 Example:
 
-    <quiz-multiple question="Which shapes have more than 7 sides?" options='["Pentagon","Heptagon","Nonagon","Decagon"]' shuffle></quiz-multiple>
+    <quiz-ordered-list question="Order the polygons by number of sides (largest to smallest):" options='["Decagon","Heptagon","Pentagon","Nonagon"]' shuffle></quiz-multiple>
 
 @demo
 -->
+
 <dom-module id="quiz-ordered-list">
-
-  <style>
-    :host {
-      display: block;
-      box-sizing: border-box;
-      @apply(--paper-font-common-base);
-    }
-
-    paper-input {
-      display: inline-block;
-    }
-
-    .question {
-      width: 100%;
-    }
-
-    ::content ol {
-      list-style-position: outside;
-      /*padding: 0;*/
-      box-sizing: border-box;
-      /*width: 100%;*/
-      display: flex; /* required to display in single line */
-      flex-direction: column;
-    }
-
-    ::content ol > li {
-      position: relative;
-      width: 100%;
-      padding: 0 20px;
-      box-sizing: border-box;
-    }
-
-    ::content ol > li:before {
-      float: left;
-    }
-
-    ::content ol > li paper-input {
-      display: inline-block;
-      width: calc(100% - 40px);
-    }
-
-    ::content .drag-item {
-      position: absolute;
-      right: 0;
-      color: grey;
-      cursor: move;
-      cursor: -webkit-grabbing;
-    }
-  </style>
-
   <template>
-    <paper-material class="content">
-      <h3 class="question" hidden=[[edit]]>[[question]]</h3>
-      <div>
-        <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>
-      </div>
-      <!-- <ol id="list"></ol> -->
-      <content></content>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+        /*@apply(--paper-font-common-base);*/
+      }
+
+      ::content ol {
+        list-style-position: outside;
+        /*padding: 0;*/
+        box-sizing: border-box;
+        /*width: 100%;*/
+        display: flex; /* required to display in single line */
+        flex-direction: column;
+      }
+
+      ::content ol > li {
+        position: relative;
+        width: 100%;
+        padding: 0 20px;
+        box-sizing: border-box;
+      }
+
+      ::content ol > li:before {
+        float: left;
+      }
+
+      ::content ol > li > paper-input {
+        display: inline-block;
+        width: calc(100% - 40px);
+      }
+
+      ::content .drag-item {
+        position: absolute;
+        right: 0;
+        color: grey;
+        cursor: move;
+        cursor: -webkit-grabbing;
+      }
+    </style>
+
+    <paper-material class="fullbleed">
+      <!-- Editor View -->
+      <template is="dom-if" if="[[edit]]">
+        <quiz-titlebar class="component" hidden=[[!edit]] label="[[_title]]" icon="editor:format-line-spacing" add remove tooltip="This is an ordered list. You can use the + and - buttons to add and delete list items that the user can reorder. After you have listed all of the items, click and drag the list items so that they are in the correct order/position on the list. This will be shuffled in the user's view and they will have to reorder the list to get this question right."></quiz-titlebar>
+
+        <div class="container">
+          <!-- question | hint -->
+          <div class="expanded row">
+            <div class$="[[_hintColumns]]">
+              <paper-input label="[[_placeholder]]" placeholder="[[_placeholder]]" value="{{question}}"></paper-input>
+            </div>
+            <div class$="[[_hintColumns]]" hidden="[[_noHint]]">
+              <paper-input label="Hint" placeholder="Hint description" value="{{hintText}}"></paper-input>
+              <paper-tooltip>Enter the hint you want to display to user's if they get this question wrong</paper-tooltip>
+            </div>
+          </div>
+          <!-- options (dynamic content elements) -->
+          <div class="expanded row">
+            <div class="small-12 columns">
+              <content></content>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <!-- Badge View -->
+      <template is="dom-if" if="[[!edit]]">
+        <div class="container">
+          <!-- question -->
+          <div class="row">
+            <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+              <h3 class="question">[[question]]</h3>
+            </div>
+          </div>
+          <!-- options (dynamic content elements) -->
+          <div class="row">
+            <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+              <content></content>
+            </div>
+          </div>
+          <!-- hint -->
+          <div class="row">
+            <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+              <div class="hint_error" hidden=[[!showHint]]>
+                <p>[[hintText]]</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+
     </paper-material>
   </template>
 
   <script>
-    QuizSelection = Polymer({
+    Polymer({
       is: 'quiz-ordered-list',
       properties: {
         /**
@@ -89,6 +127,16 @@ Example:
          */
         question: {
           type: String
+        },
+
+        _placeholder: {
+          type: String,
+          value: "Question"
+        },
+
+        _title: {
+          type: String,
+          value: "Ordered List"
         }
       },
 
@@ -102,7 +150,9 @@ Example:
           elementType : this.localName,
           question : this.question,
           options : this.options,
-          answer : this.answer
+          answer : this.answer,
+          hintText : this.hintText,
+          showHint: this.showHint
         };
       },
 
@@ -110,7 +160,9 @@ Example:
         QuizBehaviors.AddRemoveBehavior,
         QuizBehaviors.OrderableEditBehavior,
         QuizBehaviors.EditableBehavior,
-        QuizBehaviors.DataModelBehavior
+        QuizBehaviors.TitlebarBehavior,
+        QuizBehaviors.DataModelBehavior,
+        QuizBehaviors.HintBehavior
       ]
     });
   </script>

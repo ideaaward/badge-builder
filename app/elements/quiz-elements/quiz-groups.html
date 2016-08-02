@@ -1,0 +1,223 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="../../bower_components/Sortable/Sortable.html">
+<link rel="import" href="behaviors/datamodel-behavior.html">
+<link rel="import" href="behaviors/hint-behavior.html">
+
+<!--
+Quiz component for question with mutiple choice response (checkbox style)
+
+Example:
+
+    <quiz-groups question="Help Santa organise things in the right place:" groups='["Presents","Reindeer"]' items='["Rudolph","Toys","Dasher","Dancer","Sweets","Candy Canes","Prancer"]'></quiz-groups>
+
+@demo
+-->
+
+<dom-module id="quiz-groups">
+  <template>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+        /*@apply(--paper-font-common-base);*/
+      }
+
+      /* dynamic element styles */
+      ::content #groups-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        clear: both;
+      }
+
+      ::content paper-material{
+        flex: 1 1 240px;
+        margin: 5px;
+      }
+
+      ::content .options {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        list-style: none;
+      }
+
+      ::content .options li {
+        flex: 0 0 auto;
+        margin: 10px;
+      }
+
+      ::content .drag-handle {
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(0, 50%);
+        margin-left: 10px;
+      }
+
+      ::content li {
+        position: relative;
+      }
+
+      ::content .groups {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        padding: 20px;
+        border: 2px dashed #ccc;
+        list-style: none;
+      }
+
+      ::content .groups li {
+        margin: 0;
+      }
+    </style>
+
+    <paper-material class="fullbleed">
+      <!-- Badge View Only -->
+      <div class="container">
+        <!-- question -->
+        <div class="row">
+          <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+            <h3 class="question">[[question]]</h3>
+          </div>
+        </div>
+        <!-- list -->
+        <div class="expanded row">
+          <div class="small-12 columns">
+            <ul id="list" class="options">
+              <template is="dom-repeat" items="[[items]]">
+                <li class="option" title="[[item]]"><p>[[item]]</p><iron-icon icon="editor:drag-handle" class="drag-handle"></iron-icon></li>
+              </template>
+            </ul>
+          </div>
+        </div>
+        <!-- groups -->
+        <div class="expanded row">
+          <div class="small-12 columns">
+            <div id="groups-container">
+            <template is="dom-repeat" items="[[groups]]" on-dom-change="_templateChanged">
+              <paper-material elevation="0">
+                <h3>[[item]]</h3>
+                <ul class="groups" title="[[item]]"></ul>
+              </paper-material>
+            </template>
+            </div>
+          </div>
+        </div>
+        <!-- hint -->
+        <div class="row">
+          <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+            <div class="hint_error" hidden=[[!showHint]]>
+              <p>[[hintText]]</p>
+            </div>
+          </div>
+        </div>
+    </paper-material>
+  </template>
+
+  <script>
+    QuizGroups = Polymer({
+      is: 'quiz-groups',
+      properties: {
+        /**
+         * The `question` for the quiz element.
+         * @type {string}
+         */
+        question: {
+          type: String
+        },
+
+        _sortables: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        }
+      },
+
+      attached: function(){
+        var el = this.querySelector("#list");
+        this._addSortable(el);
+      },
+
+      detached: function(){
+        var i = this._sortables.length;
+        while (i--) {
+          this._sortables[i].destroy();
+        }
+      },
+
+      _createSortable: function(el){
+        var group = this._id || "group";
+        //console.log(this.localName, "create sortable group", group, el);
+        return Sortable.create(el, {
+          animation: 200,
+          group: group,
+          // sort: false,
+          // handle: ".drag-handle"
+        });
+      },
+
+      _addSortable: function(el){
+        this.push('_sortables', this._createSortable(el));
+      },
+
+      _templateChanged: function(e){
+        var elements = this._getGroupElements();
+        //console.info(this.localName, 'template changed', e, elements);
+        var i = elements.length;
+        while (i--) {
+          this._addSortable(elements[i]);
+        }
+      },
+
+      _getGroupElements: function(){
+        return this.querySelectorAll('ul.groups'); // ol.groups
+      },
+
+      _getListItems: function(element){
+        var items = [];
+        var elements = element.querySelectorAll('li');
+        var i = elements.length;
+        while (i--){
+          var value = elements[i].title;
+          if (value){
+            items.unshift(value);
+          }
+        }
+        return items;
+      },
+
+      /**
+       * method to return user selected answer(s)
+       * @type array
+       */
+      getUserAnswer: function(){
+        var answers = [];
+        var elements = this._getGroupElements();
+        var i = elements.length;
+        while(i--){
+          var element = elements[i];
+          var answer = {
+            group: element.title,
+            items: this._getListItems(element)
+          };
+          answers.push(answer);
+        }
+        //console.log("user group answers >", answers, elements.length);
+        return answers;
+      },
+
+      behaviors: [
+        QuizBehaviors.DataModelBehavior,
+        QuizBehaviors.HintBehavior
+      ]
+
+    });
+  </script>
+</dom-module>

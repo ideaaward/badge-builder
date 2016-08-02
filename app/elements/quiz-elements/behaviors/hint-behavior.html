@@ -1,0 +1,55 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<script>
+  window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviors.HintBehaviorImpl */
+  QuizBehaviors.HintBehaviorImpl = {
+    properties: {
+      /**
+       * `hintText` is the text that will be displayed to users if they get a question wrong
+       *
+       * @type String
+       */
+      hintText: {
+        type: String,
+      },
+
+      /**
+       * `showHint` is the boolean value used to determine if the user got a question wrong or right.
+       *
+       * @type Boolean
+       * @default false
+       */
+      showHint: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * `_noHint` is for editor use to hide hint input.
+       *
+       * @type Boolean
+       * @default false
+       */
+      _noHint: {
+        type: Boolean,
+        value: false
+      },
+
+      _hintColumns: {
+        type: String,
+        computed: '_classHintColumns(_noHint)'
+      }
+    },
+
+    _classHintColumns: function(noHint){
+      return noHint ? "large-12 columns" : "large-6 columns";
+    }
+
+
+  };
+
+  QuizBehaviors.HintBehavior = [
+    QuizBehaviors.HintBehaviorImpl
+  ];
+</script>

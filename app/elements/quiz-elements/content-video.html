@@ -1,0 +1,94 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/juicy-html/juicy-html.html">
+<link rel="import" href="behaviors/editable-behavior.html">
+<link rel="import" href="behaviors/datamodel-behavior.html">
+<link rel="import" href="behaviors/titlebar-behavior.html">
+<link rel="import" href="includes/quiz-titlebar.html">
+
+<!--
+Content component for embeded video display
+-->
+
+<dom-module id="content-video">
+  <template>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+      }
+
+      paper-input {
+        display: inline-block;
+        width: 100%;
+      }
+    </style>
+
+    <!-- Editor View -->
+    <template is="dom-if" if="[[edit]]">
+      <paper-material class="fullbleed content-element">
+        <quiz-titlebar class="component" label="Media" icon="av:videocam" tooltip="This element allows you to embed videos directly into the badge. Do not input the raw URL for the video, you must enter the embed code which you can find around the video of your selected video provider, generally you can get this code by finding the 'Share' button or tab. For example, on YouTube you can find the embed code by clicking on 'Share > Embed', copy that directly into the input box below. You have entered the embed code correctly if you can see the video on this page."></quiz-titlebar>
+
+        <div class="container">
+          <!-- iframe -->
+          <div class="expanded row">
+            <div class="large-12 columns">
+              <paper-input label="Media source" placeholder="<iframe>" value="{{embededURI}}"></paper-input>
+              <p style="color: red">To ensure the the video is centred and positioned correctly, please change the width variable to 100% in the iframe embedded code above e.g. width="100%"</p>
+            </div>
+            <div class="large-12 columns">
+              <!-- <div inner-h-t-m-l="[[embededURI]]"></div> -->
+              <template is="juicy-html" content$="[[embededURI]]"></template>
+            </div>
+          </div>
+        </div>
+      </paper-material>
+    </template>
+
+    <!-- Badge View -->
+    <template is="dom-if" if="[[!edit]]">
+      <div class="container">
+        <div class="row">
+          <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+            <template is="juicy-html" content$="[[embededURI]]"></template>
+           </div>
+        </div>
+      </div>
+    </template>
+
+  </template>
+
+  <script>
+
+    ContentVideo = Polymer({
+      is: 'content-video',
+      properties: {
+
+        /**
+         * The embded uri for the video.
+         * @type {string}
+         */
+        embededURI: {
+          type: String,
+        }
+
+      },
+
+      getData: function(){
+        return {
+          elementType : this.localName,
+          embededURI : this.embededURI
+        };
+      },
+
+      behaviors: [
+        QuizBehaviors.EditableBehavior,
+        QuizBehaviors.TitlebarBehavior,
+        QuizBehaviors.DataModelBehavior
+      ]
+
+    });
+
+  </script>
+</dom-module>

@@ -1,0 +1,261 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../../bower_components/paper-radio-button/paper-radio-button.html">
+
+<link rel="import" href="../../scripts/lodash.html">
+
+<script>
+  window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviors.SelectableBehavior */
+  QuizBehaviors.SelectableBehaviorImpl = {
+    properties: {
+      /**
+       * `options` indicates that the number of options to select
+       *
+       * @type boolean
+       * @default false
+       */
+      options: {
+        type: Array,
+        value: function() {
+          return [];
+        },
+        notify: true
+      },
+
+      /**
+       * Reference for dynamic option elements container
+       *
+       * @type object
+       */
+      _optionsContainer: {
+        type: Object
+      },
+
+      /**
+       * `multi` indicates that the element should allow multiple selections.
+       * Use `false` for radio buttons or `true` for checkboxes.
+       *
+       * @type boolean
+       * @default false
+       */
+      multi: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Returns "paper-checkbox" for multiple selection or "paper-radio-button" for single choice.
+       *
+       * @type boolean
+       * @default false
+       */
+      paperElement: {
+        type: String,
+        readOnly: true,
+        computed: '_paperElement(multi)'
+      },
+
+      /**
+       * Include the `shuffle` attribute to randomise the order of the `options`
+       *
+       * @type boolean
+       * @default false
+       */
+      shuffle: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Indicates the DOM elements are ready
+       */
+      _isReady: {
+        type: Boolean,
+        value: false
+      }
+    },
+
+    ready: function() {
+      // create container element
+      //console.info(this.localName, "ready");
+      this._optionsContainer = document.createElement("div");
+      this._optionsContainer.classList.add("options");
+      Polymer.dom(this).appendChild(this._optionsContainer);
+      //
+      // this.refresh(); // NB: `options` not yet set when creating as dynamic element
+    },
+
+    attached: function() {
+      this.refresh(); // NB: `options` are now set for creating dynamic elements
+    },
+
+    detached: function() {
+      // this._removeOptions();
+      // Polymer.dom(this).removeChild(this._optionsContainer);
+    },
+
+    /**
+     * Removes/adds `options` to DOM
+     */
+    _resetOptions: function() {
+      this.set('_isReady', false);
+      //console.log(this.localName, "set/reset", this.options);
+      // shuffle options
+      if (this.shuffle && this.options.length>0) {
+        this.set('options', _.shuffle(this.options) );
+        //console.log(this.localName, "shuffled options:", this.options);
+      }
+      // (remove option elements)
+      this._removeOptions();
+      // create option elements
+      this._addOptions();
+      this.set('_isReady', true);
+    },
+
+    /**
+     * Refresh view when switching between edit/view mode
+     */
+    refresh: function() {
+      var elements = this._getOptionElements();
+      if ( this.options.length != elements.length ) {
+        this._resetOptions();
+      }
+    },
+
+    _paperElement: function(multi) {
+      //console.log(this.multi, multi);
+      return (multi) ? "paper-checkbox" : "paper-radio-button";
+    },
+
+    _addOptions: function(){
+      var l = this.options.length;
+      for (var i=0; i<l; i++) {
+        this._addOption(this.options[i]);
+      }
+    },
+
+    _removeOptions: function(){
+      var elements = this._getOptionElements();
+      var i = elements.length;
+      //console.info(this.localName, "remove options", i, elements);
+      while (i--){
+        this._removeElement( elements[i] );
+      }
+    },
+
+    _addOption: function(name){
+      var el = document.createElement(this.paperElement);
+      var label = name; // || ''+(this._options.length+1);
+
+      this._appendElementLabel(el, label); //
+      el.name = label; // value & input property
+      el.classList.add('option');
+
+      this._addElement(el);
+      return el;
+    },
+
+    _removeOption: function(name){
+      var elements = this._getOptionElements();
+      var lastIndex = elements.length-1;
+      if (lastIndex >= 0) {
+        this._removeElement( elements[lastIndex] );
+      }
+    },
+
+    _appendElementLabel: function(el, label) {
+      var textnode = document.createTextNode(label);
+      var labelElement = this.multi ? el.$.checkboxLabel : el.$.radioLabel ; // NB: uses private element selector
+      labelElement.appendChild(textnode);
+    },
+
+    _getOptionElements: function(){
+      return Polymer.dom(this._optionsContainer).querySelectorAll('.option');
+    },
+
+    _addElement: function(element){
+      Polymer.dom(this._optionsContainer).appendChild(element);
+    },
+
+    _removeElement: function(element){
+      //console.info(this.localName, "remove", element);
+      Polymer.dom(this._optionsContainer).removeChild(element);
+    },
+
+    _optionsAddedRemoved: function(length){
+      // NB: we don't want to fire events while options are being set/reset
+      if (this._isReady) {
+        //console.log(this.localName, "options +/- length", length);
+        this.fire("optionsAddedRemoved", {length: length});
+      }
+    },
+
+    /**
+     * array of `options` to select
+     *
+     * @type array
+     */
+    selectOptions: function(options) {
+      var elements = this._getOptionElements();
+      var i = elements.length;
+      // console.log(this.localName, 'elements:', i);
+      while (i--) {
+        var el = elements[i];
+        var value = el.name;
+        var index = _.findIndex(options, function(v){
+          return (v === value);
+        });
+        el.checked = (index > -1 && value) ? true : false;
+      }
+    },
+
+    /**
+     * gets the selected `options` (sorted alphabetically)
+     *
+     * @type array
+     */
+    selectedOptions: function() {
+      var selectedOptions = [];
+      var elements = this._getOptionElements();
+      var i = elements.length;
+      //console.log(this.localName, 'elements:', i);
+      while (i--) {
+        var el = elements[i];
+        // console.log("item", el.checked, el.name);
+        if (el.checked && el.name) {
+          selectedOptions.unshift(el.name);
+        }
+      }
+      return _.sortBy(selectedOptions);
+    },
+
+    /**
+     * method to return user selected answer(s)
+     * @type array
+     */
+    getUserAnswer: function(){
+      return this.selectedOptions();
+    },
+
+    _selectHandler: function(e) {
+      // check if a "paper-radio-button" (or "paper-radio-button-input" element)
+      if (!this.multi && e.target.checked) {
+        // console.log(this.localName, e.target.name);
+        var singleSelection = (e.target.checked) ? [e.target.name] : [];
+        this.selectOptions(singleSelection);
+      }
+      //console.log(this.localName, e.target.name, e.target.checked, this.selectedOptions() );
+      this.fire("optionsSelected", { selectedItems: this.selectedOptions() });
+    },
+
+    listeners: {
+      'change': '_selectHandler'
+    }
+  };
+
+  QuizBehaviors.SelectableBehavior = [
+    QuizBehaviors.SelectableBehaviorImpl
+  ];
+</script>

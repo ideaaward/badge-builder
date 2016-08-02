@@ -21,21 +21,26 @@ module.exports.calculateResults = function (badge, answers) {
     if (typeof element.answer !== 'undefined') {
       var result = false;
       var userAnswer = answers[id];
-      switch(element.elementType){
-        case "quiz-single":
-        case "quiz-multiple":
-        case "quiz-ordered-list":
+      if (userAnswer) {
+        switch(element.elementType){
+          case "quiz-single":
+          case "quiz-multiple":
+          case "quiz-ordered-list":
             result = isAnswerCorrect(userAnswer, element.answer);
             break;
-        case "quiz-short-input":
+          case "quiz-short-input":
             result = isShortAnswerCorrect(userAnswer, element.answerKeywords);
             break;
-        case "quiz-long-input":
+          case "quiz-long-input":
             result = isLongAnswerCorrect(userAnswer, element.wordLimit);
             break;
-        default:
-            console.error("Unknown type");
+          case "quiz-list-groups":
+            result = isGroupedAnswerCorrect(userAnswer, element.answer);
             break;
+          default:
+            console.error("Unknown answer type", element.elementType);
+            break;
+        }
       }
       results[id] = result;
     }
@@ -69,6 +74,20 @@ function isLongAnswerCorrect(userAnswer, minNumberOfAnswers) {
     return true;
   }
   return false;
+}
+
+function isGroupedAnswerCorrect(userAnswers, answers){
+  //console.log('\nuserAnswers:\n', userAnswers, '\nanswers:\n', answers);
+  var result = true;
+  answers.forEach(function(answer){
+    var group = answer.group;
+    var userAnswer = _.find(userAnswers, function(o) { return o.group === group; });
+    var isCorrect = _.isEqual(_.sortBy(answer.items), _.sortBy(userAnswer.items));
+    if ( !isCorrect ) {
+      result = false;
+    }
+  });
+  return result;
 }
 
 function countWords(s){

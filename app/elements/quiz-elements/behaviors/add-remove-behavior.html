@@ -1,0 +1,131 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="helper-behavior.html">
+
+<script>
+  window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviors.AddRemoveBehavior */
+  QuizBehaviors.AddRemoveBehaviorImpl = {
+    properties: {
+
+      /**
+       * `options` indicates that the number of options to select
+       *
+       * @type boolean
+       * @default false
+       */
+      options: {
+        type: Array,
+        value: function(){
+          return [];
+        }
+      }
+
+    },
+
+    /**
+     * Add option handler
+     */
+    _tappedAdd: function(e) {
+      e.stopPropagation();
+      //console.info(this.localName, "Tapped add!");
+      this._addOption(); // selectable-behavior method
+      // NB: we don't need to update options until input text has been entered
+      this._disableDeleteButton(false); // enables delete button
+    },
+
+    /**
+     * Remove option handler
+     */
+    _tappedRemove: function(e) {
+      e.stopPropagation();
+      //console.info(this.localName, "Tapped remove!");
+      this._removeOption(); // selectable-behavior method
+      this.updateOptions();
+      this._optionsLengthChanged(this.options.length); // disables delete button if no more options remain
+    },
+
+    /**
+     * Overridable methods
+     */
+    _addOption: function(name){
+      console.info("Implement add option:", name);
+    },
+    _removeOption: function(name){
+      console.info("Implement remove option:", name);
+    },
+
+    /**
+     * Add/remove elements handler
+     */
+    _handleOptionsAddedRemoved: function(e) {
+      var length = e.detail.length;
+      // console.log("handle added/removed options:", length);
+      this._optionsLengthChanged(length);
+
+      // Update options after add/remove action
+      this.updateOptions(); // NB: beware - we don't want this while setting/resetting elements!
+    },
+
+    _optionsLengthChanged: function(length) {
+      //console.log(this.localName, "options length:", length);
+      if (length === 0) {
+        this._disableDeleteButton(true);
+      } else {
+        this._disableDeleteButton(false);
+      }
+    },
+
+    _disableDeleteButton: function(disabled){
+      this._elementRemove.disabled = disabled;
+    },
+
+    /**
+     * Text input handler
+     */
+    _handleInputChange: function(e){
+      // console.log(this.localName, "input", e.target.value);
+      this._updateInputOption(e.target, e.target.value);  // manually update the element name
+      this.updateOptions();
+    },
+
+    /**
+     * Hook to update parent option element name using dynamic input element change value
+     */
+    _updateInputOption: function(element, value){
+      var el = this.getParentElement(element, ".option");
+      el.name = value; // manually update the element name
+      //console.log("element", el, value);
+    },
+
+    /**
+     * Updates the options array after editing
+     */
+    updateOptions: function(){
+      var options = [];
+      var elements = this.querySelectorAll(".option");
+      var i = elements.length;
+      while(i--){
+        var el = elements[i];
+        var value = el.name || el.title; // NB: element name updates via binding
+        //console.log(i, value, el.name, el.value, el.checked);
+        if (value){
+          options.unshift(value);
+        }
+      }
+      // console.log("> update options:", options);
+      this.set('options', options);
+      this.fire('edited');
+    },
+
+    listeners: {
+      'optionsChanged': 'updateOptions',
+      'optionsAddedRemoved': '_handleOptionsAddedRemoved',
+      'input': '_handleInputChange'
+    }
+  };
+
+  QuizBehaviors.AddRemoveBehavior = [
+    QuizBehaviors.HelperBehavior,
+    QuizBehaviors.AddRemoveBehaviorImpl
+  ];
+</script>

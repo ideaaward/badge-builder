@@ -1,0 +1,136 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/iron-icons/editor-icons.html">
+<link rel="import" href="../../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../../bower_components/Sortable/Sortable.html">
+<link rel="import" href="orderable-behavior.html">
+<link rel="import" href="../../scripts/lodash.html">
+
+<script>
+  window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviors.OrderableEditBehavior */
+  QuizBehaviors.OrderableEditBehaviorImpl = {
+
+    properties: {
+      /**
+       * `answer` as an array of option strings
+       *
+       * @type array
+       */
+      answer: {
+        type: Array,
+        value: function() {
+          return [];
+        }
+      },
+
+      _isSetup: {
+        type: Boolean,
+        value: function() {
+          return false;
+        }
+      }
+    },
+
+    /* drag and drop methods */
+    _optionMoved: function(e){
+      //this.fire("optionsAddedRemoved", {length: this._getOptionElements().length});
+      this.fire("optionsChanged");
+    },
+
+    /* override methods */
+    _applyDragAndDrop: function() {
+      var options = {
+        animation: 200,
+        onEnd: this._optionMoved.bind(this)
+      };
+      // edit options
+      if (this.edit === true) {
+        options.handle = ".drag-item"
+      }
+
+      this._sortable = Sortable.create(this._optionsContainer, options);
+    },
+
+    _appendElementLabel: function(el, label) {
+      // list item title attribute
+      el.title = label;
+
+      // drag and drop handle
+      var handlerElement = document.createElement("iron-icon");
+      handlerElement.icon = "editor:drag-handle";
+      handlerElement.classList.add("drag-item");
+      el.appendChild(handlerElement);
+
+      // edit input
+      if (this.edit === true) {
+        // Disable toggling selection when editing input text
+        var element = document.createElement('paper-input'); //document.createTextNode(label);
+        element.stopKeyboardEventPropagation = true; // NB: we need to allow spaces in input text field so we need to stop key events being passed up to checkbox/radio button
+        element.placeholder = "Option";
+        element.noLabelFloat = true;
+        element.value = label; // NB: this value will not be bindable!
+        el.appendChild(element);
+        return;
+      }
+
+      // view label
+      var p = document.createElement("p");
+      var textnode = document.createTextNode(label);
+      p.appendChild(textnode);
+      el.appendChild(p);
+    },
+
+    refresh: function(){
+      if (this.edit === true && !this._isSetup ) {
+        //console.log('setup options:', this.options, "with answers:", this.answer);
+        this.set('options', this.answer); // NB: this should only be run once at start of edit mode
+        this.set('_isSetup', true);
+      }
+      //console.log('refresh:', this.options, this.answer);
+      var elements = this._getOptionElements();
+      if ( this.options.length != elements.length ) {
+        this._resetOptions();
+      }
+    },
+
+    // NB: shuffle options until they don't match answer order.
+    _shuffleOptions: function(){
+      //console.log(this.localName, "_shuffleOptions...");
+      // shuffle options
+      if (this.options.length>1) {
+        var shuffledOptions = [];
+        do {
+          shuffledOptions = _.shuffle(this.options);
+          //console.log(this.localName, "* shuffled options:", this.options, shuffledOptions);
+        } while (shuffledOptions + '' === this.answer + '');
+        this.set('options', shuffledOptions);
+      }
+    },
+
+    /**
+     * Update answers in edit mode only
+     */
+    _updateEditedAnswers: function(e) {
+      var updatedAnswers = [];
+      var elements = this._getOptionElements();
+      var i = elements.length;
+      while(i--){
+        var value = elements[i].querySelector('paper-input').value;
+        //console.log(i, "value", value);
+        if (value) {
+          updatedAnswers.unshift(value);
+        }
+      }
+      //console.log("edit answers order > ", updatedAnswers, elements.length);
+      this.set('answer', updatedAnswers);
+      this._shuffleOptions(); //this.set('options', _.shuffle(updatedAnswers));
+    }
+
+  };
+
+  QuizBehaviors.OrderableEditBehavior = [
+    QuizBehaviors.OrderableBehavior,
+    QuizBehaviors.OrderableEditBehaviorImpl
+  ];
+</script>

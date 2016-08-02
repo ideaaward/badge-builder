@@ -1,11 +1,13 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
-
-<link rel="import" href="editable-behavior.html">
-<link rel="import" href="add-remove-behavior.html">
-<link rel="import" href="selectable-edit-behavior.html">
-<link rel="import" href="datamodel-behavior.html">
+<link rel="import" href="behaviors/editable-behavior.html">
+<link rel="import" href="behaviors/add-remove-behavior.html">
+<link rel="import" href="behaviors/selectable-edit-behavior.html">
+<link rel="import" href="behaviors/datamodel-behavior.html">
+<link rel="import" href="behaviors/hint-behavior.html">
+<link rel="import" href="behaviors/titlebar-behavior.html">
+<link rel="import" href="includes/quiz-titlebar.html">
 
 <!--
 Quiz component for question with single choice response (radio button style)
@@ -16,31 +18,73 @@ Example:
 
 @demo
 -->
+
 <dom-module id="quiz-single">
-
-  <style>
-    :host {
-      display: block;
-      box-sizing: border-box;
-      @apply(--paper-font-common-base);
-    }
-
-    paper-input {
-      display: inline-block;
-    }
-
-    .question {
-      width: 100%;
-    }
-  </style>
-
   <template>
-    <paper-material class="content">
-      <h3 class="question" hidden=[[edit]]>[[question]]</h3>
-      <div>
-        <paper-input class="question" placeholder="Question" value="{{question}}" hidden=[[!edit]]></paper-input>
-      </div>
-      <content></content>
+    <style>
+      :host {
+        display: block;
+        box-sizing: border-box;
+        /*@apply(--paper-font-common-base);*/
+      }
+
+      paper-input {
+        display: inline-block;
+        width: 100%;
+      }
+    </style>
+
+    <paper-material class="fullbleed">
+      <!-- Editor View -->
+      <template is="dom-if" if="[[edit]]">
+        <quiz-titlebar class="component" hidden=[[!edit]] label="Single Choice" icon="radio-button-checked" add remove tooltip="This is a single choice question where only one option can be selected and there is only one correct answer. You can use the + and - buttons to add and delete options that the user can select. After you have listed all of the options available to the user, select the radio button for the option which is the correct answer to this question."></quiz-titlebar>
+
+        <div class="container">
+          <!-- question | hint -->
+          <div class="expanded row">
+            <div class="large-6 columns">
+              <paper-input label="Question" placeholder="Question" value="{{question}}"></paper-input>
+            </div>
+            <div class="large-6 columns">
+              <paper-input label="Hint" placeholder="Hint description" value="{{hintText}}"></paper-input>
+              <paper-tooltip>Enter the hint you want to display to user's if they get this question wrong</paper-tooltip>
+            </div>
+          </div>
+          <!-- options (dynamic content elements) -->
+          <div class="expanded row">
+            <div class="small-12 columns">
+              <content></content>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <!-- Badge View -->
+      <template is="dom-if" if="[[!edit]]">
+        <div class="container">
+          <!-- question -->
+          <div class="row">
+            <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+              <h3 class="question">[[question]]</h3>
+            </div>
+          </div>
+          <!-- options (dynamic content elements) -->
+          <div class="row">
+            <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+              <content></content>
+            </div>
+          </div>
+          <!-- hint -->
+          <div class="row">
+            <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
+              <div class="hint_error" hidden=[[!showHint]]>
+                <p>[[hintText]]</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+
     </paper-material>
   </template>
 
@@ -78,7 +122,9 @@ Example:
           elementType : this.localName,
           question : this.question,
           options : this.options,
-          answer : this.selectedOptions()
+          answer : this.selectedOptions(),
+          hintText : this.hintText,
+          showHint: this.showHint
         };
       },
 
@@ -86,7 +132,9 @@ Example:
         QuizBehaviors.AddRemoveBehavior,
         QuizBehaviors.SelectableEditBehavior,
         QuizBehaviors.EditableBehavior,
-        QuizBehaviors.DataModelBehavior
+        QuizBehaviors.TitlebarBehavior,
+        QuizBehaviors.DataModelBehavior,
+        QuizBehaviors.HintBehavior
       ]
     });
   </script>

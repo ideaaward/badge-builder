@@ -9,7 +9,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
@@ -20,17 +19,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
 <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../behaviors/document-behavior.html">
-
+<!-- quiz elements -->
 <link rel="import" href="../quiz-elements/quiz-single.html">
 <link rel="import" href="../quiz-elements/quiz-multiple.html">
-<link rel="import" href="../quiz-elements/quiz-ordered-list.html">
-<link rel="import" href="../content-video/content-video.html">
-<link rel="import" href="../content-html/content-html.html">
-<link rel="import" href="../content-button/content-button.html">
-<link rel="import" href="../content-section/content-section.html">
 <link rel="import" href="../quiz-elements/quiz-short-input.html">
 <link rel="import" href="../quiz-elements/quiz-long-input.html">
+<link rel="import" href="../quiz-elements/quiz-ordered-list.html">
+<link rel="import" href="../quiz-elements/quiz-list-groups.html">
+<!-- content elements -->
+<link rel="import" href="../quiz-elements/content-video.html">
+<link rel="import" href="../quiz-elements/content-html.html">
+<link rel="import" href="../quiz-elements/content-button.html">
+<link rel="import" href="../quiz-elements/content-section.html">
 
 <link rel="import" href="../../bower_components/Sortable/Sortable.html">
 
@@ -67,18 +69,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       ::content paper-fab.widget {
-        display: inline-block;
+        float: left;
       }
 
-      ::content paper-fab.delete {
+      ::content li > paper-input {
+        display: inline-block !important;
+      }
+
+      paper-fab.delete {
         position: absolute;
-        /*transform: translateY(-50%);
-        top: 50%;*/
         right: 10px;
         bottom: 10px;
       }
 
-      ::content .drag-handle {
+      .drag-handle {
         position: absolute;
         top: 0;
         right: 0;
@@ -86,7 +90,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       span,
       input {
-        @apply(--paper-font-body2);
+        /*@apply(--paper-font-body2);*/
       }
 
       #fab {
@@ -120,49 +124,68 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       method="PUT" on-response="handleUpdateResponse">
     </iron-ajax>
 
-    <paper-material class="content">
-      <h2 class="page-title">[[title]]</h2>
+    <nav>
+      <div class="col-l"><a href="/" class="button"><iron-icon icon="arrow-back"></iron-icon>Badges</a></div>
+      <div class="col-m idea-logo"></div>
+      <div class="col-r"><a on-tap="saveBadge" class="button">[[saveTitle]]</a></div>
+    </nav>
 
-      <paper-input id="titleInput" placeholder="Title" label="Badge Title" value="{{badgeTitle}}" autofocus required></paper-input>
+    <main>
+      <div class="gutter"></div>
 
-      <paper-input id="keyInput" placeholder="Key" label="Consumer Key" value="{{badgeKey}}"></paper-input>
-      <paper-input id="secretInput" placeholder="Secret" label="Consumer Secret" value="{{badgeSecret}}"></paper-input>
+      <paper-material class="editor">
+        <div class="titlebar header">
+          <h1><iron-icon icon="idea-icons:badge"></iron-icon>[[title]]</h1>
+        </div>
 
-      <paper-dropdown-menu label="Badge Theme">
-        <paper-listbox id="theme" class="dropdown-content" attr-for-selected="value" selected="{{badgeTheme}}" on-iron-select="selectTheme">
-          <paper-item value="blue"><span class="swatch bg_blue"></span>Blue</paper-item>
-          <paper-item value="green"><span class="swatch bg_green"></span>Green</paper-item>
-          <paper-item value="pink"><span class="swatch bg_pink"></span>Pink</paper-item>
-          <paper-item value="orange"><span class="swatch bg_orange"></span>Orange</paper-item>
-        </paper-listbox>
-      </paper-dropdown-menu>
+        <div class="container">
+          <div class="expanded row">
+            <div class="large-6 columns">
+              <paper-input id="titleInput" placeholder="Title" label="Badge Title" value="{{badgeTitle}}" autofocus required></paper-input>
+              <paper-dropdown-menu label="Badge Theme">
+                <paper-listbox id="theme" class="dropdown-content" attr-for-selected="value" selected="{{badgeTheme}}" on-iron-select="selectTheme">
+                  <paper-item value="navy"><span class="swatch bg_navy"></span>Navy</paper-item>
+                  <paper-item value="blue"><span class="swatch bg_blue"></span>Blue</paper-item>
+                  <paper-item value="green"><span class="swatch bg_green"></span>Green</paper-item>
+                  <paper-item value="pink"><span class="swatch bg_pink"></span>Pink</paper-item>
+                  <paper-item value="orange"><span class="swatch bg_orange"></span>Orange</paper-item>
+                </paper-listbox>
+              </paper-dropdown-menu>
+            </div>
+            <div class="large-6 columns">
+              <paper-input id="keyInput" placeholder="Key" label="Consumer Key" value="{{badgeKey}}" tooltip="This is required to register your badge with the iDEA platform. Leave this blank for now and email Floxx when you are ready to publish your badge for further instructions."></paper-input>
+              <paper-input id="secretInput" placeholder="Secret" label="Consumer Secret" value="{{badgeSecret}}" tooltip="This is required to register your badge with the iDEA platform. Leave this blank for now and email Floxx when you are ready to publish your badge for further instructions."></paper-input>
+              <!-- <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>[[saveTitle]]</paper-button> -->
+            </div>
+          </div>
+        </div>
+      </paper-material>
 
-      <paper-button on-tap="saveBadge" raised><iron-icon icon="save"></iron-icon>{{saveTitle}}</paper-button>
+      <!-- dynamic elements go inside here -->
+      <div id="components" class="editor"></div>
 
-      <paper-button on-tap="_test" raised><iron-icon icon="bug-report"></iron-icon>Test</paper-button>
-    </paper-material>
+    </main>
 
+    <div class="side-drawer">
+      <h3 class="title">Quiz</h3>
+      <ul>
+        <li><a on-tap="createQuizSingleChoice"><iron-icon icon="radio-button-checked"></iron-icon><span>Single&nbsp;Choice</span></a></li>
+        <li><a on-tap="createQuizMultipleChoice"><iron-icon icon="check-box"></iron-icon><span>Multiple&nbsp;Choice</span></a></li>
+        <li><a on-tap="createQuizOrderedList"><iron-icon icon="editor:format-line-spacing"></iron-icon><span>List</span></a></li>
+        <li><a on-tap="createQuizListGroups"><iron-icon icon="av:shuffle"></iron-icon><span>Groups</span></a></li>
+        <li><a on-tap="createQuizShortInput"><iron-icon icon="editor:short-text"></iron-icon><span>Keywords</span></a></li>
+        <li><a on-tap="createQuizLongInput"><iron-icon icon="editor:format-align-left"></iron-icon><span>Comments</span></a></li>
+      </ul>
 
-    <div id="fab">
-        <!-- Quiz -->
-        <paper-fab icon="radio-button-checked" on-tap="createYesNo"></paper-fab>
-        <paper-fab icon="check-box" on-tap="createMultipleChoice"></paper-fab>
-        <paper-fab icon="editor:format-list-numbered" on-tap="createQuizOrderedList"></paper-fab>
-        <!-- <paper-fab icon="editor:format-line-spacing" on-tap="createQuizDraggable"></paper-fab> -->
-        <paper-fab icon="editor:short-text" on-tap="createQuizShortInput"></paper-fab>
-        <paper-fab icon="editor:format-align-left" on-tap="createQuizLongInput"></paper-fab>
-        <!-- Content -->
-        <paper-fab icon="editor:format-color-text" on-tap="createHTML" class="blue"></paper-fab>
-        <paper-fab icon="av:videocam" on-tap="createVideo" class="blue"></paper-fab>
-        <paper-fab icon="link" on-tap="createButton" class="blue"></paper-fab>
-        <!--iframe 2.0-->
-        <!-- <paper-fab icon="av:play-circle-outline" on-tap="" class="blue"></paper-fab> -->
-        <!--section divider-->
-        <paper-fab icon="remove" on-tap="createContentSection" class="blue"></paper-fab>
+      <h3 class="title">Content</h3>
+      <ul>
+        <li><a on-tap="createHTML"><iron-icon icon="editor:format-color-text"></iron-icon><span>Text</span></a></li>
+        <li><a on-tap="createVideo"><iron-icon icon="av:videocam"></iron-icon><span>Media</span></a></li>
+        <li><a on-tap="createButton"><iron-icon icon="link"></iron-icon><span>Link</span></a></li>
+        <li><a on-tap="createContentSection"><iron-icon icon="av:web-asset"></iron-icon><span>Section</span></a></li>
+      </ul>
     </div>
 
-    <!-- dynamic elements go inside here -->
-    <div id="components"></div>
   </template>
 
 
@@ -174,20 +197,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       Polymer({
         is: 'create-badge',
         properties: {
-          _node : {
-            type: Object,
-            value: {
-              elements: []
-            }
-          },
-          elements : {
+          elementsData : {
             type: Array,
             value: []
           },
-          isEditMode : {
+          // Create/save new Badge by default
+          isUpdateMode : {
             type: Boolean,
             value: false,
-            observer: '_changeEditMode'
+            observer: '_changeUpdateMode'
           },
           title: {
             type: String,
@@ -202,6 +220,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           badgeTitle: {
             type: String,
             notifiy: true
+          },
+          badgeTheme: {
+            type: String,
+            value: "navy"
           },
           badgeKey: {
             type: String,
@@ -218,38 +240,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         opened: function (event) {
           this._resetPage();
-          // if edit mode
+          // update existing badge
           if (event.detail && event.detail.params){
             var id = event.detail.params._id;
-            console.log(this.localName, "opened", id);
-            this.set('isEditMode', true);
+            //console.log(this.localName, "opened", id);
             this.set('id', id);
+            this.set('isUpdateMode', true); // Update
             this.$.getBadge.url = '/api/author/badges/' + id;
             this.$.getBadge.generateRequest();
             return;
           }
-          this.set('isEditMode', false);
+          // create new badge
+          this.set('isUpdateMode', false);
         },
 
-        _changeEditMode: function(isEditMode) {
-          console.log("mode", isEditMode);
-          if (isEditMode){
+        _changeUpdateMode: function(isUpdateMode) {
+          // update existing badge
+          if (isUpdateMode){
             this.set('title', "Edit Badge");
             this.set('saveTitle', "Update");
             return;
           }
+          // create new badge
           this.set('saveTitle', "Save");
           this.set('title', "Create Badge");
-          // enable drag & drop when switching into edit mode
-          if (this._sortable) {
-            console.log('->', this._sortable.options.disabled);
-            this._sortable.options.disabled = (this.isEdit) ? false : true;
-          }
         },
 
         selectTheme: function(event) {
-          //var theme = event.detail.item.id;
-          console.log("select theme:", this.badgeTheme);
           this._setAppTheme(this.badgeTheme);
         },
 
@@ -259,13 +276,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             title: this.$.titleInput.value,
             content: {
               theme: this.badgeTheme,
-              elements: this.elements
+              elements: this.elementsData
             },
             consumerKey: this.$.keyInput.value,
             consumerSecret: this.$.secretInput.value
           };
           console.info(this.localName, 'save', body);
-          if (this.isEditMode) {
+          if (this.isUpdateMode) {
             this.$.updateBadge.url = '/api/author/badges/' + this.id;
             this.$.updateBadge.body = body;
             this.$.updateBadge.generateRequest();
@@ -289,216 +306,243 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         // TODO: clean-up dynamic elements / resources
         _resetPage: function(){
+          var defaultTheme = 'navy';
           this.$.titleInput.value = '';
-          this.$.theme.selected = ''; // clear theme selection
-          this._setAppTheme('none');
+          this.$.theme.selected = defaultTheme; // reset theme selection
+          this._setAppTheme(defaultTheme); // set theme style for new badge
+          this.elementsData = [];
           // detatch custom elements
-          var i = this._node.elements.length;
-          while(i--){
-            var el = this._node.elements[i];
-            console.info(this.localName, '-', el);
-            Polymer.dom(this.$.components).removeChild(el.element); // TODO: check elements are being detached
+          var elements = this._getElements();
+          var i = elements.length;
+          //console.log(this.localName, 'reset', i, elements);
+          while (i--) {
+            var el = elements[i];
+            //console.log(this.localName, '-reset', el);
+            Polymer.dom(this.$.components).removeChild(el); // TODO: check elements are being detached
           }
-          this._node = {
-            elements: []
-          };
-          this.elements = [];
         },
 
         _onDeleteElement: function(event) {
           var target = event.target;
-          console.log("- delete", event.target);
-          var i = this._node.elements.length;
-          while(i--){
-            var el = this._node.elements[i].element;
+          //console.log("- delete", event.target);
+          var elements = this._getElements();
+          var i = elements.length;
+          while (i--) {
+            var el = elements[i];
             if (el === target) {
-              console.log("delete element:", el);
-              console.log("befor:", this._node.elements);
+              //console.info("delete element:", el);
               Polymer.dom(this.$.components).removeChild(el); // TODO: check elements are being detached
-              this.splice('_node.elements',i,1); // remove from array
-              console.log("after:", this._node.elements);
-              return;
+              return true;
             }
           }
+          return false;
         },
 
-        addContentSection: function(title) {
-          var el = new ContentSection(); //document.createElement("content-section");
-          el.title = title;
-
-          this.addElement(el);
-        },
-
-        createContentSection: function() {
-          this.addContentSection("Section");
-        },
-
-        addVideo: function(embededURI) {
-          var el = new ContentVideo(); // var el = document.createElement("content-video");
-          el.embededURI = embededURI;
-
-          this.addElement(el);
-        },
-
-        createVideo: function() {
-          this.addVideo();
-        },
-
-        addHTML: function(text) {
-          var el = new ContentHTML();
-          el.text = text;
-
-          this.addElement(el);
-        },
-
-        createHTML: function() {
-          this.addHTML();
+        createButton: function() {
+          var el = new ContentButton();
+          this.addElement(el, true);
         },
 
         addButton: function(buttonURL, buttonText) {
           var el = new ContentButton();
           el.buttonURL = buttonURL;
           el.buttonText = buttonText;
-
           this.addElement(el);
         },
 
-        createButton: function() {
-          this.addButton();
+        createContentSection: function() {
+          var el = new ContentSection();
+          this.addElement(el, true);
         },
 
-        addQuizShortInput: function(id, question, answerKeywords, answer) {
+        addContentSection: function(title) {
+          var el = new ContentSection();
+          el.title = title;
+          this.addElement(el);
+        },
+
+        createVideo: function() {
+          var el = new ContentVideo();
+          this.addElement(el, true);
+        },
+
+        addVideo: function(embededURI) {
+          var el = new ContentVideo();
+          el.embededURI = embededURI;
+          this.addElement(el);
+        },
+
+        createHTML: function() {
+          var el = new ContentHTML();
+          this.addElement(el, true);
+        },
+
+        addHTML: function(text) {
+          var el = new ContentHTML();
+          el.text = text;
+          this.addElement(el);
+        },
+
+        createQuizShortInput: function() {
+          var el = new QuizShortInput();
+          this.addElement(el, true);
+        },
+
+        addQuizShortInput: function(id, question, answerKeywords, answer, hintText, showHint) {
           var el = new QuizShortInput();
           el._id = id;
           el.question = question;
           el.answerKeywords = answerKeywords;
           el.answer = answer;
-
+          el.hintText = hintText;
+          el.showHint = showHint;
           this.addElement(el);
         },
 
-        createQuizShortInput: function() {
-          this.addQuizShortInput();
+        createQuizLongInput: function() {
+          var el = new QuizLongInput();
+          this.addElement(el, true);
         },
 
-        addQuizLongInput: function(id, question, answer, wordLimit) {
+        addQuizLongInput: function(id, question, answer, wordLimit, hintText, showHint) {
           var el = new QuizLongInput();
           el._id = id;
           el.question = question;
           el.answer = answer;
           el.wordLimit = wordLimit;
-
+          el.hintText = hintText;
+          el.showHint = showHint;
           this.addElement(el);
         },
 
-        createQuizLongInput: function() {
-          this.addQuizLongInput();
+        createQuizListGroups: function(){
+          var el = document.createElement('quiz-list-groups');
+          this.addElement(el, true);
         },
 
-        // _elementsChanged: function(changeRecord){
-        //   //console.info(this.localName, '*', changeRecord, this._node.elements);
-        // },
-
-        _updateElements: function(){
-          this.set('elements', this._getElementsData());
+        addQuizListGroups: function(id, question, answer, hintText, showHint) {
+          var el = document.createElement('quiz-list-groups');
+          el._id = id;
+          el.question = question;
+          el.answer = answer;
+          el.hintText = hintText;
+          el.showHint = showHint;
+          //
+          this.addElement(el);
         },
 
-        _getElementsData: function(){
-          var elementsData = [];
-          var elements = Polymer.dom(this.$.components).querySelectorAll('.draggable'); //this._node.elements
-          var i = elements.length;
-          while(i--){
-            var el = elements[i]; //elements[i].element;
-            var data = el.getData();
-            console.log('json', data);
-            elementsData.unshift(data); // reverse order
-          }
-          console.log("elementsData:", elementsData);
-          return elementsData;
-        },
-
-        _test: function(){
-          this._updateElements();
-          console.info(this.localName, 'DATA', this.elements); // this._node.elements
-        },
-
-        createYesNo: function(){
+        createQuizSingleChoice: function(){
           var el = document.createElement('quiz-single');
           el.options = ["Yes","No"];
-          this.addElement(el);
+          this.addElement(el, true);
         },
 
-        createMultipleChoice: function(){
+        createQuizMultipleChoice: function(){
           var el = document.createElement('quiz-multiple');
-          this.addElement(el);
+          this.addElement(el, true);
         },
 
         createQuizOrderedList: function(){
           var el = document.createElement('quiz-ordered-list');
-          this.addElement(el);
+          this.addElement(el, true);
         },
 
-        createQuizDraggable: function(){
-          console.log("TODO"); //TODO
-        },
-
-        addQuizElementType: function(elementType, id, question, options, answer) {
+        /* Handles quiz-single, quiz-multiple and quiz-ordered-list */
+        addQuizElementType: function(elementType, id, question, options, answer, hintText, showHint) {
           var el = document.createElement(elementType);
           el._id = id;
           el.question = question;
           el.options = options;
           el.answer = answer;
+          el.hintText = hintText;
+          el.showHint = showHint;
           //
           this.addElement(el);
         },
 
-        addElement: function (element) {
+        addElement: function (element, isCreated) {
           element.edit = true;
           element.classList.add("draggable");
           Polymer.dom(this.$.components).appendChild(element);
-          this.push('_node.elements', {element: element});
+          if (isCreated) {
+            this._autoScroll(); // scroll down to see user created element
+          }
         },
 
         // EDIT
         badgeResponse: function(event) {
           var elements = this.response.content.elements;
-          console.log(this.localName, 'edit', this.response.content);
+          //console.log(this.localName, 'edit', this.response.content);
           this.set('badgeTitle', this.response.title);
           this.set('badgeKey', this.response.consumerKey);
           this.set('badgeSecret', this.response.consumerSecret);
           this.set('badgeTheme', this.response.content.theme);
 
-
           for (var i=0; i<elements.length; i++) {
-
             var element = elements[i];
-
             switch(element.elementType) {
-                case "content-video":
-                    this.addVideo(element.embededURI);
-                    break;
-                case "content-html":
-                    this.addHTML(element.text);
-                    break;
-                case "content-button":
-                    this.addButton(element.buttonURL, element.buttonText);
-                    break;
-                case "quiz-short-input":
-                    this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.answer);
-                    break;
-                case "quiz-long-input":
-                    this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit);
-                    break;
-                case "content-section":
-                    this.addContentSection(element.title);
-                    break;
-                default:
-                  this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.answer); // generic quiz elements
-                  break;
+              case "content-video":
+                this.addVideo(element.embededURI);
+                break;
+              case "content-html":
+                this.addHTML(element.text);
+                break;
+              case "content-button":
+                this.addButton(element.buttonURL, element.buttonText);
+                break;
+              case "content-section":
+                this.addContentSection(element.title);
+                break;
+              case "quiz-short-input":
+                this.addQuizShortInput(element._id, element.question, element.answerKeywords, element.answer, element.hintText, element.showHint);
+                break;
+              case "quiz-long-input":
+                this.addQuizLongInput(element._id, element.question, element.answer, element.wordLimit, element.hintText, element.showHint);
+                break;
+              case "quiz-list-groups":
+                this.addQuizListGroups(element._id, element.question, element.answer, element.hintText, element.showHint);
+                break;
+              default:
+                this.addQuizElementType(element.elementType, element._id, element.question, element.options, element.answer, element.hintText, element.showHint); // generic quiz elements
+                break;
             }
-
           }
-          this._applyDragAndDrop();
+        },
+
+        _getElements: function(){
+          return Polymer.dom(this.$.components).querySelectorAll('.draggable');
+        },
+
+        _getElementsData: function(){
+          var elementsData = [];
+          var elements = this._getElements();
+          var i = elements.length;
+          while(i--){
+            var el = elements[i];
+            var data = el.getData();
+            //console.log('json', data);
+            elementsData.unshift(data); // reverse order
+          }
+          //console.log("elementsData:", elementsData);
+          return elementsData;
+        },
+
+        _updateElements: function(){
+          this.set('elementsData', this._getElementsData());
+        },
+
+        _test: function(){
+          this._updateElements();
+          console.info(this.localName, 'DATA', this.elementsData);
+        },
+
+        _autoScroll: function(){
+          // allow element to be drawn to screen before scrolling to bottom
+          setTimeout(function(){
+            var bottom = document.body.scrollHeight;
+            //console.log("Scroll to bottom", bottom);
+            window.scrollTo(0, bottom);
+          }, 0);
         },
 
         _applyDragAndDrop: function() {
@@ -506,10 +550,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this._sortable = Sortable.create(container, {
             draggable: ".draggable",
             handle: ".drag-handle",
-            disabled: !this.isEditMode,
             scroll: true,
             animation: 200
           });
+        },
+
+        attached: function() {
+          this._applyDragAndDrop();
         },
 
         detached: function() {
@@ -517,10 +564,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this._sortable.destroy();
           }
         },
-
-        // observers: [
-        //   '_elementsChanged(_node.elements.length)'
-        // ],
 
         listeners: {
           'deleteElement': "_onDeleteElement"

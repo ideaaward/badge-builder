@@ -1,0 +1,38 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<script>
+  window.QuizBehaviors = window.QuizBehaviors || {}; // Behavior namespace
+  /** @polymerBehavior QuizBehaviors.DataModelBehavior */
+  QuizBehaviors.DataModelBehaviorImpl = {
+
+    properties: {
+      /**
+       * The `id` of the element for database
+       * @type {string}
+       */
+      _id: {
+        type: String,
+        value: function() {
+          return "";
+        }
+      },
+
+
+    },
+
+    /**
+     * Returns the JSON data model for saving
+     */
+     getData: function() {
+       return {
+         _id : this._id,
+         elementType : this.localName
+       };
+     }
+
+  };
+
+  QuizBehaviors.DataModelBehavior = [
+    QuizBehaviors.DataModelBehaviorImpl
+  ];
+</script>

@@ -1,54 +1,100 @@
 // NB: Keep this for SASS variables only - lets put only styles in global
 
-// Layout vars
+// Shared Layout vars
 $gap: 10px;
 
+// Badge Editor layout
+$nav_height: 50px;
+
+$list_item_width: 180px;
+$list_item_height: 180px;
+
+$sidebar_width: 200px;
+$sidebar_collapsed_width: 65px;
+
+$titlebar_height: 50px;
+$btn_height: 50px;
+
+
+// Badge Viewer layout
 $header_width: 100%;
-$header_height: 128px;
+$header_height: 50px;
 
 $footer_width: 100%;
-$footer_height: 150px;
+$footer_height: 100px;
+
 
 // Theme colour palette
-$pink: #E84079;
+$pink: #C84378;
+$navy: #2B325D;
+$green: #8ABF54;
+$blue: #4DB1E0;
+$orange: #F1A21E;
+
+$pink_muted: #953259;
+$navy_muted: #17283F;
+$green_muted: #688A58;
+$blue_muted: #6487A7;
+$orange_muted: #AB7A42;
+
+$coolgrey_1: #E9EAED;
+$coolgrey_2: #B4C0D0;
+
+$coolgrey_3: #8187A9;
+$coolgrey_4: #5A5E76;
+
 $white: #FFFFFF;
-$navy: #203269;
-$orange: #FFA409;
-$green: #6BC048;
-$blue: #00B3E3;
+$offwhite: #FAFAFA;
+$black: #212121;
+$grey: $coolgrey_3;
 
 $error: #D4332E;
+
 
 // Themes
 $themes: (
   green: (color: $green),
   blue: (color: $blue),
   pink: (color: $pink),
-  orange: (color: $orange)
+  orange: (color: $orange),
+  navy: (color: $navy)
 );
+
+
+// Images
 
 // Header images
 $png_header_green: "#{$path}idea/background/green";
 $png_header_blue: "#{$path}idea/background/blue";
 $png_header_pink: "#{$path}idea/background/pink";
 $png_header_orange: "#{$path}idea/background/orange";
+$png_header_navy: "#{$path}idea/background/navy";
+$header_bg_width: 262px;
+$header_bg_height: 100px; // $header_height * 2
 
 // Footer images
 $png_footer_green: "#{$path}idea/footer/green";
 $png_footer_blue: "#{$path}idea/footer/blue";
 $png_footer_pink: "#{$path}idea/footer/pink";
 $png_footer_orange: "#{$path}idea/footer/orange";
+$footer_bg_width: 709px;
+$footer_bg_height: 100px;
 
 // iDEA Badge Logo images
-$png_badge: "#{$path}idea/logos/iDEA-navy";
-$png_badge_green: "#{$path}idea/logos/iDEA-green";
-$png_badge_blue: "#{$path}idea/logos/iDEA-blue";
-$png_badge_pink: "#{$path}idea/logos/iDEA-pink";
-$png_badge_orange: "#{$path}idea/logos/iDEA-orange";
-$png_badge_width: 256px;
-$png_badge_height: 256px;
+$svg_badge_navy: "#{$path}idea/logos/navy";
+$svg_badge_green: "#{$path}idea/logos/green";
+$svg_badge_blue: "#{$path}idea/logos/blue";
+$svg_badge_pink: "#{$path}idea/logos/pink";
+$svg_badge_orange: "#{$path}idea/logos/orange";
+$badge_width: $header_height + $gap;
+$badge_height: $header_height + $gap;
 
 // Garter image
-$png_garter: "#{$path}idea/garter/garter-stamp-png";
-$png_garter_width: 128px;
-$png_garter_height: 128px;
+$svg_garter: "#{$path}idea/garter/garter-stamp-svg";
+$garter_width: $header_height;
+$garter_height: $header_height;
+
+// iDEA logo
+$svg_logo: "#{$path}idea/mono/iDEA";
+$logo_width: 100px;
+$logo_height: 50px;

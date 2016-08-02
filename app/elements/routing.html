@@ -23,12 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     // Middleware
     function scrollToTop(ctx, next) {
-      app.scrollPageToTop();
-      next();
-    }
-
-    function closeDrawer(ctx, next) {
-      app.closeDrawer();
+      document.documentElement.scrollTop = 0;
       next();
     }
 
@@ -51,6 +46,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page(app.baseUrl, function () {
+      switchPage('home');
+    });
+
+    page('/home', function () {
       switchPage('home');
     });
 
