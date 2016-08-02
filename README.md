@@ -2,6 +2,7 @@
 
 ## Running locally
 
+* Install nodejs https://nodejs.org/en/
 * Install mongodb https://docs.mongodb.com/manual/installation/#tutorials
 * If you are on Windows and haven't got this setup:
   - Create a folder at the root (C:/) called 'data'
@@ -13,6 +14,7 @@
 $ npm install -g gulp-cli nodemon bower
 $ npm install
 $ bower install
+$ gulp sass
 $ gulp serve
 ```
 
