@@ -35,6 +35,7 @@ Content component for embeded video display
           <div class="expanded row">
             <div class="large-12 columns">
               <paper-input label="Media source" placeholder="<iframe>" value="{{embededURI}}"></paper-input>
+              <p style="color: red">To ensure the the video is centred and positioned correctly, please change the width variable to 100% in the iframe embedded code above e.g. width="100%"</p>
             </div>
             <div class="large-12 columns">
               <!-- <div inner-h-t-m-l="[[embededURI]]"></div> -->
@@ -49,9 +50,9 @@ Content component for embeded video display
     <template is="dom-if" if="[[!edit]]">
       <div class="container">
         <div class="row">
-          <div class="small-12 small-centered columns">
+          <div class="medium-10 medium-offset-1 large-8 large-offset-2 columns">
             <template is="juicy-html" content$="[[embededURI]]"></template>
-          </div>
+           </div>
         </div>
       </div>
     </template>
