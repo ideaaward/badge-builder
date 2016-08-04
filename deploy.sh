@@ -1,7 +1,7 @@
 #!/bin/bash -e
 set -o pipefail
 
-if [ "$TRAVIS_BRANCH" = "master" ]
+if [ "$TRAVIS_BRANCH" = "master" ] && [ "$TRAVIS_EVENT_TYPE" = "push" ]
 then
   git config --global user.name "Travis CI"
   git config --global user.email "noreply@travis-ci.org"
