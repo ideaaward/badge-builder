@@ -1,22 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
-
-<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-e.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-tool-behavior.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/wysiwyg-tool-styles.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/bold.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/italic.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/underline.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/clear.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/link.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/image.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/ordered.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/unordered.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/justify.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/heading.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/undo.html">
-<link rel="import" href="../../bower_components/wysiwyg-e/tools/redo.html">
-
+<link rel="import" href="../../bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="../../bower_components/juicy-html/juicy-html.html">
 
 <link rel="import" href="behaviors/editable-behavior.html">
@@ -45,27 +29,39 @@ Content component for html content such as paragraphs, images, lists
         display: inline-block;
         width: 100%;
       }
+
+      iron-autogrow-textarea {
+        font-family: monospace;
+        width: 100%;
+        border: 1px solid #ccc;
+        margin-top: 10px;
+      }
+
+      iframe {
+        width: 100%;
+        height: 80px;
+        overflow: auto;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+      }
     </style>
 
     <!-- Editor View -->
     <template is="dom-if" if="[[edit]]">
       <paper-material class="fullbleed content-element">
-        <quiz-titlebar class="component" label="Text" icon="editor:format-color-text" tooltip="This element is a full text editor and allows you to input and style text and images in html format. You can see what the user view of this will look like by clicking on the cog icon in the blue banner, and selecting 'Read-only'"></quiz-titlebar>
-        <!-- WYSIWYG editor -->
-        <wysiwyg-e style="height:300px" value="{{text}}" hide-settings>
-          <wysiwyg-tool-bold class="wysiwyg-tool"></wysiwyg-tool-bold>
-          <wysiwyg-tool-italic class="wysiwyg-tool"></wysiwyg-tool-italic>
-          <wysiwyg-tool-underline class="wysiwyg-tool"></wysiwyg-tool-underline>
-          <!--<wysiwyg-tool-clear class="wysiwyg-tool"></wysiwyg-tool-clear>-->
-          <!--<wysiwyg-tool-link class="wysiwyg-tool"></wysiwyg-tool-link>-->
-          <wysiwyg-tool-image class="wysiwyg-tool"></wysiwyg-tool-image>
-          <wysiwyg-tool-ordered class="wysiwyg-tool"></wysiwyg-tool-ordered>
-          <wysiwyg-tool-unordered class="wysiwyg-tool"></wysiwyg-tool-unordered>
-          <wysiwyg-tool-justify class="wysiwyg-tool" right center full></wysiwyg-tool-justify>
-          <wysiwyg-tool-heading class="wysiwyg-tool" h1 h2 h3></wysiwyg-tool-heading>
-          <wysiwyg-tool-undo class="wysiwyg-tool"></wysiwyg-tool-undo>
-          <wysiwyg-tool-redo class="wysiwyg-tool"></wysiwyg-tool-redo>
-        </wysiwyg-e>
+        <quiz-titlebar class="component" label="HTML" icon="editor:format-color-text" tooltip="This element allows you to input and style text and images in html format. The user preview will also be shown below."></quiz-titlebar>
+        <div class="container">
+          <div class="expanded row">
+            <div class="large-12 columns">
+              <iron-autogrow-textarea placeholder="" max-rows="4" bind-value="{{text}}"></iron-autogrow-textarea>
+            </div>
+          </div>
+          <div class="expanded row">
+            <div class="large-12 columns">
+              <iframe id="preview"></iframe>
+            </div>
+          </div>
+        </div>
       </paper-material>
     </template>
 
@@ -94,7 +90,9 @@ Content component for html content such as paragraphs, images, lists
           type: String,
           value: function() {
             return "";
-          }
+          },
+          observer: '_textChanged',
+          notify: true
         }
 
       },
@@ -105,6 +103,30 @@ Content component for html content such as paragraphs, images, lists
           elementType: this.localName,
           text: this.text
         };
+      },
+
+      _textChanged: function(newValue) {
+        if (!this.edit) {
+          return;
+        }
+        this._previewHTML(newValue);
+      },
+
+      _previewHTML: function(text){
+        // display preview html in iframe
+        var iframe = this.$$('#preview'); //this.querySelector('iframe');
+        if (!iframe) {
+          return;
+        }
+        var iframeContent = iframe.contentDocument || iframe.contentWindow.document;
+        iframeContent.body.innerHTML = text;
+      },
+
+      attached: function() {
+        // hack to allow dynamic template time to stamp
+        setTimeout(function(){
+          this._previewHTML(this.text);
+        }.bind(this));
       },
 
       behaviors: [
