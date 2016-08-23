@@ -34,11 +34,11 @@ Content component for embeded video display
           <!-- iframe -->
           <div class="expanded row">
             <div class="large-12 columns">
-              <paper-input label="Media source" placeholder="<iframe>" value="{{embededURI}}"></paper-input>
+              <paper-input label="Media source" placeholder="<iframe>" value="{{unescapedURI}}"></paper-input>
             </div>
             <div class="large-12 columns">
               <!-- <div inner-h-t-m-l="[[embededURI]]"></div> -->
-              <template is="juicy-html" content$="[[embededURI]]"></template>
+              <template is="juicy-html" content$="[[unescapedURI]]"></template>
             </div>
           </div>
         </div>
@@ -70,6 +70,18 @@ Content component for embeded video display
          */
         embededURI: {
           type: String,
+          value: function() {
+            return "";
+          },
+          observer: '_embededURIChanged'
+        },
+
+        // quick fix to escape quotes
+        unescapedURI: {
+          type: String,
+          value: function() {
+            return "";
+          }
         }
 
       },
@@ -77,14 +89,18 @@ Content component for embeded video display
       getData: function(){
         return {
           elementType : this.localName,
-          embededURI : this.embededURI
+          embededURI : this.escapeDoubleQuotes(this.unescapedURI)
         };
       },
 
       // replaces width value with "100%"
       _forceFullWidth: function(embededURI) {
-        var fullWidthURI = embededURI.replace(/(width=\"?'?)([0-9]+)(\"?'?)/gim, "$1100%$3");
+        var fullWidthURI = this.unescapeDoubleQuotes(embededURI).replace(/(width=\"?'?)([0-9]+)(\"?'?)/gim, "$1100%$3");
         return fullWidthURI;
+      },
+
+      _embededURIChanged: function(newValue) {
+        this.set('unescapedURI', this.unescapeDoubleQuotes(newValue));
       },
 
       behaviors: [

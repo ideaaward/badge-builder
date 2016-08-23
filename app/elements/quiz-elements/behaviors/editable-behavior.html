@@ -49,6 +49,17 @@
       while (i--) {
         this.edit ? elements[i].removeAttribute('hidden') : elements[i].setAttribute('hidden', true);
       }
+    },
+
+    // temp fix to escape double quotes
+    escapeDoubleQuotes: function(text) {
+      var escapedText = text.replace(/\"/gm, "&quot;");
+      return escapedText;
+    },
+
+    unescapeDoubleQuotes: function(text) {
+      var unescapedText = text.replace(/&quot;/gm, "\"");
+      return unescapedText;
     }
   };
 
