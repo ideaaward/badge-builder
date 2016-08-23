@@ -113,12 +113,16 @@ module.exports.init = function (app) {
   app.get(['/callback', '/badges/:id/callback'],
     passport.authenticate('oauth2',
       {
-        failureRedirect: '/error?message=' + errors.AUTHENTICATION_FAILURE // Happens if user rejects authorization
+        // Happens if user rejects authorization or if we redirect to Auth0 too
+        // many times (Auth0 seems to have logic to cut too long redirect loops).
+        failureRedirect: '/error?message=' + errors.AUTHENTICATION_FAILURE
       }
     ),
     function (req, res) {
       idea.getUser(req.user.accessToken, function (ideaResponse, body) {
         if (ideaResponse.statusCode === 401) {
+          console.log('Got 401 response from the iDEA API with content:');
+          console.log(body);
           // Redirect to login endpoint in case access token
           // is rejected.
           return res.redirect(helpers.replacePathEnding(req.url, 'login'));
