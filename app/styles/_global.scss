@@ -515,7 +515,7 @@ body#viewer {
   }
 
   &.green #footer {
-  	@include backgroundSizes($footer_bg_width, $footer_bg_height, $png_footer_green, 3, 'transparent' 'png', 'repeat-x');
+  	@include backgroundSizes($footer_bg_width, $footer_bg_height, $png_footer_green, 3, 'transparent', 'png', 'repeat-x');
   }
 
   &.blue #footer {
