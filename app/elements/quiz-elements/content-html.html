@@ -53,7 +53,7 @@ Content component for html content such as paragraphs, images, lists
         <div class="container">
           <div class="expanded row">
             <div class="large-12 columns">
-              <iron-autogrow-textarea placeholder="" max-rows="4" bind-value="{{text}}"></iron-autogrow-textarea>
+              <iron-autogrow-textarea placeholder="" max-rows="4" bind-value="{{unescapedText}}"></iron-autogrow-textarea>
             </div>
           </div>
           <div class="expanded row">
@@ -70,7 +70,7 @@ Content component for html content such as paragraphs, images, lists
       <div class="container">
         <div class="row">
           <div class="small-12 columns">
-            <template is="juicy-html" content$="{{text}}"></template>
+            <template is="juicy-html" content$="[[unescapedText]]"></template>
           </div>
         </div>
       </div>
@@ -91,8 +91,16 @@ Content component for html content such as paragraphs, images, lists
           value: function() {
             return "";
           },
-          observer: '_textChanged',
-          notify: true
+          observer: '_textChanged'
+        },
+
+        // quick fix to escape quotes
+        unescapedText: {
+          type: String,
+          value: function() {
+            return "";
+          },
+          observer: '_unescapedTextChanged'
         }
 
       },
@@ -101,11 +109,15 @@ Content component for html content such as paragraphs, images, lists
       getData: function(){
         return {
           elementType: this.localName,
-          text: this.text
+          text: this.escapeDoubleQuotes(this.unescapedText)
         };
       },
 
       _textChanged: function(newValue) {
+        this.set('unescapedText', this.unescapeDoubleQuotes(newValue));
+      },
+
+      _unescapedTextChanged: function(newValue) {
         if (!this.edit) {
           return;
         }
@@ -127,6 +139,10 @@ Content component for html content such as paragraphs, images, lists
         setTimeout(function(){
           this._previewHTML(this.text);
         }.bind(this));
+      },
+
+      _unescapeText: function(text) {
+        return this.unescapeDoubleQuotes(text);
       },
 
       behaviors: [
