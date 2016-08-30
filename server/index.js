@@ -14,20 +14,26 @@ var errors = require('./errors.js');
 
 var app = express();
 
-var startServer = function () {
+var connectionString = process.env.MONGODB_CONNECTION_STRING || 'mongodb://127.0.0.1';
+mongoose.connect(connectionString);
+
+mongoose.connection.once('connected', function () {
+  models.init(mongoose.connection);
   var port = process.env.port || 8000;
   var listener = app.listen(port, function () {
     console.log('Server listening on port %d...', listener.address().port);
   });
-};
-
-var connectionString = process.env.MONGODB_CONNECTION_STRING || 'mongodb://127.0.0.1';
-mongoose.connect(connectionString);
-
-mongoose.connection.on('connected', function () {
-  models.init(mongoose.connection);
-  startServer();
 });
+
+// Log errors from connection events to help debugging potential database
+// connectivity issues.
+var logError = function (eventName) {
+  return function () {
+    console.error('Received database ' + eventName + ' at ' + new Date().toISOString());
+  };
+};
+mongoose.connection.on('disconnected', logError('disconnected'));
+mongoose.connection.on('reconnected', logError('reconnected'));
 
 var appFolder = process.argv[2] === 'dist' ? '.' : 'app';
 if (process.env.NODE_ENV === 'production') {
