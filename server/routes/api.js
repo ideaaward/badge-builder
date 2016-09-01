@@ -103,6 +103,11 @@ router.post('/badges/:id/answers', function (req, res) {
           response.statusCode + ':\n' +
           JSON.stringify(body)
         );
+        if (response.statusCode === 400) {
+          return res.json({
+            error: 'You have already completed or not yet started this badge'
+          });
+        }
         var passed = body && body.result === 'success';
         if (passed) {
           res.json({
