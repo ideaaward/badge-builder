@@ -569,8 +569,7 @@ body#viewer {
 
   #garter {
     flex: 0 0 auto;
-    //@include backgroundSizesSVG($garter_width, $garter_height, $svg_garter, 'transparent', 0, 0);
-    @include backgroundSizes($garter_width, $garter_height, $png_garter);
+    @include backgroundSizesSVG($garter_width, $garter_height, $svg_garter, 'transparent', 0, 0);
   }
 
   #title {
