@@ -11,5 +11,7 @@ then
   git commit -m "Deployment commit"
   # We redirect any output to /dev/null to hide
   # any sensitive credential data that might otherwise be exposed.
-  git push --force --quiet "https://${GIT_USER}:${GIT_PASSWORD}@${GIT_TARGET}" master:master > /dev/null 2>&1
+  # "https://${GIT_USER}:${GIT_PASSWORD}@${GIT_TARGET}"
+  
+  git push --force --quiet "https://likasem@ideabadgebuilder-deploymentdev.scm.azurewebsites.net:443/ideabadgebuilder.git" master:master > /dev/null 2>&1
 fi
