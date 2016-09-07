@@ -48,7 +48,7 @@ var filterBadge = function (badge) {
   };
 };
 
-router.get('/user', function (req, res) {
+router.get(['/user', '/badges/:id/user'], function (req, res) {
   if (!req.user) {
     return sendUnauthorized(res);
   }
