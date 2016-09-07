@@ -14,7 +14,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../behaviors/document-behavior.html">
+<link rel="import" href="../behaviors/loading-behavior.html">
 <!-- quiz elements -->
 <link rel="import" href="../quiz-elements/quiz-single.html">
 <link rel="import" href="../quiz-elements/quiz-multiple.html">
@@ -42,11 +44,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
 
     <iron-ajax id="getBadge"
-      handle-as="json" on-response="badgeResponse" last-response="{{response}}">
+      handle-as="json" on-response="badgeResponse" on-error="loadError" last-response="{{response}}">
     </iron-ajax>
 
     <iron-ajax id="getUser"
-      handle-as="json" on-response="userResponse">
+      handle-as="json" on-response="userResponse" on-error="loadError">
     </iron-ajax>
 
     <iron-ajax id="putAnswers" method="PUT" content-type="application/json"
@@ -64,16 +66,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </div>
     </paper-dialog>
 
-    <div id="section">
-      <h1>[[sectionTitle]]</h1>
-      <paper-progress value="[[progress]]" id="progress"></paper-progress>
-    </div>
+    <!-- loading spinner -->
+    <aside id="loading" class="loading middle">
+      <paper-spinner></paper-spinner>
+    </aside>
 
-    <iron-pages id="components" on-iron-select="_quizPageSelected"></iron-pages>
+    <!-- error message -->
+    <aside id="error" class="error middle" hidden>
+      <p>Something went wrong. Please try again later&hellip;</p>
+    </aside>
 
-    <div class="buttonWrapper">
-      <paper-button class="btn-submit" on-tap="submitBadgeTapped" raised><iron-icon icon="forward"></iron-icon>[[buttonLabel]]</paper-button>
-    </div>
+    <!-- quiz content container -->
+    <main id="content" hidden>
+      <div id="section">
+        <h1>[[sectionTitle]]</h1>
+        <paper-progress value="[[progress]]" id="progress"></paper-progress>
+      </div>
+
+      <iron-pages id="components" on-iron-select="_quizPageSelected"></iron-pages>
+
+      <div class="buttonWrapper">
+        <paper-button class="btn-submit" on-tap="submitBadgeTapped" raised><iron-icon icon="forward"></iron-icon>[[buttonLabel]]</paper-button>
+      </div>
+    </main>
+
   </template>
 
   <script>
@@ -131,6 +147,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ready: function (event) {
           this._resetPage();
           this.set('id', location.pathname.split('/').pop());
+          this.setLoading(true);
           this.$.getUser.url = '/api/badges/' + this.id + '/user';
           this.$.getUser.generateRequest();
         },
@@ -301,6 +318,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         badgeResponse: function (event) {
+          this.setLoading(false);
           var response = this.$.getBadge.lastResponse;
           this.badgeTitle = response.title;
           this._setAppTitle(this.badgeTitle);
@@ -315,6 +333,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.restartQuiz();
         },
 
+        loadError: function() {
+          this.setLoading(false);
+          this.showError();
+        },
+
         _collectAnswers: function () {
           var answers = {};
           this._node.elements.forEach(function (el) {
@@ -326,17 +349,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return answers;
         },
         answersResponse: function (event) {
+          this.setLoading(false);
           var response = this.$.putAnswers.lastResponse;
           //console.log("results:", response);
           var allCorrect = true;
-
-          // var element = this.$.components.selectedItem;
-          // if (response[element._id] === true){
-          //   element.classList.remove('wrong');
-          // } else {
-          //   element.classList.add('wrong');
-          //   allCorrect = false;
-          // }
 
           var sectionChildren = this.$.components.selectedItem.children;
           for (var i=0; i<sectionChildren.length; i++) {
@@ -360,6 +376,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.scrollToTop(); // scroll to top when next page, or checking mistakes
         },
         submitAnswers: function () {
+          this.setLoading(true);
           //console.info("submit answers:", this.id);
           this.$.putAnswers.url = '/api/badges/' + this.id + '/answers';
           this.$.putAnswers.body = this._collectAnswers();
@@ -384,11 +401,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         _collectPageAnswers: function(){
           var answers = {};
-
-          // var element = this.$.components.selectedItem; // NB: only one element atm
-          // if (element.getUserAnswer) {
-          //   answers[element._id] = element.getUserAnswer();
-          // }
 
           var sectionChildren = this.$.components.selectedItem.children;
           for (var i=0; i<sectionChildren.length; i++) {
@@ -490,7 +502,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
         behaviors: [
-          Page.DocumentBehavior
+          Page.DocumentBehavior,
+          Page.LoadingBehavior
         ]
       });
     })();

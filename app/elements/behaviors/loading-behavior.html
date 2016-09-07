@@ -1,0 +1,128 @@
+<script>
+'use strict';
+var Page = Page || {}; // Behavior namespace
+
+// Enables page elements to show loading then switch to content
+Page.LoadingBehavior = {
+
+  properties: {
+    _isLoading : {
+      type: Boolean,
+      observer: '_isLoadingChanged'
+    },
+    _elementContent : {
+      type: Object
+    },
+    _elementLoading : {
+      type: Object
+    },
+    _elementSpinner : {
+      type: Object
+    },
+    _elementError : {
+      type: Object
+    },
+    _elementResult : {
+      type: Object
+    },
+    _elementsToHide : {
+      type: Array,
+      value: []
+    }
+  },
+
+  ready: function() {
+    // essential elements
+    this.set('_elementContent', this.querySelector('#content'));
+    this.set('_elementLoading', this.querySelector('#loading'));
+    if (this._elementLoading) {
+      this.set('_elementSpinner', this._elementLoading.querySelector('paper-spinner'));
+    }
+    // optional elements
+    this.set('_elementError', this.querySelector('#error'));
+    this.set('_elementResult', this.querySelector('#result'));
+    this.set('_elementsToHide', this.querySelectorAll('.banish'));
+    if (!this._elementContent || !this._elementLoading || !this._elementSpinner) {
+      console.warn("Loading behavior missing element in", this.localName);
+    }
+  },
+
+  setLoading: function(isLoading) {
+    this.set('_isLoading', isLoading);
+  },
+
+  _isLoadingChanged: function() {
+    if (!this._isLoading) {
+      // ready
+      this._show(this._elementContent);
+      this._stop(this._elementSpinner);
+      this._hide(this._elementLoading);
+      this._showAll(this._elementsToHide);
+    } else {
+      // loading
+      this._hide(this._elementError);
+      this._hide(this._elementResult);
+      this._hide(this._elementContent);
+      this._show(this._elementLoading);
+      this._start(this._elementSpinner);
+      this._hideAll(this._elementsToHide);
+    }
+  },
+
+  showError: function() {
+    this._show(this._elementError);
+    this._hideElements();
+  },
+
+  showResult: function() {
+    this._show(this._elementResult);
+    this._hideElements();
+  },
+
+  _hideElements: function() {
+    this._hide(this._elementContent);
+    this._stop(this._elementSpinner);
+    this._hide(this._elementLoading);
+  },
+
+  _hideAll : function(elementArray) {
+    var i = elementArray.length;
+    while (i--) {
+      this._hide( elementArray[i] );
+    }
+  },
+
+  _showAll : function(elementArray) {
+    var i = elementArray.length;
+    while (i--) {
+      this._show( elementArray[i] );
+    }
+  },
+
+  _hide : function(element) {
+		if (element && element instanceof Node) {
+			element.setAttribute('hidden', true);
+		}
+	},
+
+	_show : function(element) {
+		if (element && element instanceof Node) {
+			element.removeAttribute('hidden');
+		}
+	},
+
+  _start : function(element) {
+    if (element && element instanceof Node) {
+
+      element.setAttribute('active', true);
+    }
+  },
+
+  _stop : function(element) {
+    if (element && element instanceof Node) {
+      element.removeAttribute('active');
+    }
+  }
+
+}
+</script>
