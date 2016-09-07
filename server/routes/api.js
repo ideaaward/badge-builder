@@ -48,7 +48,7 @@ var filterBadge = function (badge) {
   };
 };
 
-router.get('/user', function (req, res) {
+router.get(['/user', '/badges/:id/user'], function (req, res) {
   if (!req.user) {
     return sendUnauthorized(res);
   }
@@ -103,6 +103,11 @@ router.post('/badges/:id/answers', function (req, res) {
           response.statusCode + ':\n' +
           JSON.stringify(body)
         );
+        if (response.statusCode === 400) {
+          return res.json({
+            error: 'You have already completed or not yet started this badge'
+          });
+        }
         var passed = body && body.result === 'success';
         if (passed) {
           res.json({

@@ -45,7 +45,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       handle-as="json" on-response="badgeResponse" last-response="{{response}}">
     </iron-ajax>
 
-    <iron-ajax id="getUser" url="/api/user"
+    <iron-ajax id="getUser"
       handle-as="json" on-response="userResponse">
     </iron-ajax>
 
@@ -131,6 +131,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ready: function (event) {
           this._resetPage();
           this.set('id', location.pathname.split('/').pop());
+          this.$.getUser.url = '/api/badges/' + this.id + '/user';
           this.$.getUser.generateRequest();
         },
 
