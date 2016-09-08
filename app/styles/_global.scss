@@ -131,6 +131,30 @@ paper-tooltip {
   width: 100%;
 }
 
+// Loading
+.loading {
+	background-color: rgba($grey, 0.9);
+	border-radius: 4px;
+	padding: $gap;
+}
+
+.loading paper-spinner {
+	display: block;
+	margin: 0 auto;
+}
+
+.loading p {
+	text-align: center;
+	color: $grey;
+}
+
+.middle {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
 /* Editor styles only */
 body#editor {
   nav {
