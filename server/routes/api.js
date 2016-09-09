@@ -48,10 +48,15 @@ var filterBadge = function (badge) {
   };
 };
 
-router.get(['/user', '/badges/:id/user'], function (req, res) {
+
+var requireUser = function (req, res, next) {
   if (!req.user) {
     return sendUnauthorized(res);
   }
+  next();
+};
+
+router.get(['/user', '/badges/:id/user'], requireUser, function (req, res) {
   res.json({
     name: req.user.name,
     imageUrl: req.user.imageUrl,
@@ -59,7 +64,7 @@ router.get(['/user', '/badges/:id/user'], function (req, res) {
   });
 });
 
-router.get('/badges/:id', function (req, res) {
+router.get('/badges/:id', requireUser, function (req, res) {
   try {
     var _id = mongoose.Types.ObjectId(req.params.id);
     models.Badge.findOne({ _id: _id }, function (err, badge) {
@@ -73,7 +78,7 @@ router.get('/badges/:id', function (req, res) {
   }
 });
 
-router.put('/badges/:id/answers', function (req, res) {
+router.put('/badges/:id/answers', requireUser, function (req, res) {
   models.Badge.findById(req.params.id, function (err, badge) {
     if (err) {
       return sendError(res, err);
@@ -82,7 +87,7 @@ router.put('/badges/:id/answers', function (req, res) {
   });
 });
 
-router.post('/badges/:id/answers', function (req, res) {
+router.post('/badges/:id/answers', requireUser, function (req, res) {
   models.Badge.findById(req.params.id, function (err, badge) {
     if (err) {
       return sendError(res, err);
