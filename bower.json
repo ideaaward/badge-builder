@@ -2,23 +2,22 @@
   "name": "badge-builder",
   "private": true,
   "dependencies": {
+    "polymer": "Polymer/polymer#1.6.1",
     "font-roboto": "PolymerElements/font-roboto-local#1.0.1",
-    "iron-elements": "PolymerElements/iron-elements#^1.0.0",
-    "neon-elements": "PolymerElements/neon-elements#^1.0.0",
-    "page": "visionmedia/page.js#~1.6.4",
-    "paper-elements": "PolymerElements/paper-elements#^1.0.1",
-    "platinum-elements": "PolymerElements/platinum-elements#^1.1.0",
-    "polymer": "Polymer/polymer#^1.2.0",
-    "juicy-html": "^1.1.0",
-    "wysiwyg-e": "*",
-    "foundation": "~5.4.7",
-    "Sortable": "sortable.js#^1.4.2"
+    "iron-elements": "PolymerElements/iron-elements#1.0.10",
+    "paper-elements": "PolymerElements/paper-elements#1.0.7",
+    "neon-elements": "PolymerElements/neon-elements#1.0.0",
+    "platinum-elements": "PolymerElements/platinum-elements#2.0.0",
+    "page": "visionmedia/page.js#1.6.4",
+    "juicy-html": "1.1.0",
+    "foundation": "5.5.3",
+    "Sortable": "sortable.js#1.4.2"
   },
   "resolutions": {
     "font-roboto": "1.0.1"
   },
   "devDependencies": {
-    "web-component-tester": "^4.0.0"
+    "web-component-tester": "4.0.0"
   },
   "ignore": []
 }
