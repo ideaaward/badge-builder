@@ -13,14 +13,8 @@ var helpers = require('./helpers');
 // Export for testing purposes.
 module.exports._enabled = !!process.env.AUTH0_DOMAIN;
 
-// The per route client key and secret are implemented by modifying
-// the strategy object runtime. A cleaner option would have been to
-// pass the right values to the authenticate function, but the passport-oauth2
-// project doesn't currently support that.
-var strategy = null;
-
 module.exports.init = function (app) {
-  strategy = new oauth2.Strategy({
+  var strategy = new oauth2.Strategy({
     authorizationURL: 'https://' + process.env.AUTH0_DOMAIN + '/i/oauth2/authorize',
     tokenURL: 'https://' + process.env.AUTH0_DOMAIN + '/oauth/token',
     clientID: process.env.AUTH0_CLIENT_ID,
@@ -47,7 +41,7 @@ module.exports.init = function (app) {
       if (err || user === null) {
         done(null, false);
       } else {
-        var accessToken = user.accessTokens && user.accessTokens[strategy._oauth2._clientId] || null;
+        var accessToken = user.accessTokens && user.accessTokens[req.oauth2.clientID] || null;
         if (!accessToken) {
           // If no access token found for the key used for this URL
           // pass false to done, which means that user is not considered
@@ -72,14 +66,13 @@ module.exports.init = function (app) {
     });
   });
 
-  var resetAuth0 = function () {
-    strategy._oauth2._clientId = process.env.AUTH0_CLIENT_ID;
-    strategy._oauth2._clientSecret = process.env.AUTH0_CLIENT_SECRET;
-    strategy._callbackURL = process.env.AUTH0_CALLBACK_URL;
-  };
-
   app.use('/', function (req, res, next) {
-    resetAuth0();
+    // Set the values to the request object so that they can
+    // be fetched by other middleware components later on.
+    req.oauth2 = {};
+    req.oauth2.clientID = process.env.AUTH0_CLIENT_ID;
+    req.oauth2.clientSecret = process.env.AUTH0_CLIENT_SECRET;
+    req.oauth2.callbackURL = process.env.AUTH0_CALLBACK_URL;
     next();
   });
 
@@ -89,17 +82,17 @@ module.exports.init = function (app) {
         return res.redirect('/error?message=' + errors.BADGE_NOT_FOUND);
       }
       if (badge.consumerKey && badge.consumerSecret) {
-        strategy._oauth2._clientId = badge.consumerKey;
-        strategy._oauth2._clientSecret = badge.consumerSecret;
+        // If badge has been setup with custom Auth0 consumer,
+        // update the request with the right values.
+        req.oauth2.clientID = badge.consumerKey;
+        req.oauth2.clientSecret = badge.consumerSecret;
         // Construct the correct callback URL by taking the URL from the
         // environment variable as baseline and appending /callback to the
         // path this request was targeting.
         var parsedUrl = url.parse(process.env.AUTH0_CALLBACK_URL);
         var splitPath = req.baseUrl.split('?')[0].split('/');
         parsedUrl.pathname = splitPath.slice(0, 3).concat('callback').join('/');
-        strategy._callbackURL = url.format(parsedUrl);
-      } else {
-        resetAuth0();
+        req.oauth2.callbackURL = url.format(parsedUrl);
       }
       next();
     });
@@ -108,16 +101,18 @@ module.exports.init = function (app) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.get(['/login', '/badges/:id/login'], passport.authenticate('oauth2'));
+  app.get(['/login', '/badges/:id/login'], function (req, res, next) {
+    passport.authenticate('oauth2', req.oauth2 || {})(req, res, next);
+  });
 
   app.get(['/callback', '/badges/:id/callback'],
-    passport.authenticate('oauth2',
-      {
-        // Happens if user rejects authorization or if we redirect to Auth0 too
-        // many times (Auth0 seems to have logic to cut too long redirect loops).
-        failureRedirect: '/error?message=' + errors.AUTHENTICATION_FAILURE
-      }
-    ),
+    function (req, res, next) {
+      var params = req.oauth2 || {};
+      // Happens if user rejects authorization or if we redirect to Auth0 too
+      // many times (Auth0 seems to have logic to cut too long redirect loops).
+      params.failureRedirect = '/error?message=' + errors.AUTHENTICATION_FAILURE;
+      passport.authenticate('oauth2', params)(req, res, next);
+    },
     function (req, res) {
       idea.getUser(req.user.accessToken, function (ideaResponse, body) {
         if (ideaResponse.statusCode === 401) {
@@ -142,7 +137,7 @@ module.exports.init = function (app) {
           if (!user.accessTokens) {
             user.accessTokens = {};
           }
-          user.accessTokens[strategy._oauth2._clientId] = req.user.accessToken;
+          user.accessTokens[req.oauth2.clientID] = req.user.accessToken;
           user.markModified('accessTokens');
 
           user.save(function (err) {
