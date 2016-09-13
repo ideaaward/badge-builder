@@ -37,3 +37,27 @@ Below lists the key files and folders:
 npm install -g web-component-tester
 wct
 ```
+
+## Deploy to azure
+
+You can get the "GIT_URL" needed for the last command by:
+* Going to the azure portal (portal.azure.com)
+* Open the web app
+* If you haven't already, set up the follow:
+ - Go to 'Deployment options'
+ - Setup the deployment option as local git repository (this will be the next step possible)
+* Go to 'Properties'
+ - Here you should be able to find the "GIT URL"
+
+```
+npm install
+bower install
+gulp
+cd dist
+git init .
+git add .
+git commit -m "Deployment commit"
+git push --force --quiet "GIT_URL" master:master
+```
+
+Make sure to deploy to the dev deployment slot first and not straight into production.
