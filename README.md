@@ -1,5 +1,18 @@
 # Badge Builder
 
+## Directory structure
+
+Below lists the key files and folders:
+
+```
+.
+├── app // The polymer app
+│   ├── elements // Polymer elements
+├── models // Models for the REST API
+├── routes // Routes for the REST API
+├── server.js // Entry point of the REST API
+```
+
 ## Running locally
 
 * Install nodejs https://nodejs.org/en/
@@ -16,19 +29,6 @@ $ npm install
 $ bower install
 $ gulp sass
 $ gulp serve
-```
-
-## Directory structure
-
-Below lists the key files and folders:
-
-```
-.
-├── app // The polymer app
-│   ├── elements // Polymer elements
-├── models // Models for the REST API
-├── routes // Routes for the REST API
-├── server.js // Entry point of the REST API
 ```
 
 ## Run web component tests
