@@ -41,11 +41,12 @@ wct
 ## Deploy to azure
 
 You can get the "GIT_URL" needed for the last command by:
+
 * Going to the azure portal (portal.azure.com)
 * Open the web app
-* If you haven't already, set up the follow:
+* If you haven't already, set up the following:
  - Go to 'Deployment options'
- - Setup the deployment option as local git repository (this will be the next step possible)
+ - Setup the deployment option as local git repository (this will make the next step possible)
 * Go to 'Properties'
  - Here you should be able to find the "GIT URL"
 
