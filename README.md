@@ -24,8 +24,10 @@ Below lists the key files and folders:
 * Run 'mongod' in a seperate command line window
 
 ```
-$ npm install -g gulp-cli nodemon bower
 $ npm install
+$ npm install -g gulp-cli
+$ npm install -g bower
+$ npm install -g nodemon 
 $ bower install
 $ gulp sass
 $ gulp serve
