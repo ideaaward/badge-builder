@@ -16,7 +16,8 @@
     "node-uuid": "1.4.7",
     "passport": "0.3.2",
     "passport-oauth2": "vjrantal/passport-oauth2#dynamic-consumer",
-    "path": "0.12.7"
+    "path": "0.12.7",
+    "request": "2.75.0"
   },
   "devDependencies": {
     "browser-sync": "2.7.7",
