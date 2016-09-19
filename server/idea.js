@@ -1,49 +1,32 @@
-var url = require('url');
-var http = require('http');
-var https = require('https');
+var request = require('request');
 
-var ideaServer = url.parse(process.env.IDEA_API_URL || 'https://idea.org.uk/api');
+var ideaServer = process.env.IDEA_API_URL || 'https://idea.org.uk/api';
 
-var ideaRequest = function (callback, accessToken, path, body) {
-  var headers = {
-    'Authorization': 'Bearer ' + accessToken
+var ideaRequest = function (callback, accessToken, path, content) {
+  var options = {
+    url: ideaServer + path,
+    headers: {
+      'Authorization': 'Bearer ' + accessToken
+    },
+    json: true
   };
-  if (body) {
-    headers['Content-Type'] = 'application/json'
+  if (content) {
+    options.body = content;
+    options.method = 'POST';
   }
-  var library = ideaServer.protocol === 'http:' ? http : https;
-  var req = library.request({
-    method: body ? 'POST' : 'GET',
-    host: ideaServer.host,
-    path: ideaServer.path + path,
-    protocol: ideaServer.protocol,
-    headers: headers
-  }, function (ideaResponse) {
-    var body = '';
-    ideaResponse.on('data', function (data) {
-      body += data;
-    });
-    ideaResponse.on('end', function () {
-      try {
-        callback(ideaResponse, JSON.parse(body));
-      } catch (err) {
-        console.log(body);
-        callback(ideaResponse, null);
-      }
-    });
+  request(options, function (error, response, body) {
+    if (!error && response.statusCode === 200) {
+      callback(response, body);
+    } else {
+      callback(response, null);
+    }
   });
-
-  if (body) {
-    req.write(JSON.stringify(body));
-  }
-
-  req.end();
 };
 
 module.exports.getUser = function (accessToken, callback) {
  ideaRequest(callback, accessToken, '/user');
 };
 
-module.exports.postResult = function (accessToken, body, callback) {
-  ideaRequest(callback, accessToken, '/result', body);
+module.exports.postResult = function (accessToken, content, callback) {
+  ideaRequest(callback, accessToken, '/result', content);
 };
