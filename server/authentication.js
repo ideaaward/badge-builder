@@ -15,12 +15,13 @@ module.exports._enabled = !!process.env.AUTH0_DOMAIN;
 
 module.exports.init = function (app) {
   var strategy = new oauth2.Strategy({
-    authorizationURL: 'https://' + process.env.AUTH0_DOMAIN + '/i/oauth2/authorize',
+    authorizationURL: 'https://' + process.env.AUTH0_DOMAIN + 'authorize',
     tokenURL: 'https://' + process.env.AUTH0_DOMAIN + '/oauth/token',
     clientID: process.env.AUTH0_CLIENT_ID,
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
     callbackURL: process.env.AUTH0_CALLBACK_URL,
     skipUserProfile: true,
+    prompt: 'none',
     state: true
   }, function (accessToken, refreshToken, profile, done) {
     // Extract info from JWT
