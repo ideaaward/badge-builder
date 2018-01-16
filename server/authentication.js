@@ -21,7 +21,6 @@ module.exports.init = function (app) {
     clientSecret: process.env.AUTH0_CLIENT_SECRET,
     callbackURL: process.env.AUTH0_CALLBACK_URL,
     skipUserProfile: true,
-    prompt: 'none',
     state: true
   }, function (accessToken, refreshToken, profile, done) {
     // Extract info from JWT
@@ -31,6 +30,11 @@ module.exports.init = function (app) {
       accessToken: accessToken
     });
   });
+  strategy.authorizationParams = function (options) {
+    return {
+      prompt: 'none'
+    };
+  };
   passport.use(strategy);
   passport.serializeUser(function (req, auth0User, done) {
     done(null, {
