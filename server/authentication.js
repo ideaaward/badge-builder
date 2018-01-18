@@ -113,6 +113,10 @@ module.exports.init = function (app) {
   app.get(['/callback', '/badges/:id/callback'],
     function (req, res, next) {
       var params = req.oauth2 || {};
+      var error = req.query.error;
+      if (error && (error === 'login_required' || error === 'consent_required' || error === 'interaction_required')) {
+        return res.redirect('https://idea.org.uk/');
+      }
       // Happens if user rejects authorization or if we redirect to Auth0 too
       // many times (Auth0 seems to have logic to cut too long redirect loops).
       params.failureRedirect = '/error?message=' + errors.AUTHENTICATION_FAILURE;
