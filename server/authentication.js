@@ -181,10 +181,10 @@ module.exports.isAuthenticated = function (req) {
     // If token expires during the badge completion, the results can't be
     // posted at the end since renewing the token requires a redirect that
     // would lose the progress made within the badge.
-    var minimumValidityTime = 2 * 60 * 60; // 2 hours
+    /*var minimumValidityTime = 2 * 60 * 60; // 2 hours
     if (Date.now() > (req.user.jwtPayload.exp - minimumValidityTime) * 1000) {
       return false;
-    }
+    }*/
     return true;
   }
   return false;
